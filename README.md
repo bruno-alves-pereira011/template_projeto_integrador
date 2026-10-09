@@ -249,6 +249,7 @@ As principais entidades identificadas no sistema são:
 * **Categoria**
 * **Avaliação**
 * **Favorito**
+* **Pedido** — *funcionalidade extra do MVP* (decisão D1 em `docs/DECISOES.md`): o cliente descreve o serviço e um profissional aprovado da categoria aceita o chamado.
 
 ### 3 principais entidades
 
@@ -268,35 +269,194 @@ O usuário pesquisa e consulta informações dos profissionais disponíveis para
 
 Os profissionais são associados às categorias correspondentes aos serviços que prestam, permitindo que sejam encontrados por meio da busca por categoria.
 
+### Fluxo 3 — Cliente → Pedido → Profissional (extra)
+
+O cliente abre um pedido em uma categoria; os profissionais **aprovados** daquela categoria veem o pedido no feed e um deles o aceita. O pedido segue o ciclo `aberto → em_andamento → concluido` (ou `aberto → cancelado`).
+
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/73fc2f9f-ae78-48d4-9441-6637b0388398" />
+
+## 7.3 Diagrama entidade-relacionamento (modelo implementado)
+
+Modelo implementado no Supabase (PostgreSQL) em `supabase/migrations/001_schema.sql`.
+
+```mermaid
+erDiagram
+    USUARIOS ||--o| PROFISSIONAIS : "pode ser"
+    PROFISSIONAIS ||--|{ PROFISSIONAL_CATEGORIA : "atua em"
+    CATEGORIAS ||--o{ PROFISSIONAL_CATEGORIA : "agrupa"
+    USUARIOS ||--o{ AVALIACOES : "escreve"
+    PROFISSIONAIS ||--o{ AVALIACOES : "recebe"
+    USUARIOS ||--o{ FAVORITOS : "marca"
+    PROFISSIONAIS ||--o{ FAVORITOS : "e marcado"
+    USUARIOS ||--o{ PEDIDOS : "abre (cliente)"
+    PROFISSIONAIS |o--o{ PEDIDOS : "aceita"
+    CATEGORIAS ||--o{ PEDIDOS : "classifica"
+
+    USUARIOS {
+        uuid id PK "= auth.users.id"
+        text nome
+        text tipo_usuario "cliente ou profissional"
+        text telefone
+        timestamptz created_at
+    }
+    PROFISSIONAIS {
+        uuid id PK, FK "= usuarios.id"
+        text whatsapp
+        text telefone
+        text cidade
+        text bairro
+        text descricao
+        date data_nascimento "18+"
+        text status_aprovacao "pendente, aprovado ou recusado"
+        timestamptz created_at
+    }
+    CATEGORIAS {
+        bigint id PK
+        text slug UK
+        text nome
+        text descricao
+        text sigla
+        text cor
+    }
+    PROFISSIONAL_CATEGORIA {
+        uuid profissional_id PK, FK
+        bigint categoria_id PK, FK
+    }
+    AVALIACOES {
+        bigint id PK
+        uuid usuario_id FK
+        uuid profissional_id FK
+        smallint nota "1 a 5"
+        text comentario "opcional"
+        timestamptz created_at
+    }
+    FAVORITOS {
+        uuid usuario_id PK, FK
+        uuid profissional_id PK, FK
+        timestamptz created_at
+    }
+    PEDIDOS {
+        bigint id PK
+        uuid cliente_id FK
+        uuid profissional_id FK "nulo ate o aceite"
+        bigint categoria_id FK
+        text descricao
+        text endereco
+        text status "aberto, em_andamento, concluido ou cancelado"
+        timestamptz created_at
+    }
+```
+
+**Regras de negócio refletidas no modelo**
+
+* Um usuário é **cliente** ou **profissional** (`tipo_usuario`), definido no cadastro e imutável pelo próprio usuário.
+* Profissional só pode ser cadastrado se for **maior de 18 anos**, começa com status **pendente** e é aprovado manualmente pela equipe.
+* Um profissional atua em **uma ou mais** categorias; uma categoria pode existir **sem** profissionais.
+* Cada usuário avalia um profissional **no máximo uma vez** (nota 1–5 e comentário opcional) e não pode avaliar a si mesmo.
+* Favoritos são **pessoais**: cada usuário só vê e altera os próprios.
+* Todas as tabelas têm **Row Level Security (RLS)** ativo; os detalhes estão em `supabase/README.md`.
 
 ---
 
 # 8. DESCRIÇÃO DOS DADOS
 
-### USUÁRIO
+Legenda: **PK** = chave primária · **FK** = chave estrangeira · **UK** = valor único.
 
-Tabela que armazena as informações dos usuários cadastrados no sistema.
+### USUÁRIO (`usuarios`)
 
-### PROFISSIONAL
+Tabela que armazena as informações dos usuários cadastrados no sistema. A linha é criada automaticamente (por trigger) quando a pessoa se cadastra no Supabase Auth.
 
-Tabela que armazena as informações dos profissionais que disponibilizam serviços residenciais.
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | uuid | PK; FK → `auth.users(id)`, apagado em cascata |
+| nome | text | obrigatório |
+| tipo_usuario | text | obrigatório; `cliente` ou `profissional`; padrão `cliente`; não pode ser alterado pelo usuário |
+| telefone | text | opcional |
+| created_at | timestamptz | obrigatório; padrão `now()` |
 
-### CATEGORIA
+### PROFISSIONAL (`profissionais`)
 
-Tabela que armazena as categorias dos serviços oferecidos pelos profissionais.
+Tabela que armazena as informações dos profissionais que disponibilizam serviços residenciais. Especialização 1:1 de `usuarios`.
 
-### AVALIAÇÃO
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | uuid | PK; FK → `usuarios(id)`, apagado em cascata |
+| whatsapp | text | opcional |
+| telefone | text | opcional |
+| cidade | text | opcional |
+| bairro | text | opcional |
+| descricao | text | opcional |
+| data_nascimento | date | obrigatório; idade ≥ 18 anos (validado por trigger) |
+| status_aprovacao | text | obrigatório; `pendente`, `aprovado` ou `recusado`; padrão `pendente`; só a equipe altera |
+| created_at | timestamptz | obrigatório; padrão `now()` |
+
+### CATEGORIA (`categorias`)
+
+Tabela que armazena as categorias dos serviços oferecidos pelos profissionais. Vem preenchida com Encanador, Eletricista, Chaveiro, Pedreiro, Pintor e Gesseiro.
+
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | bigint | PK; gerado automaticamente |
+| slug | text | obrigatório; UK (ex.: `encanador`) |
+| nome | text | obrigatório |
+| descricao | text | opcional |
+| sigla | text | obrigatório (ex.: `EN`) |
+| cor | text | obrigatório; cor hexadecimal do ícone |
+
+### AVALIAÇÃO (`avaliacoes`)
 
 Tabela que armazena as avaliações realizadas pelos usuários sobre os profissionais.
 
-### FAVORITO
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | bigint | PK; gerado automaticamente |
+| usuario_id | uuid | obrigatório; FK → `usuarios(id)` |
+| profissional_id | uuid | obrigatório; FK → `profissionais(id)`; diferente de `usuario_id` |
+| nota | smallint | obrigatório; entre 1 e 5 |
+| comentario | text | opcional |
+| created_at | timestamptz | obrigatório; padrão `now()` |
+
+Restrição adicional: UK (`usuario_id`, `profissional_id`) — uma avaliação por usuário e profissional.
+
+### FAVORITO (`favoritos`)
 
 Tabela que registra os profissionais marcados como favoritos pelos usuários.
 
-### PROFISSIONAL_CATEGORIA
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| usuario_id | uuid | PK (composta); FK → `usuarios(id)` |
+| profissional_id | uuid | PK (composta); FK → `profissionais(id)` |
+| created_at | timestamptz | obrigatório; padrão `now()` |
+
+### PROFISSIONAL_CATEGORIA (`profissional_categoria`)
 
 Tabela associativa utilizada para representar a relação entre profissionais e categorias, permitindo que um profissional esteja associado a uma ou mais categorias.
+
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| profissional_id | uuid | PK (composta); FK → `profissionais(id)`, apagado em cascata |
+| categoria_id | bigint | PK (composta); FK → `categorias(id)`, apagado em cascata |
+
+### PEDIDO (`pedidos`) — funcionalidade extra do MVP
+
+Tabela que registra os chamados abertos pelos clientes e aceitos pelos profissionais (telas `solicitar-pedido`, `espera-cliente`, `feed-profissional` e `servico-andamento`). As alterações são enviadas em tempo real (Supabase Realtime).
+
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | bigint | PK; gerado automaticamente |
+| cliente_id | uuid | obrigatório; FK → `usuarios(id)` |
+| profissional_id | uuid | opcional (nulo até o aceite); FK → `profissionais(id)` |
+| categoria_id | bigint | obrigatório; FK → `categorias(id)` |
+| descricao | text | obrigatório |
+| endereco | text | obrigatório |
+| status | text | obrigatório; `aberto`, `em_andamento`, `concluido` ou `cancelado`; padrão `aberto` |
+| created_at | timestamptz | obrigatório; padrão `now()` |
+
+Transições permitidas: `aberto → em_andamento` (profissional aprovado da categoria aceita), `em_andamento → concluido` (cliente ou profissional do pedido) e `aberto → cancelado` (cliente).
+
+### Consulta auxiliar: `profissionais_publicos` (view)
+
+Reúne, para cada profissional **aprovado**, nome, contato, cidade/bairro, lista de categorias, média das notas e total de avaliações. É a fonte de dados das telas de busca e de perfil (HU01–HU03).
 
 ---
 
