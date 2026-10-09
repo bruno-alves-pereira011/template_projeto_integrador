@@ -5,45 +5,16 @@
 // - Lógica do botão "Aceitar Serviço": atualiza o pedido para status = 'em_andamento' e preenche profissional_id com o ID do usuário logado.
 
 
-// Cor e sigla de cada categoria (mesmas cores dos protótipos)
-const CATEGORIAS = {
-    encanador:   { sigla: 'EN', cor: '#13695f' },
-    eletricista: { sigla: 'EL', cor: '#d0901f' },
-    chaveiro:    { sigla: 'CH', cor: '#4c5aa8' },
-    pedreiro:    { sigla: 'PD', cor: '#b8532e' },
-    pintor:      { sigla: 'PT', cor: '#8b4775' },
-    gesseiro:    { sigla: 'GS', cor: '#47707e' },
-};
+// Cor e sigla de cada categoria, indexadas pelo slug. Vêm da tabela 'categorias'
+// (js/categorias.js) em vez de uma lista fixa, para o feed usar os mesmos dados da home.
+let categoriasPorSlug = {};
 
 let usuarioLogado = null;   // { id, categoria }
 
-// ==========================================
-// MODO DEMONSTRAÇÃO
-// true  = pula o login e mostra pedidos fictícios (para pré-visualizar a tela)
-// false = funcionamento real com o Supabase
-// ==========================================
-const MODO_DEMONSTRACAO = true;
-
-// Pedidos fictícios usados no modo demonstração
-const minutosAtras = (min) => new Date(Date.now() - min * 60000).toISOString();
-
-const PEDIDOS_FICTICIOS = [
-    { id: 1, cliente_nome: 'Mariana Souza',   categoria: 'encanador',   created_at: minutosAtras(4),    descricao: 'Vazamento embaixo da pia da cozinha, a água está escorrendo pelo armário.', endereco: 'Rua das Palmeiras, 152 - Centro' },
-    { id: 2, cliente_nome: 'Carlos Henrique', categoria: 'eletricista', created_at: minutosAtras(18),   descricao: 'Disjuntor desarma toda vez que ligo o chuveiro. Preciso de uma avaliação.', endereco: 'Av. Brasil, 2300 - Jardim América' },
-    { id: 3, cliente_nome: 'Fernanda Lima',   categoria: 'chaveiro',    created_at: minutosAtras(35),   descricao: 'Perdi a chave de casa e estou do lado de fora. Urgente!', endereco: 'Rua Sete de Setembro, 89 - Vila Nova' },
-    { id: 4, cliente_nome: 'João Pedro Alves', categoria: 'pintor',     created_at: minutosAtras(130),  descricao: 'Pintura de dois quartos (aprox. 12 m² cada), paredes já lixadas.', endereco: 'Rua Ipê Amarelo, 45 - Parque das Flores' },
-    { id: 5, cliente_nome: 'Ana Beatriz Costa', categoria: 'pedreiro',  created_at: minutosAtras(300),  descricao: 'Rachadura no muro dos fundos e alguns azulejos soltos no banheiro.', endereco: 'Travessa São José, 12 - Bela Vista' },
-    { id: 6, cliente_nome: 'Roberto Nunes',   categoria: 'gesseiro',    created_at: minutosAtras(1500), descricao: 'Instalar forro de gesso na sala e fazer uma sanca com iluminação.', endereco: 'Rua Dom Pedro II, 780 - Santa Mônica' },
-];
+// O modo demonstração e os pedidos fictícios saíram daqui: o modo agora é definido só em
+// js/supabase-config.js (false) e o feed sempre usa dados reais.
 
 document.addEventListener('DOMContentLoaded', async () => {
-
-    if (MODO_DEMONSTRACAO) {
-        renderizarPedidos(PEDIDOS_FICTICIOS);
-        document.getElementById('btn-atualizar').addEventListener('click', () => renderizarPedidos(PEDIDOS_FICTICIOS));
-        document.getElementById('btn-sair').addEventListener('click', () => { window.location.href = 'index.html'; });
-        return;
-    }
 
     // ==========================================
     // PROTEÇÃO DA PÁGINA
@@ -81,6 +52,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // FEED DE OPORTUNIDADES
     // ==========================================
     if (document.getElementById('lista-pedidos')) {
+        // Se as categorias falharem, o feed continua: os cards só ficam com a cor/sigla padrão
+        try {
+            categoriasPorSlug = mapaCategoriasPorSlug(await carregarCategorias());
+        } catch (falha) {
+            console.error('Erro ao carregar categorias:', falha);
+        }
+
         await carregarPedidos();
 
         document.getElementById('btn-atualizar').addEventListener('click', carregarPedidos);
@@ -148,14 +126,14 @@ function renderizarPedidos(pedidos) {
     pedidos.forEach((pedido) => {
         const card = modelo.content.cloneNode(true);
         const chave = (pedido.categoria || '').toLowerCase();
-        const categoria = CATEGORIAS[chave] || { sigla: '??', cor: '#134e48' };
+        const categoria = categoriasPorSlug[chave] || { sigla: '??', cor: '#134e48' };
 
         const avatar = card.querySelector('.avatar-categoria');
         avatar.textContent = categoria.sigla;
         avatar.style.setProperty('--cor-categoria', categoria.cor);
 
         // textContent evita que texto digitado pelo cliente vire HTML
-        card.querySelector('.badge-categoria').textContent = pedido.categoria || 'Serviço';
+        card.querySelector('.badge-categoria').textContent = categoria.nome || pedido.categoria || 'Serviço';
         card.querySelector('.card-tempo').textContent = tempoDesde(pedido.created_at);
         card.querySelector('.card-cliente').textContent = pedido.cliente_nome || '';
         card.querySelector('.card-descricao').textContent = pedido.descricao || 'Sem descrição.';
@@ -173,12 +151,6 @@ function renderizarPedidos(pedidos) {
 async function aceitarPedido(pedidoId, botao) {
     botao.disabled = true;
     botao.textContent = 'Aceitando...';
-
-    if (MODO_DEMONSTRACAO) {
-        alert('Modo demonstração: pedido aceito (nada foi salvo no banco).');
-        window.location.href = `servico-andamento.html?pedido=${pedidoId}`;
-        return;
-    }
 
     // O filtro status = 'aberto' impede que dois profissionais aceitem o mesmo pedido
     const { data, error } = await supabaseClient

@@ -1,82 +1,76 @@
-<!-- 
-  TELA: Login (index.html)
-  OBJETIVO: Entrada principal do sistema.
-  O QUE FAZER AQUI:
-  - Criar formulário com campos de E-mail e Senha.
-  - Adicionar botão "Entrar" com id="btn-entrar" e formulário id="form-login".
-  - Link para cadastro (cadastro.html).
-  - Importar no final: Supabase CDN, js/supabase-config.js e js/auth.js.
--->+
+<!--
+  TELA: Login (index.html) — US-004
+  OBJETIVO: Entrar e ser levado à tela certa para o tipo/situação do usuário.
+  ELEMENTOS (ids usados pelo js/auth.js):
+  - #login-form com #email, #senha (+ #toggle-password) e #btn-login.
+  - #login-mensagem: erros/avisos (role="alert").
+  - #link-cadastro: recebe o ?voltar= para não perder a página de retorno.
+  - Aceita ?voltar=<pagina>.html (validado em js/sessao.js) e ?confirmado=1.
+  - Scripts no final (clássicos, sem type="module"):
+    Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/auth.js.
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HelpMe - Login</title>
-    
-    <!-- Fontes e Ícones -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Entrar</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
-    <!-- CSS Estilos -->
-    <link rel="stylesheet" href="assets/css/global.css"> <!-- O global que já criamos -->
-    <link rel="stylesheet" href="assets/css/auth.css">  <!-- O CSS específico desta tela -->
-</head>
-<body>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <main class="login-container"> 
-        <!-- Logo e Boas-vindas -->
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="pagina-auth">
+
+    <main class="login-container">
         <header class="login-header">
-            <div class="brand-logo">
-                <i class="ph-fill ph-house-line"></i>
-                <span>HelpMe</span>
-            </div>
+            <a href="home-cliente.html" class="logo" aria-label="HelpMe - ir para a página inicial">
+                <span class="logo-icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </span>
+                HelpMe
+            </a>
             <h1>Bem-vindo de volta</h1>
-            <p>Faça login para solicitar ou atender serviços.</p>
+            <p>Entre para contratar ou atender serviços.</p>
         </header>
 
-        <!-- Formulário de Login -->
-        <form id="login-form" class="login-form">
+        <form id="login-form" class="login-form" novalidate>
+            <!-- Mensagens gerais (credenciais inválidas, e-mail não confirmado, rede). -->
+            <p id="login-mensagem" class="mensagem" role="alert" hidden></p>
+
             <div class="input-group">
                 <label for="email">E-mail</label>
-                <div class="input-wrapper">
-                    <i class="ph ph-envelope"></i>
-                    <input type="email" id="email" placeholder="seu@email.com" required autocomplete="email">
-                </div>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" required autocomplete="email" inputmode="email">
             </div>
 
             <div class="input-group">
                 <label for="senha">Senha</label>
                 <div class="input-wrapper">
-                    <i class="ph ph-lock-key"></i>
-                    <input type="password" id="senha" placeholder="••••••••" required autocomplete="current-password">
-                    <button type="button" id="toggle-password" class="icon-btn-inside" tabindex="-1">
-                        <i class="ph ph-eye"></i>
-                    </button>
-                </div>
-                <div class="forgot-password">
-                    <a href="#">Esqueceu a senha?</a>
+                    <input type="password" id="senha" name="senha" placeholder="Sua senha" required autocomplete="current-password">
+                    <button type="button" id="toggle-password" class="btn-mostrar-senha" aria-controls="senha" aria-pressed="false">Mostrar</button>
                 </div>
             </div>
 
-            <button type="submit" id="btn-login" class="btn-primary">
-                Entrar
-                <i class="ph-bold ph-arrow-right"></i>
-            </button>
+            <button type="submit" id="btn-login" class="btn btn-primario btn-bloco">Entrar</button>
         </form>
 
-        <!-- Link para Cadastro -->
         <footer class="login-footer">
-            <p>Ainda não tem uma conta? <a href="cadastro.html">Cadastre-se aqui</a></p>
+            <p>Ainda não tem conta? <a href="cadastro.html" id="link-cadastro" class="btn-link">Cadastre-se</a></p>
+            <a href="home-cliente.html" class="btn-link">Voltar para a home</a>
         </footer>
     </main>
 
-    <!-- JS Scripts -->
-    <!-- Carrega o SDK do Supabase via CDN para testes rápidos no front -->
+    <!-- 1. Biblioteca oficial do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="js/auth.js"></script>
+    <!-- 2. Conexão (cria a global supabaseClient) -->
+    <script src="js/supabase-config.js"></script>
+    <!-- 3. Roteamento por tipo/situação (destinoDoUsuario, voltarSeguro) -->
+    <script src="js/sessao.js"></script>
+    <!-- 4. Lógica de login/cadastro -->
+    <script src="js/auth.js"></script>
 
 </body>
 </html>

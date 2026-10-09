@@ -249,6 +249,8 @@ As principais entidades identificadas no sistema são:
 * **Categoria**
 * **Avaliação**
 * **Favorito**
+* **Contratação** — *funcionalidade extra do MVP* (decisões D1 e D5 em `docs/DECISOES.md`): o cliente logado contrata um profissional aprovado específico, direto pelo perfil dele, informando serviço, endereço e data/horário desejado.
+* **Mensagem** — chat de texto entre cliente e profissional dentro de cada contratação.
 
 ### 3 principais entidades
 
@@ -268,35 +270,219 @@ O usuário pesquisa e consulta informações dos profissionais disponíveis para
 
 Os profissionais são associados às categorias correspondentes aos serviços que prestam, permitindo que sejam encontrados por meio da busca por categoria.
 
+### Fluxo 3 — Cliente → Contratação → Profissional (extra)
+
+No perfil de um profissional **aprovado**, o cliente logado clica em "Contratar" e envia descrição, endereço e data/horário desejado (não pode ser no passado). A contratação nasce `solicitada`; o profissional **aceita** ou **recusa**; enquanto está `solicitada` o cliente pode **cancelar**; uma contratação `aceita` é marcada como **concluída** por qualquer uma das partes. Enquanto está `solicitada` ou `aceita`, cliente e profissional conversam pelo chat; depois o histórico fica somente leitura. O telefone do cliente só é revelado ao profissional após o aceite.
+
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/73fc2f9f-ae78-48d4-9441-6637b0388398" />
+
+## 7.3 Diagrama entidade-relacionamento (modelo implementado)
+
+Modelo implementado no Supabase (PostgreSQL) em `supabase/migrations/001_schema.sql`.
+
+```mermaid
+erDiagram
+    USUARIOS ||--o| PROFISSIONAIS : "pode ser"
+    PROFISSIONAIS ||--|{ PROFISSIONAL_CATEGORIA : "atua em"
+    CATEGORIAS ||--o{ PROFISSIONAL_CATEGORIA : "agrupa"
+    USUARIOS ||--o{ AVALIACOES : "escreve"
+    PROFISSIONAIS ||--o{ AVALIACOES : "recebe"
+    USUARIOS ||--o{ FAVORITOS : "marca"
+    PROFISSIONAIS ||--o{ FAVORITOS : "e marcado"
+    USUARIOS ||--o{ CONTRATACOES : "contrata (cliente)"
+    PROFISSIONAIS ||--o{ CONTRATACOES : "é contratado"
+    CONTRATACOES ||--o{ MENSAGENS : "tem chat"
+    USUARIOS ||--o{ MENSAGENS : "escreve"
+
+    USUARIOS {
+        uuid id PK "= auth.users.id"
+        text nome
+        text tipo_usuario "cliente ou profissional"
+        text telefone
+        timestamptz created_at
+    }
+    PROFISSIONAIS {
+        uuid id PK, FK "= usuarios.id"
+        text whatsapp
+        text telefone
+        text cidade
+        text bairro
+        text descricao
+        date data_nascimento "18+"
+        text status_aprovacao "pendente, aprovado ou recusado"
+        timestamptz created_at
+    }
+    CATEGORIAS {
+        bigint id PK
+        text slug UK
+        text nome
+        text descricao
+        text sigla
+        text cor
+    }
+    PROFISSIONAL_CATEGORIA {
+        uuid profissional_id PK, FK
+        bigint categoria_id PK, FK
+    }
+    AVALIACOES {
+        bigint id PK
+        uuid usuario_id FK
+        uuid profissional_id FK
+        smallint nota "1 a 5"
+        text comentario "opcional"
+        timestamptz created_at
+    }
+    FAVORITOS {
+        uuid usuario_id PK, FK
+        uuid profissional_id PK, FK
+        timestamptz created_at
+    }
+    CONTRATACOES {
+        bigint id PK
+        uuid cliente_id FK
+        uuid profissional_id FK
+        text descricao
+        text endereco
+        timestamptz data_desejada "nao pode ser no passado"
+        text status "solicitada, aceita, recusada, cancelada ou concluida"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    MENSAGENS {
+        bigint id PK
+        bigint contratacao_id FK
+        uuid autor_id FK
+        text conteudo "1 a 1000 caracteres"
+        timestamptz created_at
+    }
+```
+
+**Regras de negócio refletidas no modelo**
+
+* Um usuário é **cliente** ou **profissional** (`tipo_usuario`), definido no cadastro e imutável pelo próprio usuário.
+* Profissional só pode ser cadastrado se for **maior de 18 anos**, começa com status **pendente** e é aprovado manualmente pela equipe.
+* Um profissional atua em **uma ou mais** categorias; uma categoria pode existir **sem** profissionais.
+* Cada usuário avalia um profissional **no máximo uma vez** (nota 1–5 e comentário opcional) e não pode avaliar a si mesmo.
+* Favoritos são **pessoais**: cada usuário só vê e altera os próprios.
+* Só **cliente** contrata e só profissional **aprovado** pode ser contratado; a contratação e o chat só são visíveis para as duas partes.
+* Todas as tabelas têm **Row Level Security (RLS)** ativo; os detalhes estão em `supabase/README.md`.
 
 ---
 
 # 8. DESCRIÇÃO DOS DADOS
 
-### USUÁRIO
+Legenda: **PK** = chave primária · **FK** = chave estrangeira · **UK** = valor único.
 
-Tabela que armazena as informações dos usuários cadastrados no sistema.
+### USUÁRIO (`usuarios`)
 
-### PROFISSIONAL
+Tabela que armazena as informações dos usuários cadastrados no sistema. A linha é criada automaticamente (por trigger) quando a pessoa se cadastra no Supabase Auth.
 
-Tabela que armazena as informações dos profissionais que disponibilizam serviços residenciais.
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | uuid | PK; FK → `auth.users(id)`, apagado em cascata |
+| nome | text | obrigatório |
+| tipo_usuario | text | obrigatório; `cliente` ou `profissional`; padrão `cliente`; não pode ser alterado pelo usuário |
+| telefone | text | opcional |
+| created_at | timestamptz | obrigatório; padrão `now()` |
 
-### CATEGORIA
+### PROFISSIONAL (`profissionais`)
 
-Tabela que armazena as categorias dos serviços oferecidos pelos profissionais.
+Tabela que armazena as informações dos profissionais que disponibilizam serviços residenciais. Especialização 1:1 de `usuarios`.
 
-### AVALIAÇÃO
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | uuid | PK; FK → `usuarios(id)`, apagado em cascata |
+| whatsapp | text | opcional |
+| telefone | text | opcional |
+| cidade | text | opcional |
+| bairro | text | opcional |
+| descricao | text | opcional |
+| data_nascimento | date | obrigatório; idade ≥ 18 anos (validado por trigger) |
+| status_aprovacao | text | obrigatório; `pendente`, `aprovado` ou `recusado`; padrão `pendente`; só a equipe altera |
+| created_at | timestamptz | obrigatório; padrão `now()` |
+
+### CATEGORIA (`categorias`)
+
+Tabela que armazena as categorias dos serviços oferecidos pelos profissionais. Vem preenchida com Encanador, Eletricista, Chaveiro, Pedreiro, Pintor e Gesseiro.
+
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | bigint | PK; gerado automaticamente |
+| slug | text | obrigatório; UK (ex.: `encanador`) |
+| nome | text | obrigatório |
+| descricao | text | opcional |
+| sigla | text | obrigatório (ex.: `EN`) |
+| cor | text | obrigatório; cor hexadecimal do ícone |
+
+### AVALIAÇÃO (`avaliacoes`)
 
 Tabela que armazena as avaliações realizadas pelos usuários sobre os profissionais.
 
-### FAVORITO
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | bigint | PK; gerado automaticamente |
+| usuario_id | uuid | obrigatório; FK → `usuarios(id)` |
+| profissional_id | uuid | obrigatório; FK → `profissionais(id)`; diferente de `usuario_id` |
+| nota | smallint | obrigatório; entre 1 e 5 |
+| comentario | text | opcional |
+| created_at | timestamptz | obrigatório; padrão `now()` |
+
+Restrição adicional: UK (`usuario_id`, `profissional_id`) — uma avaliação por usuário e profissional.
+
+### FAVORITO (`favoritos`)
 
 Tabela que registra os profissionais marcados como favoritos pelos usuários.
 
-### PROFISSIONAL_CATEGORIA
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| usuario_id | uuid | PK (composta); FK → `usuarios(id)` |
+| profissional_id | uuid | PK (composta); FK → `profissionais(id)` |
+| created_at | timestamptz | obrigatório; padrão `now()` |
+
+### PROFISSIONAL_CATEGORIA (`profissional_categoria`)
 
 Tabela associativa utilizada para representar a relação entre profissionais e categorias, permitindo que um profissional esteja associado a uma ou mais categorias.
+
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| profissional_id | uuid | PK (composta); FK → `profissionais(id)`, apagado em cascata |
+| categoria_id | bigint | PK (composta); FK → `categorias(id)`, apagado em cascata |
+
+### CONTRATAÇÃO (`contratacoes`) — funcionalidade extra do MVP
+
+Tabela que registra as contratações diretas: o cliente escolhe um profissional aprovado pelo perfil e pede um serviço para uma data/horário. Substitui o antigo "pedido aberto para a categoria" (decisão D5). As alterações são enviadas em tempo real (Supabase Realtime).
+
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | bigint | PK; gerado automaticamente |
+| cliente_id | uuid | obrigatório; FK → `usuarios(id)`; usuário do tipo `cliente` |
+| profissional_id | uuid | obrigatório; FK → `profissionais(id)`; profissional `aprovado` no momento da contratação; diferente de `cliente_id` |
+| descricao | text | obrigatório |
+| endereco | text | obrigatório |
+| data_desejada | timestamptz | obrigatório; não pode estar no passado (validado por trigger) |
+| status | text | obrigatório; `solicitada`, `aceita`, `recusada`, `cancelada` ou `concluida`; padrão `solicitada` |
+| created_at | timestamptz | obrigatório; padrão `now()` |
+| updated_at | timestamptz | obrigatório; atualizado pelo banco a cada mudança de status |
+
+Transições permitidas: `solicitada → aceita` ou `solicitada → recusada` (só o profissional contratado), `solicitada → cancelada` (só o cliente) e `aceita → concluida` (qualquer uma das partes). Nenhum outro campo pode ser alterado.
+
+### MENSAGEM (`mensagens`)
+
+Tabela que armazena o chat de texto de cada contratação. Só as duas partes leem e escrevem, e só é possível enviar mensagem enquanto a contratação está `solicitada` ou `aceita`.
+
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | bigint | PK; gerado automaticamente |
+| contratacao_id | bigint | obrigatório; FK → `contratacoes(id)`, apagado em cascata |
+| autor_id | uuid | obrigatório; FK → `usuarios(id)`; sempre o usuário logado |
+| conteudo | text | obrigatório; de 1 a 1000 caracteres, desconsiderando espaços nas pontas |
+| created_at | timestamptz | obrigatório; preenchido pelo servidor |
+
+Mensagens não podem ser editadas nem apagadas.
+
+### Consulta auxiliar: `profissionais_publicos` (view)
+
+Reúne, para cada profissional **aprovado**, nome, contato, cidade/bairro, lista de categorias, média das notas e total de avaliações. É a fonte de dados das telas de busca e de perfil (HU01–HU03).
 
 ---
 

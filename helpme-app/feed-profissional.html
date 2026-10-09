@@ -5,7 +5,7 @@
   - JS busca pedidos na tabela 'pedidos' onde status = 'aberto' e categoria é a do profissional.
   - Renderizar cards com endereço e problema.
   - Cada card deve ter o botão "Aceitar Serviço".
-  - Importar no final: Supabase CDN, js/supabase-config.js e js/profissional.js.
+  - Scripts no final: Supabase CDN -> js/supabase-config.js -> js/categorias.js -> js/profissional.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -108,7 +108,10 @@
     <!-- 2. Conecta as suas chaves do banco de dados -->
     <script src="js/supabase-config.js"></script>
 
-    <!-- 3. Roda a lógica exclusiva do profissional -->
+    <!-- 3. Busca as categorias (cor/sigla dos cards) na tabela 'categorias' -->
+    <script src="js/categorias.js"></script>
+
+    <!-- 4. Roda a lógica exclusiva do profissional -->
     <script src="js/profissional.js"></script>
 
 </body>

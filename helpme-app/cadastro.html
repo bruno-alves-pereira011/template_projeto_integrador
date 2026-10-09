@@ -1,79 +1,106 @@
-<!-- 
-  TELA: Cadastro de Usuários (cadastro.html)
-  OBJETIVO: Registrar novos Clientes ou Profissionais.
-  O QUE FAZER AQUI:
-  - Form com Nome, E-mail, Senha e Seleção (Radio/Select: "Cliente" ou "Profissional").
-  - Ao cadastrar, salva dados no Supabase Auth e insere na tabela 'usuarios'.
-  - Importar no final: Supabase CDN, js/supabase-config.js e js/auth.js.
+<!--
+  TELA: Cadastro (cadastro.html) — US-004
+  OBJETIVO: Criar conta de Cliente ou Profissional.
+  COMO FUNCIONA: o signUp manda { nome, tipo_usuario, telefone } em options.data e o
+  trigger do banco cria a linha em 'usuarios'. O front NÃO grava em nenhuma outra tabela aqui:
+  o perfil profissional é criado depois, em completar-perfil.html.
+  ELEMENTOS (ids usados pelo js/auth.js):
+  - #form-cadastro com #nome, #email, #senha (+ #toggle-password), #telefone e radios name="tipo_usuario".
+  - Erros por campo: #erro-nome, #erro-email, #erro-senha, #erro-tipo. Mensagem geral: #cadastro-mensagem.
+  - Scripts no final: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/auth.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HelpMe - Criar Conta</title>
-    
-    <!-- Conectando as folhas de estilo (CSS) -->
+    <title>HelpMe - Criar conta</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/global.css">
     <link rel="stylesheet" href="assets/css/auth.css">
 </head>
-<body>
+<body class="pagina-auth">
 
-    <main class="container-login">
-        <div class="logo-container">
-            <h1>HelpMe</h1>
-            <p>Crie sua conta gratuitamente</p>
-        </div>
+    <main class="login-container">
+        <header class="login-header">
+            <a href="home-cliente.html" class="logo" aria-label="HelpMe - ir para a página inicial">
+                <span class="logo-icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </span>
+                HelpMe
+            </a>
+            <h1>Crie sua conta</h1>
+            <p>É grátis e leva menos de um minuto.</p>
+        </header>
 
-        <!-- Formulário de Cadastro (O ID deve ser exatamente form-cadastro) -->
-        <form id="form-cadastro">
-            
-            <div class="campo-input">
-                <label for="nome">Nome Completo</label>
-                <input type="text" id="nome" placeholder="Digite seu nome" required>
+        <form id="form-cadastro" class="login-form" novalidate>
+            <p id="cadastro-mensagem" class="mensagem" role="alert" hidden></p>
+
+            <div class="input-group">
+                <label for="nome">Nome completo</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required maxlength="120" autocomplete="name" aria-describedby="erro-nome">
+                <p id="erro-nome" class="campo-erro" hidden></p>
             </div>
 
-            <div class="campo-input">
+            <div class="input-group">
                 <label for="email">E-mail</label>
-                <input type="email" id="email" placeholder="Digite seu e-mail" required>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" required autocomplete="email" inputmode="email" aria-describedby="erro-email">
+                <p id="erro-email" class="campo-erro" hidden></p>
             </div>
 
-            <div class="campo-input">
+            <div class="input-group">
                 <label for="senha">Senha</label>
-                <input type="password" id="senha" placeholder="Crie uma senha (mín. 6 caracteres)" minlength="6" required>
+                <div class="input-wrapper">
+                    <input type="password" id="senha" name="senha" placeholder="Mínimo de 6 caracteres" minlength="6" required autocomplete="new-password" aria-describedby="dica-senha erro-senha">
+                    <button type="button" id="toggle-password" class="btn-mostrar-senha" aria-controls="senha" aria-pressed="false">Mostrar</button>
+                </div>
+                <p id="dica-senha" class="dica-campo">Use pelo menos 6 caracteres.</p>
+                <p id="erro-senha" class="campo-erro" hidden></p>
             </div>
 
-            <!-- Seleção de Perfil (O name deve ser exatamente tipo_usuario) -->
-            <div class="campo-selecao">
-                <p>Como você deseja usar o HelpMe?</p>
-                <div class="opcoes-radio">
-                    <label>
+            <div class="input-group">
+                <label for="telefone">Telefone <span class="opcional">(opcional)</span></label>
+                <input type="tel" id="telefone" name="telefone" placeholder="(11) 91234-5678" maxlength="20" autocomplete="tel" inputmode="tel" aria-describedby="erro-telefone">
+                <p id="erro-telefone" class="campo-erro" hidden></p>
+            </div>
+
+            <fieldset class="grupo-opcoes" id="grupo-tipo" aria-describedby="erro-tipo">
+                <legend>Como você quer usar o HelpMe?</legend>
+                <div class="lista-opcoes">
+                    <label class="opcao">
                         <input type="radio" name="tipo_usuario" value="cliente" required>
                         Quero contratar serviços
                     </label>
-                    <label>
+                    <label class="opcao">
                         <input type="radio" name="tipo_usuario" value="profissional" required>
-                        Quero trabalhar / Prestar serviços
+                        Quero prestar serviços
                     </label>
                 </div>
-            </div>
+                <p id="erro-tipo" class="campo-erro" hidden></p>
+            </fieldset>
 
-            <button type="submit" id="btn-cadastrar">Criar Conta</button>
+            <button type="submit" id="btn-cadastrar" class="btn btn-primario btn-bloco">Criar conta</button>
         </form>
 
-        <!-- Link para voltar ao login -->
-        <div class="links-extras">
-            <p>Já tem uma conta? <a href="index.html">Faça login aqui</a></p>
-        </div>
+        <!-- Mostrado quando a confirmação de e-mail está ativa no Supabase (signUp volta sem sessão). -->
+        <section id="cadastro-confirmar" class="mensagem mensagem-sucesso" role="status" tabindex="-1" hidden>
+            <p><strong>Confirme seu e-mail para entrar.</strong></p>
+            <p id="cadastro-confirmar-texto"></p>
+        </section>
+
+        <footer class="login-footer">
+            <p>Já tem conta? <a href="index.html" id="link-login" class="btn-link">Entrar</a></p>
+            <a href="home-cliente.html" class="btn-link">Voltar para a home</a>
+        </footer>
     </main>
 
-    <!-- 1. Importa a biblioteca do Supabase oficial da internet -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- 2. Conecta as suas chaves do banco de dados -->
     <script src="js/supabase-config.js"></script>
-    
-    <!-- 3. Roda a inteligência exclusiva da tela de cadastro -->
+    <script src="js/sessao.js"></script>
     <script src="js/auth.js"></script>
 
 </body>

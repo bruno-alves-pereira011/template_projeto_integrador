@@ -1,103 +1,92 @@
-// LÓGICA DO CLIENTE (cliente.js)
-// OBJETIVO: Gerenciar a criação de pedidos e tela de espera.
-// O QUE FAZER AQUI:
-// - Função para salvar o pedido na tabela 'pedidos' com status 'aberto'.
-// - Função com supabase.channel() em espera-cliente.html para escutar quando profissional_id for preenchido.
+// LÓGICA DA HOME PÚBLICA (cliente.js)
+// OBJETIVO: Mostrar o diretório de categorias em home-cliente.html, com ou sem login.
+// O QUE FAZ AQUI:
+// - Busca as categorias reais no Supabase (via js/categorias.js) e desenha um card por categoria.
+// - Cada card leva para 'profissionais.html?categoria=<slug>'.
+// - Mostra "Entrar" para visitante e "Sair" para quem tem sessão.
+// - Se a consulta falhar, mostra uma mensagem de erro (e não uma lista vazia).
+// DEPENDE DE: supabase-config.js e categorias.js carregados antes deste arquivo.
 
 
-// Categorias de serviço (mesmas cores e siglas do profissional.js / protótipos)
-const CATEGORIAS = {
-    encanador:   { nome: 'Encanador',   sigla: 'EN', cor: '#13695f', descricao: 'Vazamentos, entupimentos, torneiras e instalações hidráulicas.' },
-    eletricista: { nome: 'Eletricista', sigla: 'EL', cor: '#d0901f', descricao: 'Tomadas, disjuntores, chuveiros e instalações elétricas.' },
-    chaveiro:    { nome: 'Chaveiro',    sigla: 'CH', cor: '#4c5aa8', descricao: 'Abertura de portas, cópias de chaves e troca de fechaduras.' },
-    pedreiro:    { nome: 'Pedreiro',    sigla: 'PD', cor: '#b8532e', descricao: 'Reformas, rachaduras, pisos, azulejos e alvenaria.' },
-    pintor:      { nome: 'Pintor',      sigla: 'PT', cor: '#8b4775', descricao: 'Pintura de paredes, portões, fachadas e acabamentos.' },
-    gesseiro:    { nome: 'Gesseiro',    sigla: 'GS', cor: '#47707e', descricao: 'Forros, sancas, divisórias e reparos em gesso.' },
-};
-
-// Texto e página de cada status do pedido
-const STATUS_PEDIDO = {
-    aberto:       { texto: 'Procurando profissional', pagina: 'espera-cliente.html' },
-    em_andamento: { texto: 'Em andamento',            pagina: 'servico-andamento.html' },
-};
-
-// ==========================================
-// MODO DEMONSTRAÇÃO
-// true  = pula o login e usa dados fictícios (para pré-visualizar a tela)
-// false = funcionamento real com o Supabase
-// ==========================================
-const MODO_DEMONSTRACAO = true;
-
-const CLIENTE_FICTICIO = { id: 'demo', nome: 'Ana Paula Rocha' };
-const PEDIDO_FICTICIO = { id: 1, categoria: 'encanador', status: 'aberto', descricao: 'Vazamento embaixo da pia da cozinha.' };
-
-let usuarioLogado = null;   // { id, nome }
+// Lista vinda do banco; guardada aqui para a busca filtrar sem consultar o Supabase de novo
+let categoriasCarregadas = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // ==========================================
-    // PROTEÇÃO DA PÁGINA
-    // Só cliente logado pode ver as telas do cliente
-    // ==========================================
-    if (MODO_DEMONSTRACAO) {
-        usuarioLogado = CLIENTE_FICTICIO;
-    } else {
-        usuarioLogado = await buscarClienteLogado();
-        if (!usuarioLogado) return;
-    }
+    // A home é PÚBLICA: não redirecionamos para o login. A sessão só muda o cabeçalho.
+    await atualizarCabecalhoSessao();
 
-    // ==========================================
-    // HOME DO CLIENTE
-    // ==========================================
     if (document.getElementById('lista-categorias')) {
-        document.getElementById('nome-cliente').textContent = primeiroNome(usuarioLogado.nome);
-
-        renderizarCategorias('');
-
         document.getElementById('busca-categoria').addEventListener('input', (e) => {
             renderizarCategorias(e.target.value);
         });
 
-        await mostrarPedidoAtivo();
+        document.getElementById('btn-tentar-novamente').addEventListener('click', buscarEMostrarCategorias);
+
+        await buscarEMostrarCategorias();
     }
 
     // ==========================================
-    // BOTÃO SAIR
+    // BOTÃO SAIR (só aparece quando há sessão)
     // ==========================================
     const btnSair = document.getElementById('btn-sair');
 
     if (btnSair) {
         btnSair.addEventListener('click', async () => {
-            if (!MODO_DEMONSTRACAO) await supabaseClient.auth.signOut();
-            window.location.href = 'index.html';
+            if (supabaseClient) await supabaseClient.auth.signOut();
+            // Continua na home, agora como visitante
+            window.location.href = 'home-cliente.html';
         });
     }
 });
 
 
-// Confere a sessão e o tipo de usuário. Retorna { id, nome } ou null (e redireciona)
-async function buscarClienteLogado() {
-    const { data: sessao } = await supabaseClient.auth.getSession();
+// Mostra "Entrar" (visitante) ou "Sair" + saudação (logado).
+// O HTML já começa com "Entrar" visível: se o Supabase falhar, o visitante ainda consegue ir ao login.
+async function atualizarCabecalhoSessao() {
+    if (!supabaseClient) return;
 
-    if (!sessao.session) {
-        window.location.href = 'index.html';
-        return null;
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) {
+        console.error('Erro ao ler a sessão:', error);
+        return;
     }
 
-    const uid = sessao.session.user.id;
+    const sessao = data.session;
+    if (!sessao) return;
 
-    const { data: perfil, error } = await supabaseClient
-        .from('usuarios')
-        .select('nome, tipo_usuario')
-        .eq('id', uid)
-        .single();
+    document.getElementById('link-entrar').hidden = true;
+    document.getElementById('btn-sair').hidden = false;
 
-    if (error || perfil.tipo_usuario !== 'cliente') {
-        window.location.href = 'index.html';
-        return null;
+    // O nome vem do próprio login (enviado no cadastro), sem precisar consultar outra tabela
+    const nome = sessao.user.user_metadata && sessao.user.user_metadata.nome;
+    if (nome) {
+        document.getElementById('saudacao').textContent = `Olá, ${primeiroNome(nome)}!`;
     }
+}
 
-    return { id: uid, nome: perfil.nome };
+
+// Busca as categorias e trata os três estados da tela: carregando, erro e sucesso
+async function buscarEMostrarCategorias() {
+    const carregando = document.getElementById('categorias-carregando');
+    const erro = document.getElementById('categorias-erro');
+
+    carregando.hidden = false;
+    erro.hidden = true;
+
+    try {
+        categoriasCarregadas = await carregarCategorias();
+        renderizarCategorias(document.getElementById('busca-categoria').value);
+    } catch (falha) {
+        // Detalhe técnico só no console; o usuário vê uma mensagem amigável
+        console.error('Erro ao carregar categorias:', falha);
+        categoriasCarregadas = [];
+        document.getElementById('lista-categorias').replaceChildren();
+        document.getElementById('categorias-vazio').hidden = true;
+        erro.hidden = false;
+    } finally {
+        carregando.hidden = true;
+    }
 }
 
 
@@ -108,74 +97,36 @@ function renderizarCategorias(textoBusca) {
     const modelo = document.getElementById('modelo-card-categoria');
     const busca = normalizar(textoBusca);
 
-    const encontradas = Object.entries(CATEGORIAS).filter(([, categoria]) =>
-        normalizar(categoria.nome + ' ' + categoria.descricao).includes(busca)
+    const encontradas = categoriasCarregadas.filter((categoria) =>
+        normalizar(categoria.nome + ' ' + (categoria.descricao || '')).includes(busca)
     );
 
-    lista.innerHTML = '';
+    lista.replaceChildren();
     vazio.hidden = encontradas.length > 0;
 
-    encontradas.forEach(([chave, categoria]) => {
+    encontradas.forEach((categoria) => {
         const card = modelo.content.cloneNode(true);
 
-        // Cada card leva para o formulário já com a categoria escolhida
-        card.querySelector('.card-categoria').href = `solicitar-pedido.html?categoria=${chave}`;
+        // encodeURIComponent garante uma URL válida mesmo se o slug tiver caractere especial
+        card.querySelector('.card-categoria').href =
+            `profissionais.html?categoria=${encodeURIComponent(categoria.slug)}`;
 
+        // textContent (e não innerHTML) impede que um texto do banco vire HTML/script na página
         const avatar = card.querySelector('.avatar-categoria');
         avatar.textContent = categoria.sigla;
         avatar.style.setProperty('--cor-categoria', categoria.cor);
 
         card.querySelector('.card-categoria-nome').textContent = categoria.nome;
-        card.querySelector('.card-categoria-descricao').textContent = categoria.descricao;
+        card.querySelector('.card-categoria-descricao').textContent = categoria.descricao || '';
 
         lista.appendChild(card);
     });
 }
 
 
-// Se o cliente já tiver um pedido aberto ou em andamento, mostra o aviso no topo
-async function mostrarPedidoAtivo() {
-    let pedido = null;
-
-    if (MODO_DEMONSTRACAO) {
-        pedido = PEDIDO_FICTICIO;
-    } else {
-        const { data, error } = await supabaseClient
-            .from('pedidos')
-            .select('id, categoria, status, descricao')
-            .eq('cliente_id', usuarioLogado.id)
-            .in('status', ['aberto', 'em_andamento'])
-            .order('created_at', { ascending: false })
-            .limit(1);
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        pedido = data[0] || null;
-    }
-
-    if (!pedido) return;
-
-    const status = STATUS_PEDIDO[pedido.status];
-    const categoria = CATEGORIAS[(pedido.categoria || '').toLowerCase()];
-
-    document.getElementById('aviso-categoria').textContent = categoria ? categoria.nome : pedido.categoria;
-    document.getElementById('aviso-descricao').textContent = pedido.descricao || '';
-
-    const badge = document.getElementById('aviso-status');
-    badge.textContent = status.texto;
-    badge.classList.add(`status-${pedido.status}`);
-
-    document.getElementById('aviso-link').href = `${status.pagina}?pedido=${pedido.id}`;
-    document.getElementById('aviso-pedido').hidden = false;
-}
-
-
 // "Ana Paula Rocha" -> "Ana"
 function primeiroNome(nome) {
-    return (nome || 'cliente').trim().split(' ')[0];
+    return (nome || '').trim().split(' ')[0];
 }
 
 // Deixa minúsculo e sem acento, para a busca achar "eletrica" em "Elétrica"
