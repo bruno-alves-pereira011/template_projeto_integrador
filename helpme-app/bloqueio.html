@@ -1,8 +1,74 @@
-<!-- 
-  TELA: Aguardando Aprovação (bloqueio.html)
-  OBJETIVO: Tela de segurança/curadoria para o Profissional recém-cadastrado.
-  O QUE FAZER AQUI:
-  - Exibir mensagem: "Seu cadastro está em análise pela equipe do HelpMe".
-  - Adicionar apenas um botão de "Sair / Voltar ao Login".
-  - Não requer formulários complexos.
+<!--
+  TELA: Situação do cadastro (bloqueio.html) — US-006
+  OBJETIVO: Mostrar ao profissional pendente/recusado por que ele ainda não aparece no diretório.
+  A aprovação é manual, feita pela equipe no Table Editor do Supabase (decisão D2).
+  REGRAS (js/bloqueio.js): exige sessão de profissional; cliente vai para a home;
+  profissional aprovado ou com perfil incompleto é redirecionado (destinoDoUsuario em js/sessao.js).
+  ELEMENTOS: #bloqueio-carregando, #bloqueio-erro (+ #btn-recarregar), #painel-pendente,
+  #painel-recusado e #btn-sair.
+  Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/bloqueio.js.
 -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Situação do cadastro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="pagina-auth">
+
+    <main class="login-container">
+        <header class="login-header">
+            <a href="home-cliente.html" class="logo" aria-label="HelpMe - ir para a página inicial">
+                <span class="logo-icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </span>
+                HelpMe
+            </a>
+        </header>
+
+        <p id="bloqueio-carregando" class="status-painel" role="status">Verificando seu cadastro...</p>
+
+        <div id="bloqueio-erro" class="mensagem mensagem-erro" role="alert" hidden>
+            <p>Não foi possível verificar seu cadastro. Verifique sua conexão e tente novamente.</p>
+            <button type="button" id="btn-recarregar" class="btn btn-contorno">Tentar novamente</button>
+        </div>
+
+        <!-- Pendente: aguardando a equipe. -->
+        <section id="painel-pendente" class="status-painel" aria-labelledby="titulo-pendente" hidden>
+            <span class="selo-status">Em análise</span>
+            <h1 id="titulo-pendente">Seu cadastro está em análise</h1>
+            <p>A equipe do HelpMe está conferindo seus dados. Assim que for aprovado, seu perfil passa a aparecer para os clientes no diretório.</p>
+            <p>Enquanto isso, você pode revisar suas informações.</p>
+            <div class="acoes">
+                <a href="completar-perfil.html" class="btn btn-primario btn-bloco">Editar meu perfil</a>
+            </div>
+        </section>
+
+        <!-- Recusado: orientação para falar com a equipe. -->
+        <section id="painel-recusado" class="status-painel" aria-labelledby="titulo-recusado" hidden>
+            <span class="selo-status recusado">Recusado</span>
+            <h1 id="titulo-recusado">Seu cadastro foi recusado</h1>
+            <p>No momento seu perfil não pode ser publicado no diretório do HelpMe.</p>
+            <p>Entre em contato com a equipe do HelpMe para saber o motivo e como regularizar seu cadastro.</p>
+        </section>
+
+        <div class="acoes">
+            <button type="button" id="btn-sair" class="btn btn-contorno btn-bloco">Sair</button>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/sessao.js"></script>
+    <script src="js/bloqueio.js"></script>
+
+</body>
+</html>
