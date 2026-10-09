@@ -2,7 +2,7 @@
 // OBJETIVO: Gerenciar cadastros, logins e redirecionamentos.
 // O QUE FAZER AQUI:
 // - Capturar evento de submit do formulário de Login e Cadastro.
-// - Usar supabase.auth.signUp() e supabase.auth.signInWithPassword().
+// - Usar supabaseClient.auth.signUp() e supabaseClient.auth.signInWithPassword().
 // - Buscar tipo_usuario e status_aprovacao na tabela 'usuarios'.
 // - Redirecionar: Cliente -> home-cliente.html | Profissional Aprovado -> feed-profissional.html | Pendente -> bloqueio.html
 
@@ -10,12 +10,10 @@
 // js/auth.js
 
 // ==========================================
-// 1. INICIALIZAÇÃO DO SUPABASE
+// 1. CONEXÃO COM O SUPABASE
+// A conexão é criada UMA vez em js/supabase-config.js (carregado antes deste arquivo).
+// Aqui só usamos a global `supabaseClient`; redeclarar a URL/cliente causava SyntaxError.
 // ==========================================
-const SUPABASE_URL = 'https://btjjbtjxcbvswgezpwgc.supabase.com';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0ampidGp4Y2J2c3dnZXpwd2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzODYyMjIsImV4cCI6MjEwNDk2MjIyMn0.fgGA99SxR7pYcsg2Ezr6EKyi4PzelHaKP5Z-tcaWgn4';
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Aguarda o HTML carregar para buscar os elementos
 document.addEventListener('DOMContentLoaded', () => {
@@ -59,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Passo 1: Cria o usuário na Autenticação (Isso vai acionar o Trigger do SQL automaticamente)
-                const { data: authData, error: authError } = await supabase.auth.signUp({
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                     email: email,
                     password: senha,
                     options: {
@@ -73,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (tipoUsuario === 'profissional') {
                     const userId = authData.user.id;
                     
-                    const { error: dbError } = await supabase.from('profissional').insert([
+                    const { error: dbError } = await supabaseClient.from('profissional').insert([
                         { id_usuario: userId }
                     ]);
 
@@ -95,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 4. LÓGICA DE LOGIN (index.html)
     // ==========================================
-    const formLogin = document.getElementById('login-form'); // ou 'form-login', verifique seu HTML
+    const formLogin = document.getElementById('login-form'); // id real do formulário em index.html
 
     if (formLogin) {
         formLogin.addEventListener('submit', async (e) => {
@@ -111,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Passo 1: Valida E-mail e Senha
-                const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: senha
                 });
@@ -121,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const userId = authData.user.id;
 
                 // Passo 2: Verifica se o usuário tem registro na tabela 'profissional'
-                const { data: profData, error: profError } = await supabase
+                const { data: profData, error: profError } = await supabaseClient
                     .from('profissional')
                     .select('id_profissional')
                     .eq('id_usuario', userId)

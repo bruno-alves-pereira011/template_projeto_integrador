@@ -941,3 +941,44 @@ body.painel *::after {
         transition: none;
     }
 }
+
+/* =========================================================
+   HOME PÚBLICA: ESTADOS, ACESSIBILIDADE E TOQUE (US-001)
+   ========================================================= */
+
+/* Esconde o texto na tela, mas o leitor de tela ainda lê (label da busca) */
+.visualmente-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Botão "Tentar novamente" dentro do aviso de erro */
+.feed-vazio .btn-secundario {
+    margin-top: 1rem;
+}
+
+/* Área de toque mínima de 44px (NFR04): itens de menu, botões e o campo de busca */
+.menu-item,
+.btn-secundario,
+.barra-busca input {
+    min-height: 44px;
+}
+
+.btn-secundario {
+    justify-content: center;
+}
+
+/* Foco visível para quem navega pelo teclado (NFR05) */
+body.painel a:focus-visible,
+body.painel button:focus-visible {
+    outline: 3px solid var(--painel-laranja);
+    outline-offset: 2px;
+}
+
+.barra-busca:focus-within {
+    box-shadow: 0 0 0 3px var(--painel-verde-claro);
+}

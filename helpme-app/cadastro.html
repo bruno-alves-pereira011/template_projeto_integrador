@@ -2,9 +2,9 @@
   TELA: Cadastro de Usuários (cadastro.html)
   OBJETIVO: Registrar novos Clientes ou Profissionais.
   O QUE FAZER AQUI:
-  - Form com Nome, E-mail, Senha e Seleção (Radio/Select: "Cliente" ou "Profissional").
-  - Ao cadastrar, salva dados no Supabase Auth e insere na tabela 'usuarios'.
-  - Importar no final: Supabase CDN, js/supabase-config.js e js/auth.js.
+  - Formulário id="form-cadastro" com #nome, #email, #senha e radios name="tipo_usuario" ("cliente" ou "profissional").
+  - Ao cadastrar, cria o login no Supabase Auth; o perfil em 'usuarios' é criado pelo trigger do banco.
+  - Scripts no final (clássicos, sem type="module"): Supabase CDN -> js/supabase-config.js -> js/auth.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">

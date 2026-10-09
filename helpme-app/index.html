@@ -2,16 +2,16 @@
   TELA: Login (index.html)
   OBJETIVO: Entrada principal do sistema.
   O QUE FAZER AQUI:
-  - Criar formulário com campos de E-mail e Senha.
-  - Adicionar botão "Entrar" com id="btn-entrar" e formulário id="form-login".
+  - Formulário id="login-form" com campos #email e #senha (botão #toggle-password mostra a senha).
+  - Botão "Entrar" com id="btn-login" (type="submit").
   - Link para cadastro (cadastro.html).
-  - Importar no final: Supabase CDN, js/supabase-config.js e js/auth.js.
--->+
+  - Scripts no final (clássicos, sem type="module"): Supabase CDN -> js/supabase-config.js -> js/auth.js.
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HelpMe - Login</title>
     
     <!-- Fontes e Ícones -->
@@ -52,7 +52,7 @@
                 <div class="input-wrapper">
                     <i class="ph ph-lock-key"></i>
                     <input type="password" id="senha" placeholder="••••••••" required autocomplete="current-password">
-                    <button type="button" id="toggle-password" class="icon-btn-inside" tabindex="-1">
+                    <button type="button" id="toggle-password" class="icon-btn-inside" tabindex="-1" aria-label="Mostrar ou esconder a senha">
                         <i class="ph ph-eye"></i>
                     </button>
                 </div>
@@ -73,10 +73,14 @@
         </footer>
     </main>
 
-    <!-- JS Scripts -->
-    <!-- Carrega o SDK do Supabase via CDN para testes rápidos no front -->
+    <!-- 1. Importa a biblioteca do Supabase oficial da internet -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="js/auth.js"></script>
+
+    <!-- 2. Conecta as suas chaves do banco de dados (cria o supabaseClient) -->
+    <script src="js/supabase-config.js"></script>
+
+    <!-- 3. Roda a lógica de login (script clássico: enxerga o supabaseClient global) -->
+    <script src="js/auth.js"></script>
 
 </body>
 </html>
