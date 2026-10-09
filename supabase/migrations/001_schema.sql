@@ -17,6 +17,29 @@
 -- precisa ser removido explicitamente antes da função.
 drop trigger if exists on_auth_user_created on auth.users;
 
+-- Triggers de versões antigas do projeto em auth.users (com outro nome),
+-- que gravavam na tabela velha public.usuario e faziam TODO cadastro
+-- falhar ("null value in column senha"). Remove qualquer trigger de
+-- auth.users cuja função esteja no schema public; o nosso é recriado
+-- na seção 2.1.
+do $$
+declare
+    v_trigger record;
+begin
+    for v_trigger in
+        select t.tgname
+        from pg_trigger t
+        join pg_proc p      on p.oid = t.tgfoid
+        join pg_namespace n on n.oid = p.pronamespace
+        where t.tgrelid = 'auth.users'::regclass
+          and not t.tgisinternal
+          and n.nspname = 'public'
+    loop
+        execute format('drop trigger if exists %I on auth.users', v_trigger.tgname);
+    end loop;
+end;
+$$;
+
 drop view  if exists public.profissionais_publicos;
 
 drop table if exists public.mensagens              cascade;
