@@ -982,3 +982,291 @@ body.painel button:focus-visible {
 .barra-busca:focus-within {
     box-shadow: 0 0 0 3px var(--painel-verde-claro);
 }
+
+/* =========================================================
+   DIRETÓRIO: LISTA E PERFIL DE PROFISSIONAIS (US-002 / US-003)
+   profissionais.html e profissional.html
+   ========================================================= */
+
+/* Link "Voltar" no topo do conteúdo */
+.link-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    margin: -0.5rem 0 0.75rem -0.35rem;
+    padding: 0 0.35rem;
+    border-radius: 8px;
+    color: var(--painel-verde);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.link-voltar:hover {
+    text-decoration: underline;
+}
+
+/* Filtros de cidade e bairro */
+.filtros-profissionais {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 0.75rem 1rem;
+    max-width: 680px;
+    margin-bottom: 1.25rem;
+}
+
+.filtro-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+.filtro-campo input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 8px;
+    background: var(--painel-branco);
+    color: var(--painel-texto);
+}
+
+.filtro-campo input:focus {
+    outline: none;
+    border-color: var(--painel-verde);
+    box-shadow: 0 0 0 3px var(--painel-verde-claro);
+}
+
+/* Cards de profissionais: mesmo visual dos cards de categoria */
+.grade-profissionais {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 1rem;
+}
+
+.card-profissional {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    min-width: 0;
+    padding: 1.1rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: var(--painel-branco);
+    box-shadow: 0 1px 2px rgba(16, 40, 36, 0.05);
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.card-profissional:hover {
+    box-shadow: 0 6px 18px rgba(16, 40, 36, 0.09);
+    transform: translateY(-2px);
+}
+
+.card-profissional:hover .btn-solicitar {
+    background: var(--painel-verde-escuro);
+}
+
+.card-profissional-nome {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.1rem;
+    color: var(--painel-verde-escuro);
+    overflow-wrap: anywhere;
+}
+
+.card-profissional-nota,
+.perfil-nota {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--painel-texto);
+}
+
+.card-profissional-nota.sem-avaliacoes {
+    font-weight: 400;
+    color: var(--painel-texto-suave);
+}
+
+.nota-estrela {
+    color: #b25a17;
+}
+
+.btn-solicitar {
+    min-height: 44px;
+}
+
+/* Perfil do profissional */
+.perfil-profissional {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 720px;
+    padding: 1.5rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 14px;
+    background: var(--painel-branco);
+    box-shadow: 0 1px 2px rgba(16, 40, 36, 0.05);
+}
+
+.perfil-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.perfil-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 1.3rem;
+}
+
+.perfil-identificacao {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.perfil-identificacao h1 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.5rem;
+    color: var(--painel-verde-escuro);
+    overflow-wrap: anywhere;
+}
+
+.perfil-secao h2 {
+    margin: 0 0 0.5rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1rem;
+    color: var(--painel-verde-escuro);
+}
+
+.perfil-descricao {
+    margin: 0;
+    line-height: 1.55;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.lista-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.chip-categoria {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+    border-radius: 999px;
+    background: var(--painel-verde-claro);
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--painel-verde-escuro);
+}
+
+.chip-categoria-sigla {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--cor-categoria, var(--painel-verde));
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Botões de contato: grandes e fáceis de tocar */
+.acoes-contato {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+    gap: 0.75rem;
+}
+
+.btn-contato {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0.8rem 1.25rem;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-contato-ligar {
+    background: var(--painel-verde);
+}
+
+.btn-contato-ligar:hover {
+    background: var(--painel-verde-escuro);
+}
+
+/* Verde escuro (e não o #25D366 da marca) para o texto branco ter contraste AA */
+.btn-contato-whatsapp {
+    background: #1b6e3f;
+}
+
+.btn-contato-whatsapp:hover {
+    background: #145531;
+}
+
+.acoes-contratacao:empty {
+    display: none;
+}
+
+.acoes-contratacao {
+    margin-top: 0.75rem;
+}
+
+/* Título "Profissional não encontrado" no estado vazio */
+.feed-vazio .titulo-estado {
+    margin: 0 0 0.4rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.15rem;
+    color: var(--painel-verde-escuro);
+}
+
+.feed-vazio a.btn-secundario {
+    margin-top: 1rem;
+    text-decoration: none;
+}
+
+@media (max-width: 760px) {
+    .perfil-profissional {
+        padding: 1.1rem;
+    }
+
+    .perfil-identificacao h1 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Logo da barra lateral também é link: área de toque mínima de 44px (NFR04) */
+.sidebar-logo {
+    min-height: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-profissional {
+        transition: none;
+    }
+
+    .card-profissional:hover {
+        transform: none;
+    }
+}
