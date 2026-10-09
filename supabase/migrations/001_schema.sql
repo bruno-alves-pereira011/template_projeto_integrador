@@ -19,6 +19,11 @@ drop trigger if exists on_auth_user_created on auth.users;
 
 drop view  if exists public.profissionais_publicos;
 
+drop table if exists public.mensagens              cascade;
+drop table if exists public.contratacoes           cascade;
+-- "pedidos" (pedido aberto para a categoria) foi substituído pela
+-- contratação direta (decisão D5). O drop fica aqui para quem já rodou
+-- a versão anterior deste script.
 drop table if exists public.pedidos                cascade;
 drop table if exists public.favoritos              cascade;
 drop table if exists public.avaliacoes             cascade;
@@ -33,6 +38,10 @@ drop function if exists public.handle_new_user()                         cascade
 drop function if exists public.eh_papel_cliente_api()                    cascade;
 drop function if exists public.proteger_usuario()                        cascade;
 drop function if exists public.validar_profissional()                    cascade;
+drop function if exists public.validar_contratacao()                     cascade;
+drop function if exists public.validar_mensagem()                        cascade;
+drop function if exists public.contato_contraparte(bigint)               cascade;
+-- Funções da versão anterior (fluxo de pedidos), removidas na D5.
 drop function if exists public.validar_transicao_pedido()                cascade;
 drop function if exists public.profissional_atende_categoria(bigint)     cascade;
 drop function if exists public.compartilha_pedido(uuid)                  cascade;
@@ -72,7 +81,7 @@ create table public.profissionais (
 );
 
 -- CATEGORIAS: tipos de serviço. O slug é a "chave" usada no front
--- (ex.: solicitar-pedido.html?categoria=encanador).
+-- (ex.: profissionais.html?categoria=encanador).
 create table public.categorias (
     id         bigint generated always as identity primary key,
     slug       text not null unique,
@@ -112,20 +121,44 @@ create table public.favoritos (
     primary key (usuario_id, profissional_id)
 );
 
--- PEDIDOS (funcionalidade extra do MVP — decisão D1): o cliente descreve
--- o serviço e um profissional aprovado da categoria aceita.
--- Não há coluna cliente_nome: o nome vem de usuarios (evita dado duplicado).
-create table public.pedidos (
+-- CONTRATAÇÕES (decisão D5): o cliente contrata um profissional
+-- ESPECÍFICO a partir do perfil dele (substitui o antigo "pedido aberto
+-- para a categoria"). Não há coluna com nome do cliente: ele vem de
+-- usuarios (evita dado duplicado e respeita a BR07).
+--
+-- Sem categoria_id: a contratação é feita a um profissional, não a uma
+-- categoria. Como ele pode atuar em várias, obrigar o cliente a escolher
+-- uma seria um passo a mais sem uso no Marco 2 (nenhuma tela ou regra
+-- depende disso). Se um relatório precisar, dá para adicionar depois
+-- como coluna opcional sem quebrar nada.
+create table public.contratacoes (
     id               bigint generated always as identity primary key,
-    cliente_id       uuid   not null references public.usuarios (id) on delete cascade,
-    -- Fica nulo até alguém aceitar. Se o profissional for apagado, o
-    -- histórico do cliente continua existindo (set null).
-    profissional_id  uuid   references public.profissionais (id) on delete set null,
-    categoria_id     bigint not null references public.categorias (id),
+    cliente_id       uuid   not null references public.usuarios (id)      on delete cascade,
+    profissional_id  uuid   not null references public.profissionais (id) on delete cascade,
     descricao        text   not null,
     endereco         text   not null,
-    status           text   not null default 'aberto'
-                     check (status in ('aberto', 'em_andamento', 'concluido', 'cancelado')),
+    -- "Não pode estar no passado" (BR09) depende de now(), que muda a
+    -- todo instante, então não pode ser CHECK: é validado no trigger
+    -- validar_contratacao (seção 2.5).
+    data_desejada    timestamptz not null,
+    status           text   not null default 'solicitada'
+                     check (status in ('solicitada', 'aceita', 'recusada', 'cancelada', 'concluida')),
+    created_at       timestamptz not null default now(),
+    -- Atualizado pelo trigger a cada mudança de status.
+    updated_at       timestamptz not null default now(),
+    constraint contratacoes_nao_contratar_a_si check (cliente_id <> profissional_id)
+);
+
+-- MENSAGENS: chat de texto de cada contratação (FR14). Apagar a
+-- contratação apaga a conversa.
+create table public.mensagens (
+    id               bigint generated always as identity primary key,
+    contratacao_id   bigint not null references public.contratacoes (id) on delete cascade,
+    autor_id         uuid   not null references public.usuarios (id)     on delete cascade,
+    -- 1 a 1000 caracteres desconsiderando espaços nas pontas (NFR07):
+    -- impede mensagem vazia ou só com espaços.
+    conteudo         text   not null
+                     check (char_length(trim(conteudo)) between 1 and 1000),
     created_at       timestamptz not null default now()
 );
 
@@ -134,9 +167,10 @@ create index profissionais_status_idx          on public.profissionais (status_a
 create index profissional_categoria_cat_idx    on public.profissional_categoria (categoria_id);
 create index avaliacoes_profissional_idx       on public.avaliacoes (profissional_id);
 create index favoritos_profissional_idx        on public.favoritos (profissional_id);
-create index pedidos_status_categoria_idx      on public.pedidos (status, categoria_id);
-create index pedidos_cliente_idx               on public.pedidos (cliente_id);
-create index pedidos_profissional_idx          on public.pedidos (profissional_id);
+create index contratacoes_cliente_idx          on public.contratacoes (cliente_id, created_at);
+create index contratacoes_profissional_idx     on public.contratacoes (profissional_id, created_at);
+-- O chat sempre busca "mensagens desta contratação em ordem cronológica".
+create index mensagens_contratacao_idx         on public.mensagens (contratacao_id, created_at);
 
 
 -- =====================================================================
@@ -273,98 +307,77 @@ create trigger profissionais_validar
     for each row execute function public.validar_profissional();
 
 
--- 2.4 Funções auxiliares usadas nas políticas RLS.
--- São security definer para consultar outras tabelas sem esbarrar no RLS
--- delas (evita recursão infinita entre políticas) e retornam só true/false,
--- então não vazam dados.
-
--- O usuário logado é profissional APROVADO que atua nesta categoria?
-create function public.profissional_atende_categoria(p_categoria_id bigint)
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-    select exists (
-        select 1
-        from public.profissionais p
-        join public.profissional_categoria pc on pc.profissional_id = p.id
-        where p.id = auth.uid()
-          and p.status_aprovacao = 'aprovado'
-          and pc.categoria_id = p_categoria_id
-    );
-$$;
-
--- O usuário logado e p_outro participam do mesmo pedido (um como cliente,
--- outro como profissional)? Usado para liberar nome/telefone entre as
--- partes na tela servico-andamento sem expor a tabela usuarios inteira.
-create function public.compartilha_pedido(p_outro uuid)
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-    select exists (
-        select 1
-        from public.pedidos pe
-        where (pe.cliente_id = auth.uid() and pe.profissional_id = p_outro)
-           or (pe.profissional_id = auth.uid() and pe.cliente_id = p_outro)
-    );
-$$;
-
-
--- 2.5 pedidos: máquina de estados. O RLS diz QUEM pode tentar atualizar;
--- este trigger diz QUAL mudança é permitida:
---   (a) aberto       -> em_andamento : profissional aprovado da categoria aceita
---                                       (profissional_id passa a ser ele mesmo)
---   (b) em_andamento -> concluido    : cliente ou profissional do pedido
---   (c) aberto       -> cancelado    : só o cliente
+-- 2.4 contratacoes: regras de inserção e máquina de estados (BR06, BR09).
+-- O RLS diz QUEM pode tentar inserir/atualizar; este trigger diz QUAL
+-- mudança é permitida:
+--   (a) solicitada -> aceita | recusada : só o profissional da contratação
+--   (b) solicitada -> cancelada         : só o cliente
+--   (c) aceita     -> concluida         : qualquer uma das partes
 -- Qualquer outra transição, ou mudança em outro campo, é recusada.
-create function public.validar_transicao_pedido()
+-- Se cliente cancela e profissional aceita ao mesmo tempo, o Postgres
+-- enfileira as duas: a segunda já enxerga o status novo e é recusada.
+create function public.validar_contratacao()
 returns trigger
 language plpgsql
 as $$
 declare
     v_uid uuid := auth.uid();
 begin
+    if tg_op = 'INSERT' then
+        -- BR09 vale para todos (inclusive o seed): data no passado não.
+        if new.data_desejada < now() then
+            raise exception 'A data/horário desejado não pode estar no passado';
+        end if;
+
+        if public.eh_papel_cliente_api() then
+            -- Datas de controle sempre do servidor, nunca do navegador.
+            new.created_at := now();
+            new.updated_at := now();
+        end if;
+        return new;
+    end if;
+
+    -- UPDATE
+    new.updated_at := now();
+
     -- Equipe/painel pode corrigir dados livremente.
     if not public.eh_papel_cliente_api() then
         return new;
     end if;
 
     if v_uid is null then
-        raise exception 'É preciso estar logado para alterar um pedido';
+        raise exception 'É preciso estar logado para alterar uma contratação';
     end if;
 
-    if new.id           is distinct from old.id
-    or new.cliente_id   is distinct from old.cliente_id
-    or new.categoria_id is distinct from old.categoria_id
-    or new.descricao    is distinct from old.descricao
-    or new.endereco     is distinct from old.endereco
-    or new.created_at   is distinct from old.created_at then
-        raise exception 'Só o status (e o profissional, ao aceitar) podem mudar em um pedido';
+    if new.id              is distinct from old.id
+    or new.cliente_id      is distinct from old.cliente_id
+    or new.profissional_id is distinct from old.profissional_id
+    or new.descricao       is distinct from old.descricao
+    or new.endereco        is distinct from old.endereco
+    or new.data_desejada   is distinct from old.data_desejada
+    or new.created_at      is distinct from old.created_at then
+        raise exception 'Só o status de uma contratação pode ser alterado';
     end if;
 
-    if old.status = 'aberto' and new.status = 'em_andamento' then
-        if old.profissional_id is not null
-           or new.profissional_id is distinct from v_uid
-           or not public.profissional_atende_categoria(old.categoria_id) then
-            raise exception 'Somente um profissional aprovado da categoria pode aceitar, e em seu próprio nome';
+    if old.status = 'solicitada' and new.status in ('aceita', 'recusada') then
+        if v_uid <> old.profissional_id then
+            raise exception 'Somente o profissional contratado pode aceitar ou recusar';
+        end if;
+        -- Profissional que deixou de estar aprovado não aceita trabalho novo.
+        if new.status = 'aceita' and not exists (
+               select 1 from public.profissionais p
+               where p.id = v_uid and p.status_aprovacao = 'aprovado') then
+            raise exception 'Somente profissional aprovado pode aceitar contratações';
         end if;
 
-    elsif old.status = 'em_andamento' and new.status = 'concluido' then
-        -- "is distinct from" (e não "not in") para funcionar mesmo se
-        -- profissional_id ficou nulo (profissional apagado).
-        if (v_uid is distinct from old.cliente_id and v_uid is distinct from old.profissional_id)
-           or new.profissional_id is distinct from old.profissional_id then
-            raise exception 'Somente o cliente ou o profissional do pedido podem concluí-lo';
+    elsif old.status = 'solicitada' and new.status = 'cancelada' then
+        if v_uid <> old.cliente_id then
+            raise exception 'Somente o cliente pode cancelar a contratação';
         end if;
 
-    elsif old.status = 'aberto' and new.status = 'cancelado' then
-        if v_uid <> old.cliente_id or new.profissional_id is not null then
-            raise exception 'Somente o cliente pode cancelar um pedido aberto';
+    elsif old.status = 'aceita' and new.status = 'concluida' then
+        if v_uid <> old.cliente_id and v_uid <> old.profissional_id then
+            raise exception 'Somente as partes da contratação podem concluí-la';
         end if;
 
     else
@@ -375,9 +388,74 @@ begin
 end;
 $$;
 
-create trigger pedidos_validar_transicao
-    before update on public.pedidos
-    for each row execute function public.validar_transicao_pedido();
+create trigger contratacoes_validar
+    before insert or update on public.contratacoes
+    for each row execute function public.validar_contratacao();
+
+
+-- 2.5 mensagens: o horário vem sempre do servidor, para ninguém "furar"
+-- a ordem cronológica do chat mandando um created_at falso.
+create function public.validar_mensagem()
+returns trigger
+language plpgsql
+as $$
+begin
+    if public.eh_papel_cliente_api() then
+        new.created_at := now();
+    end if;
+    return new;
+end;
+$$;
+
+create trigger mensagens_validar
+    before insert on public.mensagens
+    for each row execute function public.validar_mensagem();
+
+
+-- 2.6 Contato da outra parte de uma contratação (BR07).
+-- Por que função e não política em usuarios? RLS libera LINHAS inteiras:
+-- uma política deixaria o profissional ler o telefone do cliente antes do
+-- aceite. A função decide coluna a coluna:
+--   * quem chama é o CLIENTE  -> nome, telefone e WhatsApp do profissional
+--                                (já são públicos no diretório);
+--   * quem chama é o PROFISSIONAL -> nome completo e telefone do cliente só
+--                                com status 'aceita' ou 'concluida'; antes
+--                                disso, apenas o primeiro nome.
+-- Quem não é parte da contratação recebe zero linhas.
+-- security definer: precisa ler usuarios de outra pessoa, o que o RLS do
+-- chamador não permite; a regra acima é que limita o que sai.
+create function public.contato_contraparte(p_contratacao_id bigint)
+returns table (nome text, telefone text, whatsapp text, contato_liberado boolean)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+    -- Visão do cliente: dados do profissional.
+    select u.nome,
+           coalesce(p.telefone, u.telefone),
+           p.whatsapp,
+           true
+    from public.contratacoes c
+    join public.usuarios u      on u.id = c.profissional_id
+    join public.profissionais p on p.id = c.profissional_id
+    where c.id = p_contratacao_id
+      and c.cliente_id = auth.uid()
+
+    union all
+
+    -- Visão do profissional: dados do cliente (clientes não têm WhatsApp
+    -- próprio no modelo, então o telefone serve para os dois botões).
+    select case when c.status in ('aceita', 'concluida') then u.nome
+                else split_part(trim(u.nome), ' ', 1) end,
+           case when c.status in ('aceita', 'concluida') then u.telefone end,
+           null::text,
+           c.status in ('aceita', 'concluida')
+    from public.contratacoes c
+    join public.usuarios u on u.id = c.cliente_id
+    where c.id = p_contratacao_id
+      and c.profissional_id = auth.uid();
+$$;
 
 
 -- =====================================================================
@@ -423,7 +501,8 @@ alter table public.categorias             enable row level security;
 alter table public.profissional_categoria enable row level security;
 alter table public.avaliacoes             enable row level security;
 alter table public.favoritos              enable row level security;
-alter table public.pedidos                enable row level security;
+alter table public.contratacoes           enable row level security;
+alter table public.mensagens              enable row level security;
 
 -- ---------- usuarios ----------
 -- Não há política de INSERT: a linha é criada pelo trigger do Auth.
@@ -437,10 +516,9 @@ create policy "usuarios: perfil de profissional aprovado e publico"
     using (exists (select 1 from public.profissionais p
                    where p.id = usuarios.id and p.status_aprovacao = 'aprovado'));
 
--- Cliente e profissional de um mesmo pedido enxergam o nome/telefone um do outro.
-create policy "usuarios: partes de um pedido se enxergam"
-    on public.usuarios for select to authenticated
-    using (public.compartilha_pedido(id));
+-- Não há política "partes se enxergam": o contato entre cliente e
+-- profissional sai pela função contato_contraparte (seção 2.6), que
+-- aplica a BR07 coluna a coluna.
 
 create policy "usuarios: editar o proprio perfil"
     on public.usuarios for update to authenticated
@@ -520,41 +598,67 @@ create policy "favoritos: tudo pelo dono"
     using (usuario_id = (select auth.uid()))
     with check (usuario_id = (select auth.uid()));
 
--- ---------- pedidos ----------
--- Quem vê: o cliente dono, o profissional atribuído e, enquanto estiver
--- aberto, os profissionais aprovados daquela categoria (o "feed").
-create policy "pedidos: leitura pelas partes e pelo feed"
-    on public.pedidos for select to authenticated
+-- ---------- contratacoes ----------
+-- Só as duas partes enxergam a contratação.
+create policy "contratacoes: leitura pelas partes"
+    on public.contratacoes for select to authenticated
     using (
         cliente_id = (select auth.uid())
         or profissional_id = (select auth.uid())
-        or (status = 'aberto' and public.profissional_atende_categoria(categoria_id))
     );
 
--- Só cliente cria, em nome próprio, já como 'aberto' e sem profissional.
-create policy "pedidos: cliente cria"
-    on public.pedidos for insert to authenticated
+-- BR10: só CLIENTE contrata, em nome próprio, começando em 'solicitada',
+-- e só profissional APROVADO pode ser contratado.
+create policy "contratacoes: cliente contrata profissional aprovado"
+    on public.contratacoes for insert to authenticated
     with check (
         cliente_id = (select auth.uid())
-        and status = 'aberto'
-        and profissional_id is null
+        and status = 'solicitada'
         and exists (select 1 from public.usuarios u
                     where u.id = (select auth.uid()) and u.tipo_usuario = 'cliente')
+        and exists (select 1 from public.profissionais p
+                    where p.id = profissional_id and p.status_aprovacao = 'aprovado')
     );
 
--- Quem pode TENTAR atualizar; as transições válidas ficam no trigger 2.5.
-create policy "pedidos: partes e feed atualizam"
-    on public.pedidos for update to authenticated
+-- Quem pode TENTAR atualizar; as transições válidas ficam no trigger 2.4.
+create policy "contratacoes: partes atualizam"
+    on public.contratacoes for update to authenticated
     using (
         cliente_id = (select auth.uid())
         or profissional_id = (select auth.uid())
-        or (status = 'aberto' and public.profissional_atende_categoria(categoria_id))
     )
     with check (
         cliente_id = (select auth.uid())
         or profissional_id = (select auth.uid())
     );
--- Sem política de DELETE: pedido nunca é apagado pelo app (vira 'cancelado').
+-- Sem política de DELETE: contratação nunca é apagada pelo app
+-- (ela termina como recusada, cancelada ou concluída).
+
+-- ---------- mensagens ----------
+-- BR08: só as partes da contratação leem o chat (o histórico continua
+-- legível depois que ela termina).
+create policy "mensagens: partes leem"
+    on public.mensagens for select to authenticated
+    using (exists (
+        select 1 from public.contratacoes c
+        where c.id = contratacao_id
+          and (c.cliente_id = (select auth.uid()) or c.profissional_id = (select auth.uid()))
+    ));
+
+-- BR08: só as partes escrevem, em nome próprio, e só enquanto a
+-- contratação está 'solicitada' ou 'aceita'.
+create policy "mensagens: partes enviam enquanto ativa"
+    on public.mensagens for insert to authenticated
+    with check (
+        autor_id = (select auth.uid())
+        and exists (
+            select 1 from public.contratacoes c
+            where c.id = contratacao_id
+              and (c.cliente_id = (select auth.uid()) or c.profissional_id = (select auth.uid()))
+              and c.status in ('solicitada', 'aceita')
+        )
+    );
+-- Sem UPDATE e sem DELETE: mensagem enviada não é editada nem apagada.
 
 
 -- =====================================================================
@@ -572,32 +676,35 @@ grant select on public.categorias, public.profissionais, public.profissional_cat
 grant select, insert, update, delete on all tables in schema public to authenticated;
 grant usage, select on all sequences in schema public to authenticated;
 
--- As funções auxiliares só fazem sentido para usuário logado.
-revoke execute on function public.profissional_atende_categoria(bigint) from public, anon;
-revoke execute on function public.compartilha_pedido(uuid)              from public, anon;
-grant  execute on function public.profissional_atende_categoria(bigint) to authenticated;
-grant  execute on function public.compartilha_pedido(uuid)              to authenticated;
+-- contato_contraparte só faz sentido para usuário logado (chamada pelo
+-- front com supabaseClient.rpc('contato_contraparte', { p_contratacao_id })).
+revoke execute on function public.contato_contraparte(bigint) from public, anon;
+grant  execute on function public.contato_contraparte(bigint) to authenticated;
 
 
 -- =====================================================================
 -- 6. REALTIME
--- espera-cliente.html escuta UPDATE em pedidos para saber quando um
--- profissional aceitou. O Realtime respeita o RLS (cada um só recebe
--- eventos das linhas que pode ler). O DO evita erro se já estiver na
--- publicação.
+-- As listas de contratações (cliente e profissional) e o chat atualizam
+-- sozinhos. O Realtime respeita o RLS: cada um só recebe eventos das
+-- linhas que pode ler. O DO evita erro se a tabela já estiver na
+-- publicação. (A antiga "pedidos" saiu da publicação ao ser dropada.)
 -- =====================================================================
 do $$
+declare
+    v_tabela text;
 begin
     if not exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
         create publication supabase_realtime;
     end if;
 
-    if not exists (select 1 from pg_publication_tables
-                   where pubname = 'supabase_realtime'
-                     and schemaname = 'public'
-                     and tablename = 'pedidos') then
-        alter publication supabase_realtime add table public.pedidos;
-    end if;
+    foreach v_tabela in array array['contratacoes', 'mensagens'] loop
+        if not exists (select 1 from pg_publication_tables
+                       where pubname = 'supabase_realtime'
+                         and schemaname = 'public'
+                         and tablename = v_tabela) then
+            execute format('alter publication supabase_realtime add table public.%I', v_tabela);
+        end if;
+    end loop;
 end;
 $$;
 

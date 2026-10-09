@@ -249,7 +249,8 @@ As principais entidades identificadas no sistema são:
 * **Categoria**
 * **Avaliação**
 * **Favorito**
-* **Pedido** — *funcionalidade extra do MVP* (decisão D1 em `docs/DECISOES.md`): o cliente descreve o serviço e um profissional aprovado da categoria aceita o chamado.
+* **Contratação** — *funcionalidade extra do MVP* (decisões D1 e D5 em `docs/DECISOES.md`): o cliente logado contrata um profissional aprovado específico, direto pelo perfil dele, informando serviço, endereço e data/horário desejado.
+* **Mensagem** — chat de texto entre cliente e profissional dentro de cada contratação.
 
 ### 3 principais entidades
 
@@ -269,9 +270,9 @@ O usuário pesquisa e consulta informações dos profissionais disponíveis para
 
 Os profissionais são associados às categorias correspondentes aos serviços que prestam, permitindo que sejam encontrados por meio da busca por categoria.
 
-### Fluxo 3 — Cliente → Pedido → Profissional (extra)
+### Fluxo 3 — Cliente → Contratação → Profissional (extra)
 
-O cliente abre um pedido em uma categoria; os profissionais **aprovados** daquela categoria veem o pedido no feed e um deles o aceita. O pedido segue o ciclo `aberto → em_andamento → concluido` (ou `aberto → cancelado`).
+No perfil de um profissional **aprovado**, o cliente logado clica em "Contratar" e envia descrição, endereço e data/horário desejado (não pode ser no passado). A contratação nasce `solicitada`; o profissional **aceita** ou **recusa**; enquanto está `solicitada` o cliente pode **cancelar**; uma contratação `aceita` é marcada como **concluída** por qualquer uma das partes. Enquanto está `solicitada` ou `aceita`, cliente e profissional conversam pelo chat; depois o histórico fica somente leitura. O telefone do cliente só é revelado ao profissional após o aceite.
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/73fc2f9f-ae78-48d4-9441-6637b0388398" />
 
@@ -288,9 +289,10 @@ erDiagram
     PROFISSIONAIS ||--o{ AVALIACOES : "recebe"
     USUARIOS ||--o{ FAVORITOS : "marca"
     PROFISSIONAIS ||--o{ FAVORITOS : "e marcado"
-    USUARIOS ||--o{ PEDIDOS : "abre (cliente)"
-    PROFISSIONAIS |o--o{ PEDIDOS : "aceita"
-    CATEGORIAS ||--o{ PEDIDOS : "classifica"
+    USUARIOS ||--o{ CONTRATACOES : "contrata (cliente)"
+    PROFISSIONAIS ||--o{ CONTRATACOES : "é contratado"
+    CONTRATACOES ||--o{ MENSAGENS : "tem chat"
+    USUARIOS ||--o{ MENSAGENS : "escreve"
 
     USUARIOS {
         uuid id PK "= auth.users.id"
@@ -335,14 +337,22 @@ erDiagram
         uuid profissional_id PK, FK
         timestamptz created_at
     }
-    PEDIDOS {
+    CONTRATACOES {
         bigint id PK
         uuid cliente_id FK
-        uuid profissional_id FK "nulo ate o aceite"
-        bigint categoria_id FK
+        uuid profissional_id FK
         text descricao
         text endereco
-        text status "aberto, em_andamento, concluido ou cancelado"
+        timestamptz data_desejada "nao pode ser no passado"
+        text status "solicitada, aceita, recusada, cancelada ou concluida"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    MENSAGENS {
+        bigint id PK
+        bigint contratacao_id FK
+        uuid autor_id FK
+        text conteudo "1 a 1000 caracteres"
         timestamptz created_at
     }
 ```
@@ -354,6 +364,7 @@ erDiagram
 * Um profissional atua em **uma ou mais** categorias; uma categoria pode existir **sem** profissionais.
 * Cada usuário avalia um profissional **no máximo uma vez** (nota 1–5 e comentário opcional) e não pode avaliar a si mesmo.
 * Favoritos são **pessoais**: cada usuário só vê e altera os próprios.
+* Só **cliente** contrata e só profissional **aprovado** pode ser contratado; a contratação e o chat só são visíveis para as duas partes.
 * Todas as tabelas têm **Row Level Security (RLS)** ativo; os detalhes estão em `supabase/README.md`.
 
 ---
@@ -437,22 +448,37 @@ Tabela associativa utilizada para representar a relação entre profissionais e 
 | profissional_id | uuid | PK (composta); FK → `profissionais(id)`, apagado em cascata |
 | categoria_id | bigint | PK (composta); FK → `categorias(id)`, apagado em cascata |
 
-### PEDIDO (`pedidos`) — funcionalidade extra do MVP
+### CONTRATAÇÃO (`contratacoes`) — funcionalidade extra do MVP
 
-Tabela que registra os chamados abertos pelos clientes e aceitos pelos profissionais (telas `solicitar-pedido`, `espera-cliente`, `feed-profissional` e `servico-andamento`). As alterações são enviadas em tempo real (Supabase Realtime).
+Tabela que registra as contratações diretas: o cliente escolhe um profissional aprovado pelo perfil e pede um serviço para uma data/horário. Substitui o antigo "pedido aberto para a categoria" (decisão D5). As alterações são enviadas em tempo real (Supabase Realtime).
 
 | Atributo | Tipo | Restrição |
 |---|---|---|
 | id | bigint | PK; gerado automaticamente |
-| cliente_id | uuid | obrigatório; FK → `usuarios(id)` |
-| profissional_id | uuid | opcional (nulo até o aceite); FK → `profissionais(id)` |
-| categoria_id | bigint | obrigatório; FK → `categorias(id)` |
+| cliente_id | uuid | obrigatório; FK → `usuarios(id)`; usuário do tipo `cliente` |
+| profissional_id | uuid | obrigatório; FK → `profissionais(id)`; profissional `aprovado` no momento da contratação; diferente de `cliente_id` |
 | descricao | text | obrigatório |
 | endereco | text | obrigatório |
-| status | text | obrigatório; `aberto`, `em_andamento`, `concluido` ou `cancelado`; padrão `aberto` |
+| data_desejada | timestamptz | obrigatório; não pode estar no passado (validado por trigger) |
+| status | text | obrigatório; `solicitada`, `aceita`, `recusada`, `cancelada` ou `concluida`; padrão `solicitada` |
 | created_at | timestamptz | obrigatório; padrão `now()` |
+| updated_at | timestamptz | obrigatório; atualizado pelo banco a cada mudança de status |
 
-Transições permitidas: `aberto → em_andamento` (profissional aprovado da categoria aceita), `em_andamento → concluido` (cliente ou profissional do pedido) e `aberto → cancelado` (cliente).
+Transições permitidas: `solicitada → aceita` ou `solicitada → recusada` (só o profissional contratado), `solicitada → cancelada` (só o cliente) e `aceita → concluida` (qualquer uma das partes). Nenhum outro campo pode ser alterado.
+
+### MENSAGEM (`mensagens`)
+
+Tabela que armazena o chat de texto de cada contratação. Só as duas partes leem e escrevem, e só é possível enviar mensagem enquanto a contratação está `solicitada` ou `aceita`.
+
+| Atributo | Tipo | Restrição |
+|---|---|---|
+| id | bigint | PK; gerado automaticamente |
+| contratacao_id | bigint | obrigatório; FK → `contratacoes(id)`, apagado em cascata |
+| autor_id | uuid | obrigatório; FK → `usuarios(id)`; sempre o usuário logado |
+| conteudo | text | obrigatório; de 1 a 1000 caracteres, desconsiderando espaços nas pontas |
+| created_at | timestamptz | obrigatório; preenchido pelo servidor |
+
+Mensagens não podem ser editadas nem apagadas.
 
 ### Consulta auxiliar: `profissionais_publicos` (view)
 

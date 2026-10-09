@@ -26,6 +26,7 @@ declare
     v_prof1   uuid;
     v_prof2   uuid;
     v_prof3   uuid;
+    v_contratacao bigint;
 begin
     -- Os ids vêm do Auth (cada projeto gera ids diferentes).
     select id into v_cliente from auth.users where email = 'cliente@helpme.test';
@@ -90,16 +91,23 @@ begin
     insert into public.favoritos (usuario_id, profissional_id) values (v_cliente, v_prof1)
     on conflict do nothing;
 
-    -- 6. Um pedido aberto de encanador (aparece no feed do prof1).
-    --    Apaga os pedidos antigos da cliente de teste para não acumular.
-    delete from public.pedidos where cliente_id = v_cliente;
+    -- 6. Uma contratação 'solicitada' da cliente para o prof1, daqui a 2
+    --    dias (aparece em "solicitações recebidas" do prof1).
+    --    Apaga as contratações antigas da cliente de teste para não
+    --    acumular (as mensagens vão junto, por cascade).
+    delete from public.contratacoes where cliente_id = v_cliente;
 
-    insert into public.pedidos (cliente_id, categoria_id, descricao, endereco)
-    select v_cliente, c.id,
-           'Vazamento embaixo da pia da cozinha, a água está escorrendo pelo armário.',
-           'Rua das Palmeiras, 152 - Centro'
-    from public.categorias c
-    where c.slug = 'encanador';
+    insert into public.contratacoes (cliente_id, profissional_id, descricao, endereco, data_desejada)
+    values (v_cliente, v_prof1,
+            'Vazamento embaixo da pia da cozinha, a água está escorrendo pelo armário.',
+            'Rua das Palmeiras, 152 - Centro',
+            now() + interval '2 days')
+    returning id into v_contratacao;
+
+    -- 7. Duas mensagens no chat dessa contratação.
+    insert into public.mensagens (contratacao_id, autor_id, conteudo, created_at) values
+        (v_contratacao, v_cliente, 'Oi, João! Consegue vir no período da manhã?', now() - interval '10 minutes'),
+        (v_contratacao, v_prof1,   'Bom dia, Ana! Consigo sim, chego por volta das 9h.', now() - interval '5 minutes');
 end;
 $$;
 
