@@ -64,6 +64,7 @@ drop function if exists public.validar_profissional()                    cascade
 drop function if exists public.validar_contratacao()                     cascade;
 drop function if exists public.validar_mensagem()                        cascade;
 drop function if exists public.contato_contraparte(bigint)               cascade;
+drop function if exists public.minha_data_nascimento()                   cascade;
 -- Funções da versão anterior (fluxo de pedidos), removidas na D5.
 drop function if exists public.validar_transicao_pedido()                cascade;
 drop function if exists public.profissional_atende_categoria(bigint)     cascade;
@@ -481,6 +482,22 @@ as $$
 $$;
 
 
+-- 2.7 Data de nascimento do próprio profissional (tela "Meu perfil").
+-- A coluna data_nascimento NÃO tem SELECT para anon/authenticated (seção 5):
+-- o RLS libera a LINHA de quem é aprovado, mas não escolhe colunas, e sem
+-- isso qualquer visitante leria a data de nascimento pela API.
+-- security definer: lê a coluna bloqueada, mas só a linha de quem chama.
+create function public.minha_data_nascimento()
+returns date
+language sql
+stable
+security definer
+set search_path = public
+as $$
+    select data_nascimento from public.profissionais where id = auth.uid();
+$$;
+
+
 -- =====================================================================
 -- 3. VIEW PARA O DIRETÓRIO (HU01–HU03)
 -- Junta perfil + nome + categorias + média das notas em uma consulta só.
@@ -692,17 +709,29 @@ create policy "mensagens: partes enviam enquanto ativa"
 -- =====================================================================
 grant usage on schema public to anon, authenticated;
 
-grant select on public.categorias, public.profissionais, public.profissional_categoria,
+grant select on public.categorias, public.profissional_categoria,
                 public.avaliacoes, public.usuarios, public.profissionais_publicos
     to anon;
 
 grant select, insert, update, delete on all tables in schema public to authenticated;
 grant usage, select on all sequences in schema public to authenticated;
 
+-- profissionais: SELECT por coluna, SEM data_nascimento (dado pessoal).
+-- O RLS libera a linha inteira de quem é aprovado; o privilégio de coluna
+-- é o que impede ler a data pela API. O dono lê a dele por
+-- minha_data_nascimento(). Insert/update continuam com a tabela toda
+-- (o perfil grava a data). Coluna nova fica oculta até entrar nesta lista.
+revoke select on public.profissionais from anon, authenticated;
+grant select (id, whatsapp, telefone, cidade, bairro, descricao, status_aprovacao, created_at)
+    on public.profissionais to anon, authenticated;
+
 -- contato_contraparte só faz sentido para usuário logado (chamada pelo
 -- front com supabaseClient.rpc('contato_contraparte', { p_contratacao_id })).
 revoke execute on function public.contato_contraparte(bigint) from public, anon;
 grant  execute on function public.contato_contraparte(bigint) to authenticated;
+
+revoke execute on function public.minha_data_nascimento() from public, anon;
+grant  execute on function public.minha_data_nascimento() to authenticated;
 
 
 -- =====================================================================
