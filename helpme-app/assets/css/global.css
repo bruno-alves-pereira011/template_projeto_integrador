@@ -31,6 +31,9 @@
     --raio: 8px;
     --raio-card: 14px;
     --sombra-card: 0 1px 3px rgba(16, 40, 36, 0.08);
+
+    /* Transição padrão reutilizável */
+    --transicao: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==========================================
@@ -44,13 +47,49 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     min-height: 100vh;
     background: var(--cor-fundo);
     color: var(--cor-texto);
     font-family: var(--fonte-texto);
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* ==========================================
+   SELEÇÃO DE TEXTO
+   ========================================== */
+::selection {
+    background: var(--cor-primaria-clara);
+    color: var(--cor-primaria-escura);
+}
+
+/* ==========================================
+   SCROLLBAR CUSTOMIZADA
+   ========================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--cor-borda);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--cor-texto-suave);
 }
 
 h1, h2, h3 {
@@ -58,12 +97,22 @@ h1, h2, h3 {
     font-weight: 700;
     line-height: 1.25;
     color: var(--cor-primaria-escura);
+    letter-spacing: -0.01em;
+}
+
+h1 {
+    letter-spacing: -0.02em;
 }
 
 a {
     color: var(--cor-primaria);
     font-weight: 600;
     text-decoration: none;
+    transition: color var(--transicao), opacity var(--transicao);
+}
+
+a:hover {
+    opacity: 0.85;
 }
 
 button,
@@ -71,6 +120,12 @@ input,
 select,
 textarea {
     font: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* ==========================================
@@ -86,7 +141,15 @@ textarea {
     border-radius: var(--raio);
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition:
+        background var(--transicao),
+        border-color var(--transicao),
+        box-shadow var(--transicao),
+        transform var(--transicao);
+}
+
+.btn:active:not(:disabled) {
+    transform: scale(0.97);
 }
 
 .btn-bloco {
@@ -96,10 +159,12 @@ textarea {
 .btn-primario {
     background: var(--cor-primaria);
     color: #fff;
+    box-shadow: 0 1px 3px rgba(19, 78, 72, 0.25);
 }
 
 .btn-primario:hover {
     background: var(--cor-primaria-escura);
+    box-shadow: 0 4px 12px rgba(14, 60, 55, 0.3);
 }
 
 .btn-contorno {
@@ -110,6 +175,7 @@ textarea {
 
 .btn-contorno:hover {
     border-color: var(--cor-primaria);
+    background: var(--cor-primaria-clara);
 }
 
 .btn:disabled {
@@ -131,6 +197,7 @@ input[type="email"],
 input[type="password"],
 input[type="tel"],
 input[type="date"],
+input[type="search"],
 select,
 textarea {
     width: 100%;
@@ -139,6 +206,10 @@ textarea {
     border-radius: var(--raio);
     background: var(--cor-branco);
     color: var(--cor-texto);
+    transition:
+        border-color var(--transicao),
+        box-shadow var(--transicao),
+        background var(--transicao);
 }
 
 input:focus,
@@ -149,8 +220,20 @@ textarea:focus {
     box-shadow: 0 0 0 3px var(--cor-primaria-clara);
 }
 
+input:hover:not(:focus):not(:disabled),
+select:hover:not(:focus):not(:disabled),
+textarea:hover:not(:focus):not(:disabled) {
+    border-color: var(--cor-texto-suave);
+}
+
 ::placeholder {
     color: #8a9492;
+    transition: opacity var(--transicao);
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+    opacity: 0.6;
 }
 
 /* ==========================================
@@ -164,10 +247,13 @@ textarea:focus {
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--cor-primaria-escura);
+    transition: transform var(--transicao), opacity var(--transicao);
 }
 
 .logo:hover {
     text-decoration: none;
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
 .logo-icone {
@@ -178,6 +264,11 @@ textarea:focus {
     border-radius: var(--raio);
     background: var(--cor-primaria);
     color: #fff;
+    transition: box-shadow var(--transicao);
+}
+
+.logo:hover .logo-icone {
+    box-shadow: 0 2px 8px rgba(19, 78, 72, 0.3);
 }
 
 [hidden] {
