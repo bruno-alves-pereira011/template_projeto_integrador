@@ -6,7 +6,7 @@
 **Origem do contexto:** híbrido (código existente em `helpme-app/` + insumos em `arquivos/` + usuário)
 **Confiança do contexto:** alta
 **Contexto processado:** sim
-**Estado operacional:** Sprint 01 em fechamento (09/10 a 16/10/2026); US-001 a US-006 em Review
+**Estado operacional:** Sprint 02 ativa (16/10 a 23/10/2026): núcleo do Fluxo 3 (DEBT-006, US-007 a US-009); US-001 a US-006 da Sprint 01 ainda em Review
 **Última atualização:** 2026-10-16
 
 ## GitHub Planning Defaults
@@ -84,10 +84,10 @@ Após o primeiro /sprint-planning de um projeto derivado, atualizar este manifes
 
 ## Estado Atual do Projeto
 
-- Sprint ativa: **Sprint 01** (`docs/sprints/sprint_planning_01.md`), termina em 2026-10-16
+- Sprint ativa: **Sprint 02** (`docs/sprints/sprint_planning_02.md`), termina em 2026-10-23. Sprint 01 encerrada (`docs/retrospectives/sprint_01_retro.md`)
 - Backlog: **gerado** (`docs/product_backlog.md`): EPIC-001 a EPIC-004, EPIC-006 (admin, candidato) e EPIC-007 (conta do cliente, candidato) no Marco 2; EPIC-005 no Marco 3; DEBT-004 a DEBT-008 da revisão de 2026-10-16
 - Discovery e requisitos: `docs/discovery/helpme-mvp-marco2.md` (rev. 3 em DRAFT: área admin + aprovação de profissionais) e `docs/requirements/helpme-mvp-marco2.md`
 - Decisões do projeto: `docs/DECISOES.md` (D6 proposta no Discovery rev. 3)
-- Próximo passo sugerido: DEBT-004 (PR `fix/sprint01-fechamento` → `main`) → testes manuais das US-001 a US-006 no Supabase real → `/sprint-retrospective` → `/sprint-planning` da Sprint 02 (DEBT-006 + US-007 a US-009). Em paralelo: Gate G0 do Discovery rev. 3 → `/requirements` rev. 3
+- Próximo passo sugerido: merge do DEBT-004 + testes manuais das US-001 a US-006 (Lucas, até 20/10) → decidir DEBT-005 → `/feature-development` do DEBT-006 e da US-007. Sprint 03 prevista: US-010 + US-014, US-015, US-013
 
 > Atualize apenas ao final de cada sprint ou mudança relevante. Evite atualizações desnecessárias.

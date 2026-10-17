@@ -73,9 +73,9 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-007 | - | Contratar profissional pelo perfil | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
-| US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
-| US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
+| US-007 | - | Contratar profissional pelo perfil | 5 | Sprint 02 | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Sprint 02 | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Sprint 02 | Sprint 02 | - | - | docs/bdd/contratacao.feature |
 | US-010 | - | Chat em tempo real na contratacao | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
 
 **Notas do Fluxo 3 (2026-10-16):** antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.
@@ -145,7 +145,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | DEBT-003 | **Sprint 01 — implementado (a701e35), falta aplicar no Supabase real.** Revisar `supabase/migrations/001_schema.sql` antes de aplicar: `pedidos` → `contratacoes` (`profissional_id` obrigatorio, `data_desejada`, status `solicitada/aceita/recusada/cancelada/concluida`, trigger de transicao BR06, BR09, BR10), nova tabela `mensagens` (RLS so das partes, BR08, limite 1000 chars, Realtime), contato da outra parte so apos aceite (BR07), seed e `supabase/README.md`; registrar D5 em `docs/DECISOES.md`. Aplicar no Supabase real. | Alta (bloqueia US-001) | 3 | Sem isso nenhuma story roda contra o banco real |
 | DEBT-004 | Abrir e mesclar o PR `fix/sprint01-fechamento` → `main`. A `main` esta quebrada: `completar-perfil.js` chama `minha_data_nascimento()`, que so existe na branch (leva `e2be2b8`, `6bb2aa5`, `f603172` e a mudanca de caminhos dos docs) | **Critica (bloqueia tudo)** | 1 | `completar-perfil.html` falha em `main` |
 | DEBT-005 | Decidir e mesclar (ou descartar) `origin/refactor/ui-polish` (reescreve `dashboard.css`, ~1.400 linhas) antes de criar telas novas | Alta (antes de US-007) | 1 | Conflito em todas as telas do Fluxo 3 e do admin |
-| DEBT-006 | Remover o legado de pedidos (D5): `feed-profissional.html`, `js/profissional.js` (le `pedidos`, que nao existe, e nao usa `exigirSessao`), `solicitar-pedido.html`, `espera-cliente.html`, `servico-andamento.html` (so comentarios) | Alta (Sprint 02) | 1 | Codigo morto quebrado e contrario a FR09 |
+| DEBT-006 | **Sprint 02.** Remover o legado de pedidos (D5): `feed-profissional.html`, `js/profissional.js` (le `pedidos`, que nao existe, e nao usa `exigirSessao`), `solicitar-pedido.html`, `espera-cliente.html`, `servico-andamento.html` (so comentarios) | Alta (Sprint 02) | 1 | Codigo morto quebrado e contrario a FR09 |
 | DEBT-007 | Fixar versao exata da CDN `@supabase/supabase-js@2` em todos os HTML | Baixa | 1 | App pode quebrar sozinho com versao nova |
 | DEBT-008 | Banco real ja tem dados: daqui em diante so migrations incrementais (`003_*`, `004_*`); nao editar nem reaplicar o `001` (reaplicar apaga dados e desfaz o `002`). Toda tabela nova com RLS no mesmo script (o `001` da `grant ... on all tables to authenticated`) | Alta (regra de trabalho) | 0 | Perda de dados / tabela exposta |
 | DEBT-001 | README do projeto: rastreabilidade HU × tela × tabela (secao 9), contratacao no minimundo/HUs, secao "Como rodar o projeto" | Alta (DoD do Marco 2) | 2 | Avaliacao da disciplina cobra rastreabilidade |
