@@ -84,20 +84,21 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 **Objetivo:** Area administrativa centralizada no app e triagem automatica dos profissionais em analise, substituindo a aprovacao manual pelo Table Editor (D2 → D6 proposta).
 **Valor de negocio:** Alto
-**Estimativa:** ~37 pontos (a confirmar no `/requirements`)
+**Estimativa:** 29 pontos (+ 6 pontos Could)
 **GitHub Epic Issue:** -
-**Origem:** `docs/discovery/helpme-mvp-marco2.md` (revisao 3). Discovery e Requirements rev. 3 aprovados (G0 e G1 em 2026-10-16). Itens abaixo sao **candidatos** ate o Review & Adjust do `/create-user-story` (Modo Backlog).
+**Origem:** `docs/discovery/helpme-mvp-marco2.md` (revisao 3). Discovery e Requirements rev. 3 aprovados (G0 e G1 em 2026-10-16). Stories aprovadas no Modo Backlog em 2026-10-16 (US-016 dividida em US-016 + US-021). Primeiro vertical slice: US-014 + US-015 + US-013.
 
-##### User Stories (candidatas)
+##### User Stories
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-014 | - | Papel de administrador: tabela `administradores`, `eh_admin()`, roteamento e protecao das paginas | 5 | Ideia | - | - | - | - |
-| US-015 | - | Fila de analise: aprovar/recusar com motivo e aprovacao em lote | 5 | Ideia | - | - | - | - |
-| US-013 | - | Profissional ve o motivo da pendencia/recusa e reenvia para analise | 3 | Ideia | - | - | - | - |
-| US-016 | - | Triagem automatica de cadastros no banco (Nivel A, sem dependencia nova) | 8 | Ideia | - | - | - | - |
-| US-017 | - | Painel de indicadores do administrador | 5 | Ideia | - | - | - | - |
-| US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Ideia | - | - | - | - |
+| US-014 | - | Papel de administrador e area admin | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-017 | - | Painel de indicadores do administrador | 5 | Backlog | - | - | - | - |
+| US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Backlog | - | - | - | - |
 | US-019 | - | Suspender/reativar profissional aprovado (Could) | 3 | Ideia | - | - | - | - |
 | US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Ideia | - | - | - | - |
 
@@ -108,12 +109,12 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 **Estimativa:** 5 pontos
 **GitHub Epic Issue:** -
 
-##### User Stories (candidatas — requisitos FR23, FR24, BR22 aprovados na rev. 3)
+##### User Stories
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-011 | - | Esqueci minha senha (nao existe `resetPassword` no codigo) | 3 | Ideia | - | - | - | - |
-| US-012 | - | Meu perfil do cliente (nome e telefone; sem telefone o profissional fica sem contato apos o aceite — BR07) | 2 | Ideia | - | - | - | - |
+| US-011 | - | Esqueci minha senha | 3 | Backlog | - | - | - | - |
+| US-012 | - | Meu perfil do cliente (nome e telefone) | 2 | Backlog | - | - | - | - |
 
 ---
 
@@ -175,7 +176,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 1. **Fechamento da Sprint 01:** DEBT-004 → testes manuais US-001 a US-006 no Supabase real (recriar `prof1@helpme.test`) → `/sprint-retrospective` → DEBT-005.
 2. **Sprint 02 — nucleo do Fluxo 3:** DEBT-006, US-007, US-008, US-009 (~16 pts). Em paralelo, sem tocar no front: Discovery/Requirements rev. 3 do EPIC-006.
 3. **Sprint 03:** US-010 (chat), US-014, US-015, US-013 — substitui o Table Editor.
-4. **Sprint 04:** US-016 (triagem automatica), US-017, US-018, US-011, US-012, DEBT-001, DEBT-002 — fecha o Marco 2.
+4. **Sprint 04:** US-016 + US-021 (triagem automatica), US-017, US-018, US-011, US-012, DEBT-001, DEBT-002 — fecha o Marco 2.
 5. **Marco 3:** EPIC-005, US-019, US-020, sinais pos-aprovacao (Nivel C).
 
 ### Marco 3
@@ -210,6 +211,17 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | NFR02 | US-002, US-003 |
 | NFR04, NFR05 | criterio comum de todas as stories de tela |
 | NFR07 | US-010 |
+| FR15, BR11, NFR08 | US-014 |
+| FR17, FR18, FR19, BR15, BR16, BR19, NFR10 | US-015 |
+| FR21, BR17 | US-013 |
+| FR20, BR12, BR13 | US-016 |
+| BR14, BR18 | US-021 |
+| FR16, NFR09 | US-017 |
+| FR22, BR20 | US-018 |
+| FR23, BR22 | US-011 |
+| FR24 | US-012 |
+| FR25, FR26, BR21 | US-019, US-020 (Could) |
+| NFR11 | US-014, US-015, US-016 (criterio comum) |
 
 ---
 

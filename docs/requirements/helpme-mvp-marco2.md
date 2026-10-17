@@ -253,7 +253,8 @@ O usuario pode **aprovar, editar, adicionar, remover ou reclassificar** qualquer
 | FR15, BR11, NFR08 | US-014 |
 | FR17, FR18, FR19, BR15, BR16, BR19, NFR10 | US-015 |
 | FR21, BR17 | US-013 |
-| FR20, BR12, BR13, BR14, BR18 | US-016 |
+| FR20, BR12, BR13 | US-016 |
+| BR14, BR18 | US-021 (dividida da US-016 no Modo Backlog) |
 | FR16, NFR09 | US-017 |
 | FR22, BR20 | US-018 |
 | FR23, BR22 | US-011 |
