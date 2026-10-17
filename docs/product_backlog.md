@@ -2,7 +2,7 @@
 
 **Produto:** HelpMe — Hub de Contatos de Emergencia para Servicos Residenciais
 **Product Owner:** Equipe do Projeto Integrador (IFES Campus Serra)
-**Ultima atualizacao:** 2026-10-09
+**Ultima atualizacao:** 2026-10-16 (revisao geral do projeto para o Fluxo 3)
 
 ---
 
@@ -78,6 +78,43 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
 | US-010 | - | Chat em tempo real na contratacao | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
 
+**Notas do Fluxo 3 (2026-10-16):** antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.
+
+#### [EPIC-006] Administracao e aprovacao de profissionais
+
+**Objetivo:** Area administrativa centralizada no app e triagem automatica dos profissionais em analise, substituindo a aprovacao manual pelo Table Editor (D2 → D6 proposta).
+**Valor de negocio:** Alto
+**Estimativa:** ~37 pontos (a confirmar no `/requirements`)
+**GitHub Epic Issue:** -
+**Origem:** `docs/discovery/helpme-mvp-marco2.md` — **revisao 3 em DRAFT**. Itens abaixo sao **candidatos**: so viram stories refinadas depois de PROBLEM READY e REQUIREMENTS READY da rev. 3 (regra 18 do `AGENTS.md`).
+
+##### User Stories (candidatas)
+
+| ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
+|----|-------|--------|--------------|--------|--------|------|----------|-----|
+| US-014 | - | Papel de administrador: tabela `administradores`, `eh_admin()`, roteamento e protecao das paginas | 5 | Ideia | - | - | - | - |
+| US-015 | - | Fila de analise: aprovar/recusar com motivo e aprovacao em lote | 5 | Ideia | - | - | - | - |
+| US-013 | - | Profissional ve o motivo da pendencia/recusa e reenvia para analise | 3 | Ideia | - | - | - | - |
+| US-016 | - | Triagem automatica de cadastros no banco (Nivel A, sem dependencia nova) | 8 | Ideia | - | - | - | - |
+| US-017 | - | Painel de indicadores do administrador | 5 | Ideia | - | - | - | - |
+| US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Ideia | - | - | - | - |
+| US-019 | - | Suspender/reativar profissional aprovado (Could) | 3 | Ideia | - | - | - | - |
+| US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Ideia | - | - | - | - |
+
+#### [EPIC-007] Conta do cliente
+
+**Objetivo:** Fechar lacunas de conta encontradas na revisao de 2026-10-16.
+**Valor de negocio:** Medio
+**Estimativa:** 5 pontos
+**GitHub Epic Issue:** -
+
+##### User Stories (candidatas — precisam entrar nos Requirements rev. 3)
+
+| ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
+|----|-------|--------|--------------|--------|--------|------|----------|-----|
+| US-011 | - | Esqueci minha senha (nao existe `resetPassword` no codigo) | 3 | Ideia | - | - | - | - |
+| US-012 | - | Meu perfil do cliente (nome e telefone; sem telefone o profissional fica sem contato apos o aceite — BR07) | 2 | Ideia | - | - | - | - |
+
 ---
 
 ### Media Prioridade — Marco 3 (LATER)
@@ -95,7 +132,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
 | (a refinar) | - | Orcamento: profissional envia valor, cliente aprova | - | Ideia | - | - | - | - |
 | (a refinar) | - | Pagamento simulado (forma + status pago, sem gateway) | - | Ideia | - | - | - | - |
-| (a refinar) | - | HU04 — Avaliar profissional (1–5 + comentario) | - | Ideia | - | - | - | - |
+| (a refinar) | - | HU04 — Avaliar profissional (1–5 + comentario). **Atencao:** a politica `avaliacoes: autor cria` (001) deixa qualquer usuario logado avaliar; a HU04 precisa exigir contratacao `concluida` | - | Ideia | - | - | - | - |
 | (a refinar) | - | HU05 — Favoritar profissional | - | Ideia | - | - | - | - |
 
 ---
@@ -105,6 +142,11 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | ID | Descricao | Prioridade | Estimativa | Impacto |
 |----|-----------|------------|------------|---------|
 | DEBT-003 | **Sprint 01 — implementado (a701e35), falta aplicar no Supabase real.** Revisar `supabase/migrations/001_schema.sql` antes de aplicar: `pedidos` → `contratacoes` (`profissional_id` obrigatorio, `data_desejada`, status `solicitada/aceita/recusada/cancelada/concluida`, trigger de transicao BR06, BR09, BR10), nova tabela `mensagens` (RLS so das partes, BR08, limite 1000 chars, Realtime), contato da outra parte so apos aceite (BR07), seed e `supabase/README.md`; registrar D5 em `docs/DECISOES.md`. Aplicar no Supabase real. | Alta (bloqueia US-001) | 3 | Sem isso nenhuma story roda contra o banco real |
+| DEBT-004 | Abrir e mesclar o PR `fix/sprint01-fechamento` → `main`. A `main` esta quebrada: `completar-perfil.js` chama `minha_data_nascimento()`, que so existe na branch (leva `e2be2b8`, `6bb2aa5`, `f603172` e a mudanca de caminhos dos docs) | **Critica (bloqueia tudo)** | 1 | `completar-perfil.html` falha em `main` |
+| DEBT-005 | Decidir e mesclar (ou descartar) `origin/refactor/ui-polish` (reescreve `dashboard.css`, ~1.400 linhas) antes de criar telas novas | Alta (antes de US-007) | 1 | Conflito em todas as telas do Fluxo 3 e do admin |
+| DEBT-006 | Remover o legado de pedidos (D5): `feed-profissional.html`, `js/profissional.js` (le `pedidos`, que nao existe, e nao usa `exigirSessao`), `solicitar-pedido.html`, `espera-cliente.html`, `servico-andamento.html` (so comentarios) | Alta (Sprint 02) | 1 | Codigo morto quebrado e contrario a FR09 |
+| DEBT-007 | Fixar versao exata da CDN `@supabase/supabase-js@2` em todos os HTML | Baixa | 1 | App pode quebrar sozinho com versao nova |
+| DEBT-008 | Banco real ja tem dados: daqui em diante so migrations incrementais (`003_*`, `004_*`); nao editar nem reaplicar o `001` (reaplicar apaga dados e desfaz o `002`). Toda tabela nova com RLS no mesmo script (o `001` da `grant ... on all tables to authenticated`) | Alta (regra de trabalho) | 0 | Perda de dados / tabela exposta |
 | DEBT-001 | README do projeto: rastreabilidade HU × tela × tabela (secao 9), contratacao no minimundo/HUs, secao "Como rodar o projeto" | Alta (DoD do Marco 2) | 2 | Avaliacao da disciplina cobra rastreabilidade |
 | DEBT-002 | Revisao final por agente que nao escreveu o codigo: fluxos com usuarios do seed, tentativa de burlar RLS, checklist de acessibilidade/mobile | Alta (DoD do Marco 2) | 2 | Garante seguranca e qualidade antes da entrega |
 
@@ -122,10 +164,19 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 ### Marco 2 (atual)
 
-- [ ] DEBT-003 + EPIC-001 + EPIC-002 — primeiro vertical slice (visitante → categoria → perfil → WhatsApp)
-- [ ] EPIC-003 — conta e acesso
-- [ ] EPIC-004 — contratacao no app + chat
+- [ ] DEBT-003 + EPIC-001 + EPIC-002 — primeiro vertical slice (visitante → categoria → perfil → WhatsApp) — implementado, em Review
+- [ ] EPIC-003 — conta e acesso — implementado, em Review
+- [ ] EPIC-004 — contratacao no app + chat (Fluxo 3)
+- [ ] EPIC-006 — administracao e aprovacao (pendente Discovery/Requirements rev. 3)
 - [ ] DEBT-001 e DEBT-002
+
+### Ordem de execucao recomendada (revisao de 2026-10-16, aprovada pelo PO)
+
+1. **Fechamento da Sprint 01:** DEBT-004 → testes manuais US-001 a US-006 no Supabase real (recriar `prof1@helpme.test`) → `/sprint-retrospective` → DEBT-005.
+2. **Sprint 02 — nucleo do Fluxo 3:** DEBT-006, US-007, US-008, US-009 (~16 pts). Em paralelo, sem tocar no front: Discovery/Requirements rev. 3 do EPIC-006.
+3. **Sprint 03:** US-010 (chat), US-014, US-015, US-013 — substitui o Table Editor.
+4. **Sprint 04:** US-016 (triagem automatica), US-017, US-018, US-011, US-012, DEBT-001, DEBT-002 — fecha o Marco 2.
+5. **Marco 3:** EPIC-005, US-019, US-020, sinais pos-aprovacao (Nivel C).
 
 ### Marco 3
 

@@ -85,9 +85,9 @@ Após o primeiro /sprint-planning de um projeto derivado, atualizar este manifes
 ## Estado Atual do Projeto
 
 - Sprint ativa: **Sprint 01** (`docs/sprints/sprint_planning_01.md`), termina em 2026-10-16
-- Backlog: **gerado** (`docs/product_backlog.md`): EPIC-001 a EPIC-004 no Marco 2, EPIC-005 no Marco 3
-- Discovery e requisitos: `docs/discovery/helpme-mvp-marco2.md` e `docs/requirements/helpme-mvp-marco2.md`
-- Decisões do projeto: `docs/DECISOES.md`
-- Próximo passo sugerido: testes manuais das US-001 a US-006 no Supabase real → `/sprint-retrospective` → `/sprint-planning` da Sprint 02 (EPIC-004 + débitos técnicos do frontend)
+- Backlog: **gerado** (`docs/product_backlog.md`): EPIC-001 a EPIC-004, EPIC-006 (admin, candidato) e EPIC-007 (conta do cliente, candidato) no Marco 2; EPIC-005 no Marco 3; DEBT-004 a DEBT-008 da revisão de 2026-10-16
+- Discovery e requisitos: `docs/discovery/helpme-mvp-marco2.md` (rev. 3 em DRAFT: área admin + aprovação de profissionais) e `docs/requirements/helpme-mvp-marco2.md`
+- Decisões do projeto: `docs/DECISOES.md` (D6 proposta no Discovery rev. 3)
+- Próximo passo sugerido: DEBT-004 (PR `fix/sprint01-fechamento` → `main`) → testes manuais das US-001 a US-006 no Supabase real → `/sprint-retrospective` → `/sprint-planning` da Sprint 02 (DEBT-006 + US-007 a US-009). Em paralelo: Gate G0 do Discovery rev. 3 → `/requirements` rev. 3
 
 > Atualize apenas ao final de cada sprint ou mudança relevante. Evite atualizações desnecessárias.
