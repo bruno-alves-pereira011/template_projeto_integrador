@@ -86,7 +86,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 **Valor de negocio:** Alto
 **Estimativa:** ~37 pontos (a confirmar no `/requirements`)
 **GitHub Epic Issue:** -
-**Origem:** `docs/discovery/helpme-mvp-marco2.md` — **revisao 3 em DRAFT**. Itens abaixo sao **candidatos**: so viram stories refinadas depois de PROBLEM READY e REQUIREMENTS READY da rev. 3 (regra 18 do `AGENTS.md`).
+**Origem:** `docs/discovery/helpme-mvp-marco2.md` (revisao 3). Discovery e Requirements rev. 3 aprovados (G0 e G1 em 2026-10-16). Itens abaixo sao **candidatos** ate o Review & Adjust do `/create-user-story` (Modo Backlog).
 
 ##### User Stories (candidatas)
 
@@ -108,7 +108,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 **Estimativa:** 5 pontos
 **GitHub Epic Issue:** -
 
-##### User Stories (candidatas — precisam entrar nos Requirements rev. 3)
+##### User Stories (candidatas — requisitos FR23, FR24, BR22 aprovados na rev. 3)
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|

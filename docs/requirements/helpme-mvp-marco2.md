@@ -1,6 +1,6 @@
 # Requirements — HelpMe: MVP funcional do Marco 2
 
-**Status:** REQUIREMENTS_READY (revisao 2) · revisao 3 em **DRAFT** (area do administrador, aprovacao de profissionais e conta do cliente — ver secao "Revisao 3")
+**Status:** REQUIREMENTS_READY (revisao 3 — inclui area do administrador, aprovacao de profissionais e conta do cliente, ver secao "Revisao 3")
 **Discovery de origem:** `docs/discovery/helpme-mvp-marco2.md` (rev. 3 PROBLEM_READY em 2026-10-16)
 **Classificacao de Processo:** NORMAL PROCESS (rev. 1–2) · HEAVY PROCESS (rev. 3)
 
@@ -132,7 +132,7 @@ O usuario pode **aprovar, editar, adicionar, remover ou reclassificar** qualquer
 
 ## Revisao 3 — Area do administrador, aprovacao de profissionais e conta do cliente
 
-**Status:** DRAFT — aguardando Review & Adjust (Checkpoint R1) e Gate G1
+**Status:** REQUIREMENTS_READY (aprovado em 2026-10-16)
 **Discovery de origem:** secao "Revisao 3" de `docs/discovery/helpme-mvp-marco2.md` (PROBLEM_READY, 2026-10-16); decisoes D6 e D7 em `docs/DECISOES.md`.
 **Efeito sobre a rev. 2:** "Painel admin de aprovacao" sai de *Out of Scope*; BR03 passa a dizer "so um administrador altera, pelo app ou pelo painel". O restante da rev. 2 (FR01–FR14, BR01–BR10, NFR01–NFR07) continua valendo sem mudanca.
 
@@ -263,11 +263,16 @@ O usuario pode **aprovar, editar, adicionar, remover ou reclassificar** qualquer
 
 ### Review & Adjust (rev. 3)
 
-- [ ] Proposta completa apresentada ao usuario
-- [ ] Ajustes solicitados incorporados
-- [ ] IDs estabilizados depois da revisao
-- [ ] Nenhuma pergunta bloqueante aberta
+- [x] Proposta completa apresentada ao usuario
+- [x] Ajustes solicitados incorporados (nenhum solicitado)
+- [x] IDs estabilizados depois da revisao
+- [x] Nenhuma pergunta bloqueante aberta
+
+#### User adjustments
+- 2026-10-16: aprovado sem ajustes ("prossiga com a execucao conforme recomendado").
 
 ### Gate G1 — REQUIREMENTS READY (rev. 3)
 
-**Status:** PENDING
+**Status:** APPROVED
+
+**Aprovado pelo usuario:** sim (rev. 3, 2026-10-16)
