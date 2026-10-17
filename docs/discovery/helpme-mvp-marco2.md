@@ -1,6 +1,6 @@
 # Discovery — HelpMe: MVP funcional do Marco 2
 
-**Status:** PROBLEM_READY (revisao 2) · revisao 3 em **DRAFT** (area do administrador e aprovacao de profissionais — ver secao "Revisao 3")
+**Status:** PROBLEM_READY (revisao 3 — inclui area do administrador e aprovacao de profissionais, ver secao "Revisao 3")
 **Classificacao de Processo:** NORMAL PROCESS (rev. 1–2) · HEAVY PROCESS (rev. 3: novo papel com privilegio, RLS, dados pessoais, muda a D2)
 **Origem:** hibrido (codigo em `template_projeto_integrador/` + README do Marco 1 + briefing de diagnostico + decisoes da equipe)
 
@@ -57,7 +57,7 @@ Um avaliador consegue, no app rodando contra o Supabase real:
 - Revisao final: teste manual dos fluxos, tentativa de burlar RLS, checklist basico de acessibilidade/mobile.
 
 ### OUT
-- Painel administrativo de aprovacao (aprovacao e manual pelo Table Editor — D2). *A revisao 3 (DRAFT) propoe mover para IN.*
+- ~~Painel administrativo de aprovacao (aprovacao e manual pelo Table Editor — D2).~~ *Movido para IN na revisao 3 (D6).*
 - Pedido aberto para a categoria inteira (fluxo tipo "Uber") — substituido pela contratacao direta.
 - Pagamento real / gateway (Mercado Pago, Stripe).
 - Framework/build no front (equipe domina HTML/CSS/JS puro).
@@ -116,9 +116,9 @@ Um avaliador consegue, no app rodando contra o Supabase real:
 
 ---
 
-## Revisao 3 — Area do administrador e aprovacao de profissionais (DRAFT)
+## Revisao 3 — Area do administrador e aprovacao de profissionais
 
-**Status:** DRAFT — aguardando Review & Adjust (Checkpoint D1) e Gate G0
+**Status:** PROBLEM_READY (aprovado em 2026-10-16)
 **Origem:** revisao geral do projeto de 2026-10-16 (pedido do PO para o Fluxo 3) + codigo atual (`supabase/migrations/001_schema.sql`, `002_privacidade_data_nascimento.sql`, `helpme-app/`).
 **Classificacao de Processo:** HEAVY PROCESS (aprovada pelo PO em 2026-10-16: "prossiga conforme recomendado").
 **Nao altera** o escopo ja aprovado do Fluxo 3 (US-007 a US-010), que segue direto para o `/sprint-planning`.
@@ -209,15 +209,20 @@ Substituir a aprovacao manual pelo Table Editor (D2) por uma **area administrati
 - [BLOCKING? nao] `refactor/ui-polish` sera mesclada antes das telas novas?
 
 ### Key Decisions Proposed
-- **D6 (proposta):** aprovacao de profissionais passa a ser feita pela area admin do app, com triagem automatica no banco e pre-aprovacao dos casos verdes aprovada em lote por um humano; papel admin em tabela propria, criado so pelo SQL Editor; sem coleta de documentos. Substitui a D2 quando aprovada.
+- **D6 (aprovada em 2026-10-16, registrada em `docs/DECISOES.md`):** aprovacao de profissionais passa a ser feita pela area admin do app, com triagem automatica no banco e pre-aprovacao dos casos verdes aprovada em lote por um humano; papel admin em tabela propria, criado so pelo SQL Editor; sem coleta de documentos. Substitui a D2 quando aprovada.
 
 ### Review & Adjust (rev. 3)
 
-- [ ] Usuario revisou a proposta completa da revisao 3
-- [ ] Alteracoes solicitadas foram incorporadas
-- [ ] Decisoes relevantes foram confirmadas (D6)
-- [ ] Nao existem perguntas bloqueantes abertas
+- [x] Usuario revisou a proposta completa da revisao 3
+- [x] Alteracoes solicitadas foram incorporadas (nenhuma solicitada)
+- [x] Decisoes relevantes foram confirmadas (D6)
+- [x] Nao existem perguntas bloqueantes abertas
+
+#### User adjustments
+- 2026-10-16: aprovado sem ajustes ("prossiga conforme recomendado").
 
 ### Gate G0 — PROBLEM READY (rev. 3)
 
-**Status:** PENDING
+**Status:** APPROVED
+
+**Aprovado pelo usuario:** sim (rev. 3, 2026-10-16)
