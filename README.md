@@ -239,6 +239,7 @@ O sistema poderá fornecer informações relacionadas aos profissionais cadastra
 # 7. MODELO CONCEITUAL
 
 O modelo conceitual deverá representar as principais entidades e seus relacionamentos, utilizando uma notação adequada, preferencialmente o BR Modelo 3.
+<img width="2520" height="1760" alt="image" src="https://github.com/user-attachments/assets/f66e9f98-9435-469e-a878-f4a7b2a7c226" />
 
 ## 7.1 Principais entidades
 
