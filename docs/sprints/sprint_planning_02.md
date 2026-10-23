@@ -114,7 +114,7 @@ Ordem de execução: DEBT-006 → US-007 → US-008 → US-009.
 - **Behavior change esperado:** YES
 - **Critérios de Aceitação:** ver `docs/stories/US-009_acompanhar-e-concluir-contratacao.md`
   - [ ] Cliente vê as próprias contratações em tempo real e cancela enquanto `solicitada`
-  - [ ] `contratacao.html` mostra detalhe e libera contato das partes só após o aceite (BR07)
+  - [ ] `espera-cliente.html?id=` acompanha a contratação `solicitada` (tempo real, cancelar) e `servico-andamento.html?id=` mostra a `aceita`, com contato das partes só após o aceite (BR07) — D8
   - [ ] Qualquer parte conclui uma contratação `aceita`; terceiro vê "Contratação não encontrada"
   - [ ] Menu do cliente com "Minhas contratações"
 
@@ -159,7 +159,7 @@ Ordem de execução: DEBT-006 → US-007 → US-008 → US-009.
 | Risco/Dependência | Impacto | Mitigação |
 |-------------------|---------|-----------|
 | `main` quebrada até o merge do DEBT-004 | Alto | Pré-condição da sprint, prazo 20/10; nenhuma branch nova antes do merge |
-| US-007 leva o cliente a `contratacao.html`, que só nasce na US-009 | Médio | Até a US-009, redirecionar para `contratacoes.html` (ou criar a casca de `contratacao.html` na US-007) e registrar no PR |
+| US-007 leva o cliente à tela de acompanhamento (`espera-cliente.html`, D8), que só fica pronta na US-009 | Médio | Até a US-009, redirecionar para `contratacoes.html` (ou criar a casca de `contratacao.html` na US-007) e registrar no PR |
 | `contratacoes.html` é compartilhada: lista do profissional (US-008) e do cliente (US-009) | Médio | US-008 cria a página já separando a visão por `tipo_usuario`; US-009 só acrescenta a visão do cliente |
 | Realtime com RLS ainda não validado no ambiente real | Médio | Testar com duas abas logo na US-008; se não chegar o evento, recarregar a lista |
 | Conflito de CSS com `refactor/ui-polish` | Médio | Decidir o DEBT-005 antes da US-007 |
@@ -170,6 +170,7 @@ Ordem de execução: DEBT-006 → US-007 → US-008 → US-009.
 
 ## Notas e Decisões
 
+- **2026-10-23 — D8:** as telas antigas `solicitar-pedido.html`, `espera-cliente.html` e `servico-andamento.html` ficam e recebem a contratação (US-007 e US-009); `feed-profissional.html` e `js/profissional.js` saem no DEBT-006. Branches empilhadas: DEBT-006 → US-007 → US-008 → US-009, com PRs para `developer` mesclados nessa ordem.
 - Capacidade de ~16 pts decidida na retrospectiva; a US-010 (chat) vai para a Sprint 03, junto com o primeiro slice do EPIC-006 (US-014, US-015, US-013).
 - Responsáveis por item: **a definir** (decisão do PO em 2026-10-16: "sem responsável por enquanto").
 - Folga: os ~16 pts deixam espaço para fechar o Done da Sprint 01 (testes e merge), que não conta pontos; por isso a reserva de 20% não foi descontada em pontos.

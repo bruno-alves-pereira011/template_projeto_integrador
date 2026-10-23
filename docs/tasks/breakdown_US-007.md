@@ -21,7 +21,7 @@
 - **US exige Contract governado?** Nao
 - **Justificativa do Nivel ScrumAIDev:** regra de negocio e controle de acesso ja estao no banco (`contratacoes`: RLS "cliente contrata profissional aprovado" + trigger `validar_contratacao`); o front so consome. Nivel 1 com BDD de revisao manual basta.
 - **Justificativa:** sem API propria; o boundary e o Supabase (PostgREST) com RLS. Nenhuma mudanca de banco (D7).
-- **Touch List aplicavel:** `helpme-app/profissional.html`, `helpme-app/js/perfil-profissional.js`, `helpme-app/contratar.html` (novo), `helpme-app/js/contratar.js` (novo), `helpme-app/assets/css/contratacao.css` (novo). O stub `solicitar-pedido.html` ja sai no DEBT-006.
+- **Touch List aplicavel:** `helpme-app/profissional.html`, `helpme-app/js/perfil-profissional.js`, `helpme-app/solicitar-pedido.html` (novo), `helpme-app/js/solicitar-pedido.js` (novo), `helpme-app/assets/css/contratacao.css` (novo). O stub `solicitar-pedido.html` ja sai no DEBT-006.
 - **Runner BDD a executar:** N/A (revisao manual)
 - **Validacao de contrato a executar:** N/A
 - **Teste de contrato a executar:** N/A
@@ -43,7 +43,7 @@ Aplicavel (`Behavior change` = YES).
 | Desvio | Por que e necessario | Alternativa mais simples rejeitada porque |
 |---|---|---|
 | Novo `assets/css/contratacao.css` | `input[type="datetime-local"]` nao tem estilo; `global.css` e `auth.css` estao sendo reescritos na `refactor/ui-polish` (DEBT-005) | Editar o bloco de inputs do `global.css` conflitaria com a `refactor/ui-polish` no mesmo trecho |
-| Tela de sucesso na propria `contratar.html` | O criterio 4 manda para `contratacao.html?id=`, que so nasce na US-009 | Redirecionar para uma pagina inexistente quebraria o fluxo; a troca fica marcada como TEMPORARIO no codigo |
+| Tela de sucesso na propria `solicitar-pedido.html` | O criterio 4 manda para a tela de acompanhamento (`espera-cliente.html?id=`, D8), que so fica pronta na US-009 | Redirecionar para uma pagina inexistente quebraria o fluxo; a troca fica marcada como TEMPORARIO no codigo |
 
 ---
 
@@ -56,7 +56,7 @@ Aplicavel (`Behavior change` = YES).
 - **Dependencias:** nenhuma
 - **Criterio de conclusao:** em `profissional.html`, o link aparece para visitante e cliente e nao aparece para profissional logado (criterio 1). Usa `buscarUsuario()` do `sessao.js` (passa a ser carregado na pagina).
 
-#### [TASK-002] Pagina `contratar.html` + `js/contratar.js`
+#### [TASK-002] Pagina `solicitar-pedido.html` + `js/solicitar-pedido.js`
 - **Estimativa:** 3 h
 - **Dependencias:** TASK-001
 - **Criterio de conclusao:** `exigirSessao('cliente')` (visitante → login → volta; criterio 2); mostra o profissional (so aprovados, via `profissionais_publicos`); formulario com descricao, endereco e data/horario obrigatorios e data no futuro (criterio 3); `insert` em `contratacoes` e confirmacao com status `solicitada` (criterio 4, com a ressalva da tabela acima); erros do banco traduzidos (criterio 5).

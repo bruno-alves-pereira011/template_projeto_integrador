@@ -1,7 +1,8 @@
-// CONTRATAR PROFISSIONAL (contratar.js) — US-007 / FR10
+// SOLICITAR PEDIDO = CONTRATAR PROFISSIONAL (solicitar-pedido.js) — US-007 / FR10
+// (O nome antigo do arquivo foi mantido pela decisão D8; o pedido agora é uma linha em 'contratacoes'.)
 // DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js.
 // Fluxo:
-//   1. exigirSessao('cliente'): visitante vai ao login com ?voltar=contratar.html?profissional=<id>
+//   1. exigirSessao('cliente'): visitante vai ao login com ?voltar=solicitar-pedido.html?profissional=<id>
 //      e volta para cá depois de entrar; profissional é mandado para a página dele.
 //   2. Lê o profissional na view 'profissionais_publicos' (só aprovados). Fora dela = "não disponível".
 //   3. Valida no front e grava em 'contratacoes'. O banco valida de novo:
@@ -244,8 +245,8 @@
 
             if (error) throw error;
 
-            // TEMPORÁRIO até a US-009: quando contratacao.html existir, trocar o painel abaixo por
-            //   window.location.replace('contratacao.html?id=' + data.id);
+            // TEMPORÁRIO até a US-009: quando espera-cliente.html estiver pronta, trocar o painel abaixo por
+            //   window.location.replace('espera-cliente.html?id=' + data.id);
             el.sucessoTexto.textContent = `Solicitação nº ${data.id} enviada para ${el.resumoNome.textContent}!`;
             mostrarEstado('sucesso');
             el.sucesso.focus();

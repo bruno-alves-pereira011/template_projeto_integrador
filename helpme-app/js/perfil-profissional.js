@@ -41,7 +41,7 @@
         el('btn-tentar-novamente').addEventListener('click', carregarPerfil);
 
         tipoUsuarioPromessa = lerTipoUsuario().catch((falha) => {
-            console.error('Erro ao ler o tipo do usuário (o botão Contratar aparece; contratar.html confere de novo):', falha);
+            console.error('Erro ao ler o tipo do usuário (o botão Contratar aparece; solicitar-pedido.html confere de novo):', falha);
             return 'desconhecido';
         });
 
@@ -135,7 +135,7 @@
     }
 
 
-    // Link "Contratar" (US-007). Visitante vê e, ao clicar, contratar.html manda ao login e volta.
+    // Link "Contratar" (US-007). Visitante vê e, ao clicar, solicitar-pedido.html manda ao login e volta.
     // Profissional logado não vê: só cliente contrata (BR10; o banco também barra).
     async function prepararContratar(prof, minhaConsulta) {
         const container = el('acoes-contratacao');
@@ -148,7 +148,7 @@
         const nome = (prof.nome || '').trim() || 'Profissional';
         const link = document.createElement('a');
         link.className = 'btn btn-primario btn-bloco';
-        link.href = `contratar.html?profissional=${encodeURIComponent(prof.id)}`;
+        link.href = `solicitar-pedido.html?profissional=${encodeURIComponent(prof.id)}`;
         link.textContent = 'Contratar';
         link.setAttribute('aria-label', `Contratar ${nome}`);
         container.appendChild(link);

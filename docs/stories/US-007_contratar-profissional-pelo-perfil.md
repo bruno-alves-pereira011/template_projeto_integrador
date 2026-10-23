@@ -19,7 +19,7 @@
 
 ### Contexto Adicional
 
-Adiciona o botao "Contratar" em `profissional.html` e a nova pagina `contratar.html?profissional=<id>`. Cria a linha em `contratacoes` com status `solicitada`. A contratacao direta substitui o pedido aberto para a categoria (fluxo tipo Uber).
+Adiciona o botao "Contratar" em `profissional.html` e a pagina `solicitar-pedido.html?profissional=<id>` (nome antigo mantido pela decisao D8). Cria a linha em `contratacoes` com status `solicitada`. A contratacao direta substitui o pedido aberto para a categoria (fluxo tipo Uber).
 
 - **Requisitos de origem:** FR10, BR09, BR10 (`docs/requirements/helpme-mvp-marco2.md`)
 - **Dependencias:** US-003, US-004, DEBT-003
@@ -34,9 +34,9 @@ Adiciona o botao "Contratar" em `profissional.html` e a nova pagina `contratar.h
 ## Criterios de Aceitacao
 
 - [ ] **Criterio 1:** O botao "Contratar" aparece no perfil para visitantes e clientes; nao aparece para profissionais logados.
-- [ ] **Criterio 2:** Visitante sem login que clica em "Contratar" vai ao login e, apos entrar como cliente, volta para `contratar.html` do mesmo profissional.
+- [ ] **Criterio 2:** Visitante sem login que clica em "Contratar" vai ao login e, apos entrar como cliente, volta para `solicitar-pedido.html` do mesmo profissional.
 - [ ] **Criterio 3:** O formulario pede descricao (obrigatoria), endereco (obrigatorio) e data/horario desejado (obrigatorio, nao pode estar no passado).
-- [ ] **Criterio 4:** Ao enviar, cria a contratacao com status `solicitada` e leva o cliente para `contratacao.html?id=<id>`.
+- [ ] **Criterio 4:** Ao enviar, cria a contratacao com status `solicitada` e leva o cliente para `espera-cliente.html?id=<id>` (D8; ate a US-009, confirmacao na propria pagina).
 - [ ] **Criterio 5:** O banco rejeita contratacao feita por profissional, para profissional nao aprovado ou com data no passado (testado via console).
 - [ ] **Criterio 6:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
 - [ ] **Criterio 7:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
@@ -57,7 +57,7 @@ Adiciona o botao "Contratar" em `profissional.html` e a nova pagina `contratar.h
 - **Padrao de erro aplicavel:** N/A
 - **BDD previsto:** `docs/bdd/contratacao.feature` (revisao manual)
 - **Gates opcionais aplicaveis:** N/A (sem runner de testes no projeto)
-- **Touch List preliminar:** template_projeto_integrador/helpme-app/profissional.html, template_projeto_integrador/helpme-app/contratar.html (novo), template_projeto_integrador/helpme-app/js/contratar.js (novo); remove stub template_projeto_integrador/helpme-app/solicitar-pedido.html
+- **Touch List preliminar:** template_projeto_integrador/helpme-app/profissional.html, template_projeto_integrador/helpme-app/solicitar-pedido.html (novo), template_projeto_integrador/helpme-app/js/solicitar-pedido.js (novo); remove stub template_projeto_integrador/helpme-app/solicitar-pedido.html
 - **Task Issues previstas:** N/A
 
 ---
@@ -155,7 +155,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
-- 2026-10-23: implementada na branch `feat/US-007-contratar` (a partir de `developer`, com o DEBT-004). Breakdown em `docs/tasks/breakdown_US-007.md`. Ate a US-009, o envio mostra a confirmacao na propria `contratar.html` em vez de ir para `contratacao.html?id=` (criterio 4).
+- 2026-10-23: implementada na branch `feat/US-007-contratar` (a partir de `developer`, com o DEBT-004). Breakdown em `docs/tasks/breakdown_US-007.md`. Ate a US-009, o envio mostra a confirmacao na propria `solicitar-pedido.html` em vez de ir para `contratacao.html?id=` (criterio 4).
 
 ---
 

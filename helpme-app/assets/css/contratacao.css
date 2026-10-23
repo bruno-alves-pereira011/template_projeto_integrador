@@ -1,7 +1,7 @@
 /* ==========================================
    CONTRATAÇÃO (contratacao.css) — Fluxo 3
-   Estilos das telas de contratação (contratar.html; depois contratacoes.html e
-   contratacao.html). Carregar DEPOIS de global.css e auth.css/dashboard.css.
+   Estilos das telas de contratação (solicitar-pedido.html, contratacoes.html,
+   espera-cliente.html e servico-andamento.html). Carregar DEPOIS de global.css e auth.css/dashboard.css.
    Arquivo separado para não mexer nos blocos de global.css/auth.css que a branch
    refactor/ui-polish está reescrevendo (DEBT-005).
    ========================================== */
