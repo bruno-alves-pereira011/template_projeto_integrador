@@ -1,8 +1,8 @@
 # Requirements — HelpMe: MVP funcional do Marco 2
 
-**Status:** REQUIREMENTS_READY (revisao 2)
-**Discovery de origem:** `docs/discovery/helpme-mvp-marco2.md`
-**Classificacao de Processo:** NORMAL PROCESS
+**Status:** REQUIREMENTS_READY (revisao 3 — inclui area do administrador, aprovacao de profissionais e conta do cliente, ver secao "Revisao 3")
+**Discovery de origem:** `docs/discovery/helpme-mvp-marco2.md` (rev. 3 PROBLEM_READY em 2026-10-16)
+**Classificacao de Processo:** NORMAL PROCESS (rev. 1–2) · HEAVY PROCESS (rev. 3)
 
 ## Intent Summary
 Qualquer visitante encontra um profissional aprovado de uma categoria e o contata por telefone/WhatsApp; profissionais se cadastram, completam o perfil e aparecem no diretorio depois de aprovados pela equipe. Tudo contra o Supabase real, sem dados de demonstracao, com seguranca garantida por RLS. Clientes logados contratam o profissional direto pelo app, com data/horario desejado e chat.
@@ -127,3 +127,153 @@ O usuario pode **aprovar, editar, adicionar, remover ou reclassificar** qualquer
 **Status:** APPROVED
 
 **Aprovado pelo usuario:** sim (rev. 1 e rev. 2, 2026-10-09)
+
+---
+
+## Revisao 3 — Area do administrador, aprovacao de profissionais e conta do cliente
+
+**Status:** REQUIREMENTS_READY (aprovado em 2026-10-16)
+**Discovery de origem:** secao "Revisao 3" de `docs/discovery/helpme-mvp-marco2.md` (PROBLEM_READY, 2026-10-16); decisoes D6 e D7 em `docs/DECISOES.md`.
+**Efeito sobre a rev. 2:** "Painel admin de aprovacao" sai de *Out of Scope*; BR03 passa a dizer "so um administrador altera, pelo app ou pelo painel". O restante da rev. 2 (FR01–FR14, BR01–BR10, NFR01–NFR07) continua valendo sem mudanca.
+
+### Functional Requirements (rev. 3)
+
+#### Acesso do administrador
+- **FR15** — Ao entrar, um administrador e levado para `admin.html`. Toda pagina `admin*.html` exige sessao de administrador; quem nao e admin e redirecionado para a pagina inicial do proprio tipo. *(US-014)*
+
+#### Painel
+- **FR16** — `admin.html` mostra indicadores agregados: usuarios por tipo; profissionais por status; tamanho da fila de analise e tempo medio em analise; contratacoes por status nos ultimos 7 e 30 dias; taxa de aceite (aceitas ÷ respondidas); categorias ativas sem nenhum profissional aprovado. *(US-017)*
+
+#### Fila de analise
+- **FR17** — `admin-analise.html` lista os profissionais `pendente` com o resultado da ultima triagem (verde / pendencia / suspeito), os motivos e o tempo na fila; filtra por resultado. *(US-015)*
+- **FR18** — No detalhe (`admin-profissional.html`), o admin ve os dados do perfil, as checagens da triagem e o historico de decisoes, e aprova ou recusa o profissional; a recusa exige motivo. *(US-015)*
+- **FR19** — Na fila, o admin seleciona profissionais com resultado **verde** e aprova todos em uma acao (aprovacao em lote). *(US-015)*
+
+#### Triagem automatica
+- **FR20** — Ao salvar o perfil profissional (criacao ou edicao), o sistema executa a triagem no banco e grava o resultado com a lista de checagens (BR13, BR14). *(US-016)*
+- **FR21** — O profissional pendente ou recusado ve em `bloqueio.html` o motivo — pendencias da triagem ou motivo da recusa — e um link para corrigir o perfil; ao salvar, a triagem roda de novo. Profissional recusado pode reenviar para analise (BR17). *(US-013)*
+
+#### Categorias
+- **FR22** — `admin-categorias.html` permite criar categoria (nome, slug, sigla, cor, descricao), editar e desativar/reativar. *(US-018)*
+
+#### Conta do usuario
+- **FR23** — "Esqueci minha senha" no login: o usuario informa o e-mail, recebe um link de redefinicao e define uma nova senha numa pagina do app. *(US-011)*
+- **FR24** — O cliente logado edita nome e telefone em "Meu perfil". *(US-012)*
+
+#### Could / LATER (registrados para nao perder rastreabilidade)
+- **FR25** *(Could)* — Admin suspende e reativa profissional aprovado, com motivo. *(US-019)*
+- **FR26** *(Could)* — Admin consulta contratacoes (lista e filtros), somente leitura e sem acesso ao chat. *(US-020)*
+
+### Business / Domain Rules (rev. 3)
+- **BR11** — Administrador e quem tem linha na tabela `administradores`, criada so pelo SQL Editor. **Nao** e um `tipo_usuario` (BR05 inalterada). Pelo app, so administrador muda `status_aprovacao`; o proprio profissional nunca.
+- **BR12** — Resultado da triagem: **verde** (todas as checagens obrigatorias passaram e nao ha sinal de suspeita), **pendencia** (alguma checagem obrigatoria falhou: o profissional corrige), **suspeito** (algum sinal de suspeita: humano decide). A triagem **nunca aprova nem recusa sozinha**: ela so classifica (D6). Excecao: a BR18.
+- **BR13** — Checagens obrigatorias: e-mail confirmado; 18 anos ou mais; cidade e bairro preenchidos; descricao com pelo menos 30 caracteres; pelo menos 1 categoria ativa; WhatsApp ou telefone com DDD brasileiro valido e 10 ou 11 digitos (11 digitos = celular comecando com 9).
+- **BR14** — Sinais de suspeita: WhatsApp ou telefone (normalizado) igual ao de outro profissional; descricao contendo link, e-mail, sequencia de 8+ digitos (telefone embutido) ou termo da lista de bloqueio; profissional ja recusado anteriormente.
+- **BR15** — A aprovacao (individual ou em lote) e conferida no banco no momento da acao: so aprova quem esta `pendente`; no lote, so quem tem a ultima triagem **verde**. Itens que nao atendem sao ignorados e informados ao admin.
+- **BR16** — Recusa exige motivo de 10 a 500 caracteres, que fica visivel ao profissional.
+- **BR17** — Profissional recusado pode corrigir o perfil e reenviar: volta a `pendente`, passa por nova triagem e o sinal "ja recusado" (BR14) garante revisao humana.
+- **BR18** — Se um profissional **aprovado** editar o perfil e a triagem gerar pendencia ou suspeita, ele volta para `pendente` (sai do diretorio) ate nova aprovacao. Contratacoes ja aceitas continuam e podem ser concluidas (BR06 nao exige aprovacao para concluir).
+- **BR19** — Toda decisao (triagem do sistema, aprovacao, recusa, reenvio) grava historico: profissional, resultado/acao, autor (sistema ou id do admin), motivo e data. O historico nao e editado nem apagado pelo app.
+- **BR20** — Categoria nao e apagada pelo app, so desativada. Desativada some da home, da lista de categorias do `completar-perfil` e nao conta como "categoria ativa" na BR13; os vinculos existentes sao mantidos.
+- **BR21** — Administrador nao le mensagens do chat.
+- **BR22** — A redefinicao de senha mostra a mesma mensagem exista ou nao o e-mail (nao revela quem tem cadastro).
+
+### Non-Functional Requirements (rev. 3)
+- **NFR08** — Seguranca do papel admin: `eh_admin()` e `security definer`, `stable`, com `search_path` fixo; toda tabela nova liga RLS e cria politicas no mesmo script; mudancas so em migrations incrementais (`003_*`, `004_*`) — D7.
+- **NFR09** — Privacidade dos indicadores: o painel le uma funcao que devolve so totais, nunca linhas de usuarios.
+- **NFR10** — Auditabilidade: 100% das mudancas de `status_aprovacao` feitas pelo app tem registro em historico (BR19).
+- **NFR11** — Verificacao de seguranca versionada: roteiro SQL de testes de RLS do papel admin e da triagem em `supabase/` (ex.: `supabase/testes/`), executado pela equipe antes do merge de cada migration.
+- **NFR03, NFR04, NFR05** (stack, mobile 360px, acessibilidade) valem para todas as telas novas.
+
+### User Scenarios (rev. 3)
+
+#### Main flow — Admin aprova cadastros verdes em lote
+1. Admin entra → `admin.html` mostra "Fila de analise: 7 (5 verdes, 1 pendencia, 1 suspeito)".
+2. Abre a fila, filtra "verde", seleciona os 5 e clica "Aprovar selecionados".
+3. Os 5 aparecem no diretorio; o historico registra o admin como autor.
+
+#### Main flow — Profissional corrige pendencia sozinho
+1. Profissional salva o perfil com descricao curta → triagem: pendencia ("descricao com menos de 30 caracteres").
+2. No login, `bloqueio.html` mostra o motivo e o link "Corrigir meu perfil".
+3. Corrige e salva → triagem verde → entra na fila como verde, sem o admin abrir o detalhe.
+
+#### Main flow — Caso suspeito
+1. Profissional usa o mesmo WhatsApp de outra conta → triagem: suspeito.
+2. Admin abre o detalhe, ve "WhatsApp igual ao de <nome>", recusa com motivo.
+3. Profissional ve o motivo em `bloqueio.html`.
+
+#### Alternative / Error / Edge cases
+- Usuario faz `signUp` com `tipo_usuario = 'admin'` nos metadados → vira cliente (comportamento atual de `handle_new_user`); nao ganha acesso admin.
+- Cliente ou profissional abre `admin.html` → redirecionado; chamada direta das funcoes admin pela API → erro de permissao.
+- Dois admins aprovam/recusam o mesmo profissional ao mesmo tempo → a primeira acao vale; a segunda e ignorada e informada (BR15).
+- Lote com profissional que deixou de ser verde (editou o perfil depois que a fila carregou) → ignorado e informado.
+- Recusa sem motivo ou com menos de 10 caracteres → nao envia.
+- Confirmacao de e-mail desligada no Supabase → checagem "e-mail confirmado" passa sempre (A06).
+- Descricao com numero de rua ("Rua 12, casa 3") → nao dispara (precisa de 8+ digitos seguidos); se houver falso positivo, vai para humano, nunca para recusa.
+- Desativar a unica categoria de um profissional aprovado → continua aprovado, mas some da busca por categoria; o painel mostra o caso.
+- "Esqueci minha senha" com e-mail inexistente → mesma mensagem de sucesso (BR22).
+
+### Business / Domain Context (rev. 3)
+- Substitui a D2 (aprovacao pelo Table Editor) pela D6. A rastreabilidade HU × tela × tabela do README (DEBT-001) precisa incluir as telas admin.
+
+### Technical Context & Constraints (rev. 3)
+- **Migration `003_admin.sql`:** tabela `administradores (usuario_id pk → usuarios)`; `eh_admin()`; tabela `analises_profissional` (profissional_id, resultado, checagens `jsonb`, acao, autor_id nulo = sistema, motivo, created_at); coluna `categorias.ativa`; funcao admin para aprovar/recusar (individual e lote) aplicando BR15/BR16; funcao `painel_admin()` (NFR09); politicas de leitura para admin em `usuarios`, `profissionais`, `profissional_categoria`, `categorias` (escrita) e `contratacoes` (so se FR26 entrar) — nunca em `mensagens`.
+- **Migration `004_triagem.sql`:** funcao `solicitar_analise()` chamada pelo `completar-perfil.js` ao final do salvamento (as categorias sao gravadas em requisicao separada, depois do perfil, entao um trigger em `profissionais` rodaria cedo demais). Por ser `security definer`, o `current_user` dentro dela e o dono, entao `eh_papel_cliente_api()` devolve falso e o trigger `validar_profissional` permite a volta para `pendente` (BR17, BR18) sem abrir essa porta ao usuario.
+- `validar_profissional` ganha o ramo "admin pela API pode mudar `status_aprovacao`" (hoje bloqueia todo `authenticated`).
+- Front: `sessao.js` ganha o destino admin (consulta `eh_admin()` por RPC) e `exigirSessao('admin')`; `bloqueio.js` le o motivo da ultima analise; `categorias.js` filtra `ativa = true`.
+- Redefinicao de senha: `supabaseClient.auth.resetPasswordForEmail` + `updateUser({ password })` — ja fazem parte do supabase-js, sem dependencia nova.
+
+### Quality Attributes (rev. 3)
+- **Security** (papel admin, RLS) e **auditability** (historico) sao criticos; **eficiencia operacional** (aprovacao em lote) e o ganho principal.
+
+### Assumptions (rev. 3)
+- **A05** — Um unico nivel de administrador.
+- **A06** — A confirmacao de e-mail sera ligada no Supabase; enquanto estiver desligada, a checagem correspondente passa sempre.
+- **A07** — Lista de bloqueio inicial curta, mantida dentro da funcao de triagem (editavel por SQL); tela para mante-la fica LATER.
+- **A08** — Aprovacao automatica total (sem humano) fica **desligada**; pode ser reavaliada depois de existir verificacao de identidade.
+- **A09** — O primeiro administrador e inserido pela equipe no SQL Editor apos a `003`.
+
+### Out of Scope (rev. 3)
+- CPF, documento, selfie; APIs de verificacao de identidade; Edge Functions; admin lendo chat ou editando contratacoes; tela de lista de bloqueio; moderacao de avaliacoes; sinais pos-aprovacao (Marco 3).
+
+### Open Questions (rev. 3)
+- (nenhuma bloqueante) Data de entrega do Marco 2 — decide se FR16, FR22, FR23 e FR24 cabem no Marco 2 ou escorregam.
+
+### Key Decisions Proposed (rev. 3)
+- A triagem **classifica**, quem **decide** e o admin (BR12) — exceto a volta automatica para `pendente` da BR18.
+- Recusado pode reenviar, sempre com revisao humana (BR17).
+- Profissional aprovado que edita e gera alerta sai do diretorio ate nova aprovacao (BR18).
+- Categoria so desativa, nunca apaga (BR20).
+- Roteiro de testes de RLS versionado (NFR11).
+
+### Rastreabilidade Requisitos → Stories (rev. 3)
+
+| Requisito | Story candidata |
+|-----------|-----------------|
+| FR15, BR11, NFR08 | US-014 |
+| FR17, FR18, FR19, BR15, BR16, BR19, NFR10 | US-015 |
+| FR21, BR17 | US-013 |
+| FR20, BR12, BR13 | US-016 |
+| BR14, BR18 | US-021 (dividida da US-016 no Modo Backlog) |
+| FR16, NFR09 | US-017 |
+| FR22, BR20 | US-018 |
+| FR23, BR22 | US-011 |
+| FR24 | US-012 |
+| FR25 / FR26, BR21 | US-019 / US-020 (Could) |
+| NFR11 | criterio comum de US-014, US-015 e US-016 |
+
+### Review & Adjust (rev. 3)
+
+- [x] Proposta completa apresentada ao usuario
+- [x] Ajustes solicitados incorporados (nenhum solicitado)
+- [x] IDs estabilizados depois da revisao
+- [x] Nenhuma pergunta bloqueante aberta
+
+#### User adjustments
+- 2026-10-16: aprovado sem ajustes ("prossiga com a execucao conforme recomendado").
+
+### Gate G1 — REQUIREMENTS READY (rev. 3)
+
+**Status:** APPROVED
+
+**Aprovado pelo usuario:** sim (rev. 3, 2026-10-16)
