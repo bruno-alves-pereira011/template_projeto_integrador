@@ -1,0 +1,42 @@
+/* ==========================================
+   CONTRATAÇÃO (contratacao.css) — Fluxo 3
+   Estilos das telas de contratação (contratar.html; depois contratacoes.html e
+   contratacao.html). Carregar DEPOIS de global.css e auth.css/dashboard.css.
+   Arquivo separado para não mexer nos blocos de global.css/auth.css que a branch
+   refactor/ui-polish está reescrevendo (DEBT-005).
+   ========================================== */
+
+/* O global.css estiliza text/email/tel/date, mas não datetime-local. */
+input[type="datetime-local"] {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    background: var(--cor-branco);
+    color: var(--cor-texto);
+    font: inherit;
+}
+
+/* Cartão com o profissional que está sendo contratado */
+.resumo-profissional {
+    padding: 12px 14px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    background: var(--cor-primaria-clara);
+}
+
+.resumo-profissional p {
+    margin: 0;
+}
+
+.resumo-profissional .resumo-nome {
+    font-family: var(--fonte-titulo);
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+}
+
+.resumo-profissional .resumo-local {
+    color: var(--cor-texto-suave);
+    font-size: 0.95rem;
+}

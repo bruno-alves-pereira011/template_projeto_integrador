@@ -8,10 +8,11 @@
     (chips do <template id="modelo-chip-categoria">), #perfil-descricao.
   - #btn-ligar (tel:) e #btn-whatsapp (wa.me, nova aba). Cada botão some se o número for inválido;
     #contato-indisponivel aparece se os dois sumirem.
-  - #acoes-contratacao: lugar reservado para o botão "Contratar" (US-007).
+  - #acoes-contratacao: recebe o link "Contratar" (US-007), criado pelo JS para visitante e cliente
+    (profissional logado não vê). Leva a contratar.html?profissional=<id>.
   - Estados: #perfil-carregando, #perfil-erro (+ #btn-tentar-novamente) e #perfil-nao-encontrado.
   - Dados lidos SÓ da view 'profissionais_publicos' (nunca da tabela 'profissionais').
-  - Scripts no final: Supabase CDN -> js/supabase-config.js -> js/categorias.js -> js/telefone.js -> js/perfil-profissional.js.
+  - Scripts no final: Supabase CDN -> js/supabase-config.js -> js/categorias.js -> js/telefone.js -> js/sessao.js -> js/perfil-profissional.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -107,11 +108,8 @@
                 </div>
                 <p id="contato-indisponivel" class="subtitulo" hidden>Este profissional ainda não cadastrou um telefone válido.</p>
 
-                <!-- ==========================================================
-                     PONTO DE EXTENSÃO — US-007 (Contratar)
-                     O botão "Contratar" entra AQUI, dentro de #acoes-contratacao.
-                     Deixe o container vazio até a US-007; o perfil já funciona sem ele.
-                     ========================================================== -->
+                <!-- US-007: o link "Contratar" é criado aqui pelo JS (só para visitante e cliente).
+                     Vazio, o container some (.acoes-contratacao:empty). -->
                 <div id="acoes-contratacao" class="acoes-contratacao"></div>
             </section>
         </article>
@@ -157,7 +155,10 @@
     <!-- 4. Normalização de telefone e links tel:/wa.me -->
     <script src="js/telefone.js"></script>
 
-    <!-- 5. Lógica desta página -->
+    <!-- 5. Sessão (buscarUsuario: decide se o botão "Contratar" aparece) -->
+    <script src="js/sessao.js"></script>
+
+    <!-- 6. Lógica desta página -->
     <script src="js/perfil-profissional.js"></script>
 
 </body>

@@ -8,7 +8,8 @@
 // - Esconde cada botão de contato quando o número é inválido (regras em js/telefone.js).
 // - Estados: carregando, erro (com "Tentar novamente") e "Profissional não encontrado".
 // - O "Voltar" leva para a lista da categoria de origem (?categoria=) ou para a home.
-// DEPENDE DE: supabase-config.js, categorias.js e telefone.js carregados antes deste arquivo.
+// - Botão "Contratar" (US-007) para visitante e cliente; profissional logado não vê (BR10).
+// DEPENDE DE: supabase-config.js, categorias.js, telefone.js e sessao.js carregados antes deste arquivo.
 // Tudo fica dentro de uma IIFE para não criar variáveis globais (evita colidir com outros scripts).
 
 (function () {
@@ -27,6 +28,10 @@
     // Evita que uma resposta antiga sobrescreva a mais nova (clique duplo em "Tentar novamente")
     let consultaAtual = 0;
 
+    // Tipo de quem está vendo: null (visitante), 'cliente', 'profissional' ou 'desconhecido' (erro ao ler).
+    // Lido uma vez só, junto com o perfil, para decidir se o botão "Contratar" aparece.
+    let tipoUsuarioPromessa = Promise.resolve(null);
+
     const el = (id) => document.getElementById(id);
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -34,6 +39,11 @@
         configurarLinksVoltar();
 
         el('btn-tentar-novamente').addEventListener('click', carregarPerfil);
+
+        tipoUsuarioPromessa = lerTipoUsuario().catch((falha) => {
+            console.error('Erro ao ler o tipo do usuário (o botão Contratar aparece; contratar.html confere de novo):', falha);
+            return 'desconhecido';
+        });
 
         carregarPerfil();
     });
@@ -83,6 +93,7 @@
 
             preencherPerfil(profissional, mapaCategoriasPorSlug(categorias));
             mostrarEstado('perfil');
+            await prepararContratar(profissional, minhaConsulta);
         } catch (falha) {
             if (minhaConsulta !== consultaAtual) return;
 
@@ -108,6 +119,39 @@
         if (error) throw error;
 
         return data;
+    }
+
+
+    // null = visitante; senão o tipo_usuario da linha em 'usuarios' (buscarUsuario está em sessao.js).
+    async function lerTipoUsuario() {
+        if (!supabaseClient) return null;
+
+        const { data, error } = await supabaseClient.auth.getSession();
+        if (error) throw error;
+        if (!data.session) return null;
+
+        const usuario = await buscarUsuario(data.session.user.id);
+        return usuario ? usuario.tipo_usuario : 'desconhecido';
+    }
+
+
+    // Link "Contratar" (US-007). Visitante vê e, ao clicar, contratar.html manda ao login e volta.
+    // Profissional logado não vê: só cliente contrata (BR10; o banco também barra).
+    async function prepararContratar(prof, minhaConsulta) {
+        const container = el('acoes-contratacao');
+        container.replaceChildren();
+
+        const tipo = await tipoUsuarioPromessa;
+        if (minhaConsulta !== consultaAtual) return; // chegou um "Tentar novamente" no meio
+        if (tipo === 'profissional') return;
+
+        const nome = (prof.nome || '').trim() || 'Profissional';
+        const link = document.createElement('a');
+        link.className = 'btn btn-primario btn-bloco';
+        link.href = `contratar.html?profissional=${encodeURIComponent(prof.id)}`;
+        link.textContent = 'Contratar';
+        link.setAttribute('aria-label', `Contratar ${nome}`);
+        container.appendChild(link);
     }
 
 
