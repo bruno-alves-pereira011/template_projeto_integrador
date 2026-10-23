@@ -202,3 +202,9 @@ Nenhuma story foi testada contra o Supabase real ainda. Para fechar como Done: a
 - **Usuários de teste:** `prof1@helpme.test` não existe no banco real; recriar pelo painel (Authentication → Add user) antes dos testes manuais.
 - **Pendente para Done:** testes manuais de US-001 a US-006 contra o Supabase real, checagem mobile (360px)/acessibilidade, code review cruzado e validação do PO.
 - **Processo:** ScrumAIDev instalado no repositório (PR #2); planejamento movido de `docs/planejamento/` para os caminhos padrão (`docs/sprints/`, `docs/stories/`, `docs/product_backlog.md`, `docs/discovery/`, `docs/requirements/`, `docs/bdd/`).
+
+## Encerramento (2026-10-16)
+
+- Retrospectiva: `docs/retrospectives/sprint_01_retro.md`.
+- Resultado: 33 pts implementados, 0 em Done (US-001 a US-006 em Review). Os testes manuais e o merge do DEBT-004 ficam como action items para o início da Sprint 02 (responsável: Lucas dos Santos Felipe, até 2026-10-20).
+- Capacidade decidida para a Sprint 02: ~16 pts.

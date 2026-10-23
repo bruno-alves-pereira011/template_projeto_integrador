@@ -1,7 +1,7 @@
 # Discovery — HelpMe: MVP funcional do Marco 2
 
-**Status:** PROBLEM_READY (revisao 2)
-**Classificacao de Processo:** NORMAL PROCESS
+**Status:** PROBLEM_READY (revisao 3 — inclui area do administrador e aprovacao de profissionais, ver secao "Revisao 3")
+**Classificacao de Processo:** NORMAL PROCESS (rev. 1–2) · HEAVY PROCESS (rev. 3: novo papel com privilegio, RLS, dados pessoais, muda a D2)
 **Origem:** hibrido (codigo em `template_projeto_integrador/` + README do Marco 1 + briefing de diagnostico + decisoes da equipe)
 
 ## Intent
@@ -57,7 +57,7 @@ Um avaliador consegue, no app rodando contra o Supabase real:
 - Revisao final: teste manual dos fluxos, tentativa de burlar RLS, checklist basico de acessibilidade/mobile.
 
 ### OUT
-- Painel administrativo de aprovacao (aprovacao e manual pelo Table Editor — D2).
+- ~~Painel administrativo de aprovacao (aprovacao e manual pelo Table Editor — D2).~~ *Movido para IN na revisao 3 (D6).*
 - Pedido aberto para a categoria inteira (fluxo tipo "Uber") — substituido pela contratacao direta.
 - Pagamento real / gateway (Mercado Pago, Stripe).
 - Framework/build no front (equipe domina HTML/CSS/JS puro).
@@ -113,3 +113,116 @@ Um avaliador consegue, no app rodando contra o Supabase real:
 **Status:** APPROVED
 
 **Aprovado pelo usuario:** sim (rev. 1 e rev. 2, 2026-10-09)
+
+---
+
+## Revisao 3 — Area do administrador e aprovacao de profissionais
+
+**Status:** PROBLEM_READY (aprovado em 2026-10-16)
+**Origem:** revisao geral do projeto de 2026-10-16 (pedido do PO para o Fluxo 3) + codigo atual (`supabase/migrations/001_schema.sql`, `002_privacidade_data_nascimento.sql`, `helpme-app/`).
+**Classificacao de Processo:** HEAVY PROCESS (aprovada pelo PO em 2026-10-16: "prossiga conforme recomendado").
+**Nao altera** o escopo ja aprovado do Fluxo 3 (US-007 a US-010), que segue direto para o `/sprint-planning`.
+
+### Intent
+Substituir a aprovacao manual pelo Table Editor (D2) por uma **area administrativa centralizada** no app e por uma **triagem automatica** dos profissionais "em analise", reduzindo a analise individual sem aprovar indevidamente quem nao atende aos requisitos.
+
+### Problem
+- Nao existe papel de administrador: `usuarios.tipo_usuario` aceita so `cliente`/`profissional` e o trigger `validar_profissional` bloqueia qualquer mudanca de `status_aprovacao` vinda do app.
+- A aprovacao depende de alguem com acesso ao painel do Supabase, abrindo linha por linha, sem criterio registrado nem historico de quem aprovou e por que.
+- O profissional recusado/pendente ve so uma mensagem generica em `bloqueio.html` ("entre em contato com a equipe"), sem saber o que corrigir.
+- Nao ha visao do sistema como um todo (quantos usuarios, fila de analise, contratacoes, categorias sem oferta).
+- O perfil nao tem nenhum documento: com os dados atuais da para provar **consistencia** dos dados, nao **identidade**.
+
+### Users / Stakeholders
+- **Administrador geral** (alguem da equipe): aprova/recusa, acompanha indicadores, mantem categorias.
+- **Profissional em analise**: quer ser aprovado rapido e saber o que corrigir.
+- **Cliente**: indiretamente — confia que o diretorio so mostra profissionais validados.
+- **Avaliadores da disciplina**: cobram seguranca (RLS) e rastreabilidade.
+
+### Current Situation
+- Aprovacao manual (D2); `status_aprovacao` em `pendente|aprovado|recusado`; RLS impede autoaprovacao.
+- Regras ja automatizadas no banco: 18+ (trigger), status inicial forcado para `pendente`.
+- Sem Storage, sem Edge Functions, sem backend proprio (NFR03).
+
+### Desired Outcome
+1. O administrador entra pelo mesmo login e cai em `admin.html` com indicadores do sistema.
+2. Ve a fila de profissionais em analise ja **triada** (verde / pendencia do profissional / suspeito) e aprova os verdes **em lote** com um clique; abre o detalhe so dos suspeitos.
+3. Toda decisao (do sistema ou do admin) fica registrada com autor, data e motivo; recusa exige motivo.
+4. O profissional ve em `bloqueio.html` o motivo da pendencia/recusa, corrige o perfil e a triagem roda de novo sozinha.
+5. O administrador mantem as categorias (criar, editar, desativar) sem usar o painel do Supabase.
+
+### Success Criteria
+- Nenhum usuario consegue se tornar administrador pelo app (nem pelos metadados do `signUp`); admin so e criado pelo SQL Editor.
+- Profissional nao consegue aprovar a si mesmo nem pular a triagem (testes de RLS documentados).
+- Caso "verde" vai da conclusao do perfil a aprovacao em 1 clique do admin; caso com pendencia volta ao profissional com motivo legivel, sem acao do admin.
+- 100% das mudancas de `status_aprovacao` feitas pelo app tem registro de auditoria.
+- Admin nao le o conteudo do chat das contratacoes (privacidade).
+
+### Scope
+
+#### IN (proposto)
+- Papel de administrador: tabela `administradores` (preenchida so pelo SQL Editor) + funcao `eh_admin()`; **nao** e um terceiro `tipo_usuario` (BR05 continua valendo).
+- Roteamento do login para `admin.html` e protecao das paginas admin no `sessao.js`.
+- Painel com indicadores agregados (funcao que devolve so totais).
+- Fila de analise com aprovacao/recusa individual e aprovacao em lote dos verdes; recusa com motivo obrigatorio; historico de decisoes.
+- **Triagem automatica no banco (Nivel A, sem dependencia nova)**, executada no servidor ao concluir/editar o perfil: e-mail confirmado, 18+, perfil completo (cidade, bairro, descricao minima, 1+ categoria), telefone/WhatsApp com DDD valido; sinais de suspeita (telefone/WhatsApp repetido em outra conta, link/telefone/termo bloqueado na descricao, recadastro apos recusa).
+- Politica dos casos verdes: **pre-aprovacao + aprovacao em lote por um humano** (configuravel para aprovacao automatica total no futuro).
+- Motivo da pendencia/recusa visivel em `bloqueio.html` + reanalise apos o profissional corrigir.
+- Reanalise de conteudo quando um profissional ja aprovado edita a descricao.
+- Gestao de categorias: criar, editar e **desativar** (nao apagar: o `on delete cascade` removeria os vinculos dos profissionais).
+
+#### OUT (proposto)
+- Coleta de CPF, foto de documento ou selfie (Nivel B) — evita tratamento de dado pessoal sensivel (LGPD) no projeto academico.
+- APIs externas de verificacao de identidade (Serpro Datavalid, idwall etc.) e Edge Functions.
+- Admin lendo mensagens do chat.
+- Admin criando/editando contratacoes.
+
+#### LATER
+- Suspender/reativar profissionais aprovados e consulta somente-leitura de contratacoes no admin (Could; Marco 3 se faltar tempo).
+- Sinais pos-aprovacao (Nivel C): muitas recusas/cancelamentos, nota baixa, denuncias → volta para revisao (Marco 3, depende de HU04).
+- Moderacao de avaliacoes (Marco 3).
+- Nivel B (documento + selfie em bucket privado), se a equipe decidir no futuro.
+
+### Constraints / Feasibility
+- Stack fixa (NFR03): regras em Postgres (RLS, triggers, funcoes `security definer` com `search_path` fixo); telas em HTML/CSS/JS puro.
+- O banco real **ja tem dados**: mudancas vao em migrations incrementais (`003_*`, `004_*`), sem editar nem reaplicar o `001`.
+- `grant ... on all tables to authenticated` (001, secao 5): toda tabela nova precisa de RLS ligado no mesmo script.
+- Agentes nao acessam o painel do Supabase: entregam SQL e roteiro de verificacao; a equipe aplica.
+
+### Assumptions
+- [ASSUMPTION] Um unico nivel de administrador (sem perfis de permissao diferentes).
+- [ASSUMPTION] A confirmacao de e-mail sera ligada no Supabase (senao a checagem "e-mail confirmado" vira so aviso).
+- [ASSUMPTION] Sem CPF, a deteccao de duplicidade usa telefone/WhatsApp normalizados.
+- [ASSUMPTION] Profissional aprovado que edita o perfil continua aprovado (A02), **exceto** se a nova descricao disparar sinal de suspeita.
+- [ASSUMPTION] A area admin entra no Marco 2, nas Sprints 03–04, depois do nucleo do Fluxo 3 (data de entrega do Marco 2 ainda nao informada).
+
+### Risks
+- Papel admin e a mudanca de RLS de maior risco do projeto: um erro em `eh_admin()` ou numa politica expoe dados de todos. Mitigacao: funcao `security definer` com `search_path` fixo, testes de RLS versionados, revisao por quem nao escreveu.
+- Aprovacao sem verificacao de identidade: mitigada por manter um humano na aprovacao dos verdes.
+- Triagem por regras gera falsos positivos (ex.: descricao com numero de rua confundido com telefone): casos vao para humano, nunca para recusa automatica.
+- Conflito com a branch `refactor/ui-polish` (reescreve `dashboard.css`).
+- Acesso ao painel do Supabase concentrado em uma pessoa (aplicar 003/004).
+
+### Open Questions
+- [BLOCKING? nao] Data de entrega do Marco 2 (afeta se US-017/US-018 cabem no Marco 2).
+- [BLOCKING? nao] Quem sera o(s) administrador(es) inicial(is)?
+- [BLOCKING? nao] `refactor/ui-polish` sera mesclada antes das telas novas?
+
+### Key Decisions Proposed
+- **D6 (aprovada em 2026-10-16, registrada em `docs/DECISOES.md`):** aprovacao de profissionais passa a ser feita pela area admin do app, com triagem automatica no banco e pre-aprovacao dos casos verdes aprovada em lote por um humano; papel admin em tabela propria, criado so pelo SQL Editor; sem coleta de documentos. Substitui a D2 quando aprovada.
+
+### Review & Adjust (rev. 3)
+
+- [x] Usuario revisou a proposta completa da revisao 3
+- [x] Alteracoes solicitadas foram incorporadas (nenhuma solicitada)
+- [x] Decisoes relevantes foram confirmadas (D6)
+- [x] Nao existem perguntas bloqueantes abertas
+
+#### User adjustments
+- 2026-10-16: aprovado sem ajustes ("prossiga conforme recomendado").
+
+### Gate G0 — PROBLEM READY (rev. 3)
+
+**Status:** APPROVED
+
+**Aprovado pelo usuario:** sim (rev. 3, 2026-10-16)
