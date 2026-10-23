@@ -54,7 +54,7 @@ Outros dados: 21 commits, 20 de uma mesma pessoa; 2 PRs mesclados (#1 e #2); a `
 
 | Ação | Responsável | Prazo | Status |
 |------|-------------|-------|--------|
-| Fazer os testes manuais das US-001 a US-006 no Supabase real (recriar `prof1@helpme.test`) e registrar o resultado em cada story; fazer o code review cruzado e o merge do PR do DEBT-004 | Lucas dos Santos Felipe | 2026-10-20 | Não concluído em 23/10 (DEBT-004 integrado só na `developer`) |
+| Fazer os testes manuais das US-001 a US-006 no Supabase real (recriar `prof1@helpme.test`) e registrar o resultado em cada story; fazer o code review cruzado e o merge do PR do DEBT-004 | Lucas dos Santos Felipe | 2026-10-20 | Testes feitos e aprovados pelo PO (Bruno Alves) em 2026-10-23; code review cruzado e merge do DEBT-004 na `main` ainda pendentes |
 | No planejamento da Sprint 02, nomear um responsável por item, sem que uma mesma pessoa fique com mais da metade dos pontos | Bruno Alves (PO) | 2026-10-16 (Sprint Planning 02) | Não feito: PO decidiu "sem responsável por enquanto" (16/10) |
 | Decidir se a branch `refactor/ui-polish` é mesclada ou descartada (DEBT-005) antes de começar a US-007 | Lucas dos Santos Felipe (autor do commit `visual`) — a confirmar | 2026-10-20 | Pendente em 23/10 (a Sprint 02 evitou o conflito com um `contratacao.css` próprio) |
 

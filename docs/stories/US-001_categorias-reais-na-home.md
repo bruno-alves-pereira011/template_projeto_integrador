@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** 01
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,16 +33,16 @@ Primeira story do slice inicial. Alem de FR01, carrega as correcoes de base que 
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** `home-cliente.html` abre sem sessao e lista as 6 categorias lidas da tabela `categorias` (nome, sigla, cor, descricao).
-- [ ] **Criterio 2:** Alterar o nome de uma categoria no Table Editor reflete na home apos recarregar (prova de que nao ha lista hard-coded).
-- [ ] **Criterio 3:** A URL configurada e `https://btjjbtjxcbvswgezpwgc.supabase.co` e existe em um unico arquivo (`js/supabase-config.js`).
-- [ ] **Criterio 4:** Todas as paginas carregam scripts na mesma ordem (CDN Supabase → `supabase-config.js` → script da pagina) e o console do navegador nao mostra erros em `index.html`, `cadastro.html` e `home-cliente.html`.
-- [ ] **Criterio 5:** `MODO_DEMONSTRACAO` existe so em `supabase-config.js`, com valor `false`.
-- [ ] **Criterio 6:** `index.html` nao tem o `+` antes do `<!DOCTYPE html>` e os comentarios de topo dos HTML batem com os ids reais.
-- [ ] **Criterio 7:** A home mostra um link "Entrar" para `index.html`; se o Supabase falhar, mostra mensagem de erro amigavel em vez de lista vazia.
-- [ ] **Criterio 8:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 9:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 10:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** `home-cliente.html` abre sem sessao e lista as 6 categorias lidas da tabela `categorias` (nome, sigla, cor, descricao).
+- [x] **Criterio 2:** Alterar o nome de uma categoria no Table Editor reflete na home apos recarregar (prova de que nao ha lista hard-coded).
+- [x] **Criterio 3:** A URL configurada e `https://btjjbtjxcbvswgezpwgc.supabase.co` e existe em um unico arquivo (`js/supabase-config.js`).
+- [x] **Criterio 4:** Todas as paginas carregam scripts na mesma ordem (CDN Supabase → `supabase-config.js` → script da pagina) e o console do navegador nao mostra erros em `index.html`, `cadastro.html` e `home-cliente.html`.
+- [x] **Criterio 5:** `MODO_DEMONSTRACAO` existe so em `supabase-config.js`, com valor `false`.
+- [x] **Criterio 6:** `index.html` nao tem o `+` antes do `<!DOCTYPE html>` e os comentarios de topo dos HTML batem com os ids reais.
+- [x] **Criterio 7:** A home mostra um link "Entrar" para `index.html`; se o Supabase falhar, mostra mensagem de erro amigavel em vez de lista vazia.
+- [x] **Criterio 8:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 9:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 10:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -161,22 +161,23 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-10-23: **Done.** Testes manuais de todos os criterios executados no Supabase real pelo PO (Bruno Alves), todos passaram. Pendentes de registro na DoD: code review cruzado e `Behavior change` documentado no PR.
 
 ---
 
 ## Definition of Done Checklist
 
-- [ ] Codigo implementado conforme criterios de aceitacao
-- [ ] Decisao sobre Spec governada foi registrada
-- [ ] Decisao sobre Contract governado foi registrada
-- [ ] Nivel ScrumAIDev foi registrado
-- [ ] Spec, Contract e BDD foram atualizados quando aplicavel
-- [ ] Gates opcionais executados ou dispensados com justificativa
-- [ ] Error handling observavel segue o padrao compartilhado quando aplicavel
+- [x] Codigo implementado conforme criterios de aceitacao
+- [x] Decisao sobre Spec governada foi registrada
+- [x] Decisao sobre Contract governado foi registrada
+- [x] Nivel ScrumAIDev foi registrado
+- [x] Spec, Contract e BDD foram atualizados quando aplicavel
+- [x] Gates opcionais executados ou dispensados com justificativa
+- [x] Error handling observavel segue o padrao compartilhado quando aplicavel
 - [ ] Code review aprovado
-- [ ] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
-- [ ] Testes de integracao e contract passando (N/A — dispensado)
-- [ ] Documentacao atualizada
-- [ ] Build/CI passando (N/A — sem build)
+- [x] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
+- [x] Testes de integracao e contract passando (N/A — dispensado)
+- [x] Documentacao atualizada
+- [x] Build/CI passando (N/A — sem build)
 - [ ] `Behavior change` documentado no PR
-- [ ] Aprovacao do Product Owner
+- [x] Aprovacao do Product Owner

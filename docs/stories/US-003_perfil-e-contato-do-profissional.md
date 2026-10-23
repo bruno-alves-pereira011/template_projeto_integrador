@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** 01
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,15 +33,15 @@ Implementa HU02 e HU03. Nova pagina `profissional.html?id=<uuid>`. Fecha o prime
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** A pagina exibe nome, descricao, cidade/bairro, categorias (com cor/sigla), media de notas e total de avaliacoes do profissional.
-- [ ] **Criterio 2:** O botao "Ligar" usa `tel:<digitos>` e o botao "WhatsApp" usa `https://wa.me/55<DDD><numero>`, ambos com o numero normalizado (so digitos; remove `+55`/`55` duplicado).
-- [ ] **Criterio 3:** Se o numero estiver ausente ou tiver menos de 10 digitos apos normalizar, o respectivo botao nao aparece.
-- [ ] **Criterio 4:** `?id=` ausente, inexistente ou de profissional nao aprovado mostra "Profissional nao encontrado" com link para voltar.
-- [ ] **Criterio 5:** Ha um link "Voltar" para a lista da categoria de origem.
-- [ ] **Criterio 6:** Funciona sem login e le apenas da view `profissionais_publicos`.
-- [ ] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** A pagina exibe nome, descricao, cidade/bairro, categorias (com cor/sigla), media de notas e total de avaliacoes do profissional.
+- [x] **Criterio 2:** O botao "Ligar" usa `tel:<digitos>` e o botao "WhatsApp" usa `https://wa.me/55<DDD><numero>`, ambos com o numero normalizado (so digitos; remove `+55`/`55` duplicado).
+- [x] **Criterio 3:** Se o numero estiver ausente ou tiver menos de 10 digitos apos normalizar, o respectivo botao nao aparece.
+- [x] **Criterio 4:** `?id=` ausente, inexistente ou de profissional nao aprovado mostra "Profissional nao encontrado" com link para voltar.
+- [x] **Criterio 5:** Ha um link "Voltar" para a lista da categoria de origem.
+- [x] **Criterio 6:** Funciona sem login e le apenas da view `profissionais_publicos`.
+- [x] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -156,22 +156,23 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-10-23: **Done.** Testes manuais de todos os criterios executados no Supabase real pelo PO (Bruno Alves), todos passaram. Pendentes de registro na DoD: code review cruzado e `Behavior change` documentado no PR.
 
 ---
 
 ## Definition of Done Checklist
 
-- [ ] Codigo implementado conforme criterios de aceitacao
-- [ ] Decisao sobre Spec governada foi registrada
-- [ ] Decisao sobre Contract governado foi registrada
-- [ ] Nivel ScrumAIDev foi registrado
-- [ ] Spec, Contract e BDD foram atualizados quando aplicavel
-- [ ] Gates opcionais executados ou dispensados com justificativa
-- [ ] Error handling observavel segue o padrao compartilhado quando aplicavel
+- [x] Codigo implementado conforme criterios de aceitacao
+- [x] Decisao sobre Spec governada foi registrada
+- [x] Decisao sobre Contract governado foi registrada
+- [x] Nivel ScrumAIDev foi registrado
+- [x] Spec, Contract e BDD foram atualizados quando aplicavel
+- [x] Gates opcionais executados ou dispensados com justificativa
+- [x] Error handling observavel segue o padrao compartilhado quando aplicavel
 - [ ] Code review aprovado
-- [ ] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
-- [ ] Testes de integracao e contract passando (N/A — dispensado)
-- [ ] Documentacao atualizada
-- [ ] Build/CI passando (N/A — sem build)
+- [x] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
+- [x] Testes de integracao e contract passando (N/A — dispensado)
+- [x] Documentacao atualizada
+- [x] Build/CI passando (N/A — sem build)
 - [ ] `Behavior change` documentado no PR
-- [ ] Aprovacao do Product Owner
+- [x] Aprovacao do Product Owner

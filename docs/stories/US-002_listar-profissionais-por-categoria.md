@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** 01
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,15 +33,15 @@ Implementa HU01. Nova pagina `profissionais.html?categoria=<slug>`, aberta ao cl
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** Clicar numa categoria na home abre `profissionais.html?categoria=<slug>` com o nome da categoria no titulo.
-- [ ] **Criterio 2:** A lista mostra somente profissionais com `status_aprovacao = 'aprovado'` que atuam na categoria (o profissional pendente do seed nao aparece).
-- [ ] **Criterio 3:** Cada card exibe nome, cidade/bairro e media de notas (ou "Sem avaliacoes") e leva para `profissional.html?id=<id>`.
-- [ ] **Criterio 4:** Os campos de filtro por cidade e bairro reduzem a lista por texto (sem diferenciar maiusculas/minusculas).
-- [ ] **Criterio 5:** Categoria sem profissionais aprovados mostra mensagem de estado vazio; slug inexistente mostra "Categoria nao encontrada" com link para a home.
-- [ ] **Criterio 6:** A pagina funciona sem login e a consulta usa a view `profissionais_publicos`, nao a tabela `profissionais`.
-- [ ] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** Clicar numa categoria na home abre `profissionais.html?categoria=<slug>` com o nome da categoria no titulo.
+- [x] **Criterio 2:** A lista mostra somente profissionais com `status_aprovacao = 'aprovado'` que atuam na categoria (o profissional pendente do seed nao aparece).
+- [x] **Criterio 3:** Cada card exibe nome, cidade/bairro e media de notas (ou "Sem avaliacoes") e leva para `profissional.html?id=<id>`.
+- [x] **Criterio 4:** Os campos de filtro por cidade e bairro reduzem a lista por texto (sem diferenciar maiusculas/minusculas).
+- [x] **Criterio 5:** Categoria sem profissionais aprovados mostra mensagem de estado vazio; slug inexistente mostra "Categoria nao encontrada" com link para a home.
+- [x] **Criterio 6:** A pagina funciona sem login e a consulta usa a view `profissionais_publicos`, nao a tabela `profissionais`.
+- [x] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -156,22 +156,23 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-10-23: **Done.** Testes manuais de todos os criterios executados no Supabase real pelo PO (Bruno Alves), todos passaram. Pendentes de registro na DoD: code review cruzado e `Behavior change` documentado no PR.
 
 ---
 
 ## Definition of Done Checklist
 
-- [ ] Codigo implementado conforme criterios de aceitacao
-- [ ] Decisao sobre Spec governada foi registrada
-- [ ] Decisao sobre Contract governado foi registrada
-- [ ] Nivel ScrumAIDev foi registrado
-- [ ] Spec, Contract e BDD foram atualizados quando aplicavel
-- [ ] Gates opcionais executados ou dispensados com justificativa
-- [ ] Error handling observavel segue o padrao compartilhado quando aplicavel
+- [x] Codigo implementado conforme criterios de aceitacao
+- [x] Decisao sobre Spec governada foi registrada
+- [x] Decisao sobre Contract governado foi registrada
+- [x] Nivel ScrumAIDev foi registrado
+- [x] Spec, Contract e BDD foram atualizados quando aplicavel
+- [x] Gates opcionais executados ou dispensados com justificativa
+- [x] Error handling observavel segue o padrao compartilhado quando aplicavel
 - [ ] Code review aprovado
-- [ ] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
-- [ ] Testes de integracao e contract passando (N/A — dispensado)
-- [ ] Documentacao atualizada
-- [ ] Build/CI passando (N/A — sem build)
+- [x] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
+- [x] Testes de integracao e contract passando (N/A — dispensado)
+- [x] Documentacao atualizada
+- [x] Build/CI passando (N/A — sem build)
 - [ ] `Behavior change` documentado no PR
-- [ ] Aprovacao do Product Owner
+- [x] Aprovacao do Product Owner

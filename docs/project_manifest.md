@@ -6,7 +6,7 @@
 **Origem do contexto:** híbrido (código existente em `helpme-app/` + insumos em `arquivos/` + usuário)
 **Confiança do contexto:** alta
 **Contexto processado:** sim
-**Estado operacional:** Sprint 02 no último dia (16/10 a 23/10/2026): DEBT-006 e US-007 a US-009 implementados em branches, em Review (sem teste no Supabase real); DEBT-004 sem merge na `main`; US-001 a US-006 da Sprint 01 ainda em Review
+**Estado operacional:** Sprint 02 no último dia (16/10 a 23/10/2026): DEBT-006 e US-007 a US-009 implementados em branches, em Review (sem teste no Supabase real); DEBT-004 sem merge na `main`; US-001 a US-006 da Sprint 01 em Done (validadas pelo PO em 2026-10-23)
 **Última atualização:** 2026-10-23
 
 ## GitHub Planning Defaults
@@ -89,6 +89,6 @@ Após o primeiro /sprint-planning de um projeto derivado, atualizar este manifes
 - Discovery e requisitos: `docs/discovery/helpme-mvp-marco2.md` e `docs/requirements/helpme-mvp-marco2.md`, ambos aprovados na rev. 3 (área admin + aprovação de profissionais)
 - Decisões do projeto: `docs/DECISOES.md` (D1–D8; D8 = nomes antigos das telas de contratação)
 - Branches: integração na `developer` (já tem `main` + DEBT-004 + planejamento). Sprint 02 empilhada: `chore/DEBT-006-remove-pedidos` → `feat/US-007-contratar` → `feat/US-008-solicitacoes-recebidas` → `feat/US-009-acompanhar-contratacao` → `docs/status-sprint02`; PRs ainda não abertos
-- Próximo passo sugerido: (1) abrir os PRs da Sprint 02 para `developer`, na ordem da pilha; (2) testes manuais no Supabase real (US-001 a US-009) e code review cruzado; (3) merge do DEBT-004 na `main` e decisão do DEBT-005; (4) PO decide estender ou encerrar a Sprint 02 → `/sprint-retrospective` → `/sprint-planning` da Sprint 03 (US-010 + US-014, US-015, US-013)
+- Próximo passo sugerido: (1) abrir os PRs da Sprint 02 para `developer`, na ordem da pilha; (2) testes manuais no Supabase real das US-007 a US-009 e code review cruzado; (3) merge do DEBT-004 na `main` e decisão do DEBT-005; (4) PO decide estender ou encerrar a Sprint 02 → `/sprint-retrospective` → `/sprint-planning` da Sprint 03 (US-010 + US-014, US-015, US-013)
 
 > Atualize apenas ao final de cada sprint ou mudança relevante. Evite atualizações desnecessárias.

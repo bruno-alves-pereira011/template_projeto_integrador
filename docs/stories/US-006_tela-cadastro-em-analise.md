@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 2
 **Sprint:** 01
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,13 +33,13 @@ Implementa o stub `bloqueio.html`. A aprovacao e manual pela equipe no Table Edi
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** Profissional `pendente` ve a mensagem "Seu cadastro esta em analise" e o link "Editar meu perfil".
-- [ ] **Criterio 2:** Profissional `recusado` ve a mensagem de cadastro recusado com orientacao para contatar a equipe.
-- [ ] **Criterio 3:** Ha botao "Sair" que encerra a sessao.
-- [ ] **Criterio 4:** Um profissional aprovado que abrir `bloqueio.html` e redirecionado para `contratacoes.html`; cliente e redirecionado para a home.
-- [ ] **Criterio 5:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 6:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 7:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** Profissional `pendente` ve a mensagem "Seu cadastro esta em analise" e o link "Editar meu perfil".
+- [x] **Criterio 2:** Profissional `recusado` ve a mensagem de cadastro recusado com orientacao para contatar a equipe.
+- [x] **Criterio 3:** Ha botao "Sair" que encerra a sessao.
+- [x] **Criterio 4:** Um profissional aprovado que abrir `bloqueio.html` e redirecionado para `contratacoes.html`; cliente e redirecionado para a home.
+- [x] **Criterio 5:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 6:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 7:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -145,22 +145,23 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-10-23: **Done.** Testes manuais de todos os criterios executados no Supabase real pelo PO (Bruno Alves), todos passaram. Pendentes de registro na DoD: code review cruzado e `Behavior change` documentado no PR.
 
 ---
 
 ## Definition of Done Checklist
 
-- [ ] Codigo implementado conforme criterios de aceitacao
-- [ ] Decisao sobre Spec governada foi registrada
-- [ ] Decisao sobre Contract governado foi registrada
-- [ ] Nivel ScrumAIDev foi registrado
-- [ ] Spec, Contract e BDD foram atualizados quando aplicavel
-- [ ] Gates opcionais executados ou dispensados com justificativa
-- [ ] Error handling observavel segue o padrao compartilhado quando aplicavel
+- [x] Codigo implementado conforme criterios de aceitacao
+- [x] Decisao sobre Spec governada foi registrada
+- [x] Decisao sobre Contract governado foi registrada
+- [x] Nivel ScrumAIDev foi registrado
+- [x] Spec, Contract e BDD foram atualizados quando aplicavel
+- [x] Gates opcionais executados ou dispensados com justificativa
+- [x] Error handling observavel segue o padrao compartilhado quando aplicavel
 - [ ] Code review aprovado
-- [ ] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
-- [ ] Testes de integracao e contract passando (N/A — dispensado)
-- [ ] Documentacao atualizada
-- [ ] Build/CI passando (N/A — sem build)
+- [x] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
+- [x] Testes de integracao e contract passando (N/A — dispensado)
+- [x] Documentacao atualizada
+- [x] Build/CI passando (N/A — sem build)
 - [ ] `Behavior change` documentado no PR
-- [ ] Aprovacao do Product Owner
+- [x] Aprovacao do Product Owner

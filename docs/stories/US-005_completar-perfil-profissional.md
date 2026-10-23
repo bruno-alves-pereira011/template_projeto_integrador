@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** 01
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,15 +33,15 @@ Nova pagina `completar-perfil.html` (serve para criar e editar). Grava em `profi
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** O formulario tem WhatsApp, telefone, cidade, bairro, descricao, data de nascimento e as 6 categorias como checkboxes (vindas da tabela).
-- [ ] **Criterio 2:** Nao e possivel salvar sem pelo menos uma categoria marcada nem com idade menor que 18 anos (mensagem no campo).
-- [ ] **Criterio 3:** Ao salvar pela primeira vez, cria a linha em `profissionais` com status `pendente` e as linhas em `profissional_categoria`, e redireciona para `bloqueio.html`.
-- [ ] **Criterio 4:** Ao editar, o formulario vem preenchido; desmarcar/marcar categorias atualiza `profissional_categoria`; o status de aprovacao nao muda.
-- [ ] **Criterio 5:** Se o banco rejeitar (ex.: idade burlada no front), a mensagem de erro aparece e nada fica salvo pela metade.
-- [ ] **Criterio 6:** A pagina exige sessao de profissional (`exigirSessao('profissional')`).
-- [ ] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** O formulario tem WhatsApp, telefone, cidade, bairro, descricao, data de nascimento e as 6 categorias como checkboxes (vindas da tabela).
+- [x] **Criterio 2:** Nao e possivel salvar sem pelo menos uma categoria marcada nem com idade menor que 18 anos (mensagem no campo).
+- [x] **Criterio 3:** Ao salvar pela primeira vez, cria a linha em `profissionais` com status `pendente` e as linhas em `profissional_categoria`, e redireciona para `bloqueio.html`.
+- [x] **Criterio 4:** Ao editar, o formulario vem preenchido; desmarcar/marcar categorias atualiza `profissional_categoria`; o status de aprovacao nao muda.
+- [x] **Criterio 5:** Se o banco rejeitar (ex.: idade burlada no front), a mensagem de erro aparece e nada fica salvo pela metade.
+- [x] **Criterio 6:** A pagina exige sessao de profissional (`exigirSessao('profissional')`).
+- [x] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -155,22 +155,23 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-10-23: **Done.** Testes manuais de todos os criterios executados no Supabase real pelo PO (Bruno Alves), todos passaram. Pendentes de registro na DoD: code review cruzado e `Behavior change` documentado no PR.
 
 ---
 
 ## Definition of Done Checklist
 
-- [ ] Codigo implementado conforme criterios de aceitacao
-- [ ] Decisao sobre Spec governada foi registrada
-- [ ] Decisao sobre Contract governado foi registrada
-- [ ] Nivel ScrumAIDev foi registrado
-- [ ] Spec, Contract e BDD foram atualizados quando aplicavel
-- [ ] Gates opcionais executados ou dispensados com justificativa
-- [ ] Error handling observavel segue o padrao compartilhado quando aplicavel
+- [x] Codigo implementado conforme criterios de aceitacao
+- [x] Decisao sobre Spec governada foi registrada
+- [x] Decisao sobre Contract governado foi registrada
+- [x] Nivel ScrumAIDev foi registrado
+- [x] Spec, Contract e BDD foram atualizados quando aplicavel
+- [x] Gates opcionais executados ou dispensados com justificativa
+- [x] Error handling observavel segue o padrao compartilhado quando aplicavel
 - [ ] Code review aprovado
-- [ ] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
-- [ ] Testes de integracao e contract passando (N/A — dispensado)
-- [ ] Documentacao atualizada
-- [ ] Build/CI passando (N/A — sem build)
+- [x] Testes unitarios com cobertura adequada (N/A — sem runner; dispensado)
+- [x] Testes de integracao e contract passando (N/A — dispensado)
+- [x] Documentacao atualizada
+- [x] Build/CI passando (N/A — sem build)
 - [ ] `Behavior change` documentado no PR
-- [ ] Aprovacao do Product Owner
+- [x] Aprovacao do Product Owner

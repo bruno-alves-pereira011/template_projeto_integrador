@@ -208,3 +208,8 @@ Nenhuma story foi testada contra o Supabase real ainda. Para fechar como Done: a
 - Retrospectiva: `docs/retrospectives/sprint_01_retro.md`.
 - Resultado: 33 pts implementados, 0 em Done (US-001 a US-006 em Review). Os testes manuais e o merge do DEBT-004 ficam como action items para o início da Sprint 02 (responsável: Lucas dos Santos Felipe, até 2026-10-20).
 - Capacidade decidida para a Sprint 02: ~16 pts.
+
+## Validação final (2026-10-23)
+
+- US-001 a US-006 testadas manualmente pelo PO (Bruno Alves) no Supabase real: **todos os critérios passaram → Done** (18 pontos + 12 adicionados = 30 pts em Done; DEBT-003 já aplicado em 16/10).
+- Sem registro: code review cruzado e `Behavior change` documentado no PR (ficam desmarcados na DoD de cada story).

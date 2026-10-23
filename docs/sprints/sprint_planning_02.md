@@ -207,7 +207,7 @@ Ordem de execução: DEBT-006 → US-007 → US-008 → US-009.
 | Pontos comprometidos | 16 |
 | Pontos implementados (em Review) | 16 |
 | Pontos em Done | 0 |
-| Pré-condições da retrospectiva 01 cumpridas | 0 de 3 (DEBT-004 sem merge na `main`, testes manuais da Sprint 01 não registrados, DEBT-005 sem decisão) |
+| Pré-condições da retrospectiva 01 cumpridas | 1 de 3 (testes manuais da Sprint 01 feitos pelo PO em 2026-10-23; DEBT-004 sem merge na `main`; DEBT-005 sem decisão) |
 
 - **Bloqueio para Done:** nenhum item foi testado no Supabase real e nenhum PR foi aberto ou revisado. A meta da retrospectiva 01 (70% em Done, commits de 3+ integrantes) não foi atingida.
 - **Decisão pendente do PO:** estender a Sprint 02 (mesmo escopo, foco em teste, revisão e merge) ou encerrar com `/sprint-retrospective` e levar a validação para a Sprint 03.
