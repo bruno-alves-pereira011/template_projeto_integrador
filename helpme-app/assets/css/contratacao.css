@@ -40,3 +40,80 @@ input[type="datetime-local"] {
     color: var(--cor-texto-suave);
     font-size: 0.95rem;
 }
+
+/* ==========================================
+   LISTA DE CONTRATAÇÕES (contratacoes.html) — reaproveita .grade-pedidos,
+   .card-pedido, .btn-aceitar e .badge-status do dashboard.css
+   ========================================== */
+.grupo-contratacoes {
+    margin-bottom: 2rem;
+}
+
+.grupo-contratacoes h2 {
+    margin: 0 0 0.75rem;
+    font-family: var(--fonte-titulo);
+    font-size: 1.15rem;
+    color: var(--cor-primaria-escura);
+}
+
+.contador-grupo {
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+}
+
+.card-numero {
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+}
+
+.acoes-card {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.acoes-card:empty {
+    display: none;
+}
+
+.acoes-card .btn-aceitar,
+.btn-recusar {
+    flex: 1;
+    min-height: 44px;
+}
+
+.btn-recusar {
+    padding: 0.75rem;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-branco);
+    color: #8e2a20;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-recusar:hover {
+    border-color: #8e2a20;
+}
+
+.btn-recusar:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.aviso-lista {
+    margin: 0 0 1rem;
+    padding: 12px 14px;
+    border: 1px solid #b9d4cf;
+    border-radius: var(--raio);
+    background: var(--cor-primaria-clara);
+    color: var(--cor-primaria-escura);
+    font-weight: 600;
+}
+
+/* Selos dos status da contratação (texto escuro sobre fundo claro: contraste AA) */
+.status-solicitada { background: #fdeee2; color: #8a4410; }
+.status-aceita     { background: #e2ebf7; color: #24497a; }
+.status-concluida  { background: #e1f3e8; color: #17603a; }
+.status-recusada,
+.status-cancelada  { background: #eeeeec; color: #4a4f4e; }

@@ -16,11 +16,9 @@ const PAGINA_LOGIN = 'index.html';
 const PAGINA_COMPLETAR_PERFIL = 'completar-perfil.html';
 const PAGINA_BLOQUEIO = 'bloqueio.html';
 
-// TEMPORÁRIO: a tela de contratações recebidas (US-008, contratacoes.html) ainda não existe.
-// Até lá o profissional aprovado cai no próprio perfil com o aviso de "publicado".
-// Quando a US-008 entrar, troque só esta linha por 'contratacoes.html'.
+// Profissional aprovado cai na lista de contratações recebidas (US-008).
 // (O antigo feed-profissional.html, que lia a tabela 'pedidos', foi removido no DEBT-006.)
-const DESTINO_PROFISSIONAL_APROVADO = 'completar-perfil.html?aprovado=1';
+const DESTINO_PROFISSIONAL_APROVADO = 'contratacoes.html';
 
 
 // Valida o parâmetro ?voltar= para evitar "open redirect" (um link malicioso
