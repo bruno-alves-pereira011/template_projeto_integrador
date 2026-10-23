@@ -105,6 +105,7 @@ Qualquer visitante encontra um profissional aprovado de uma categoria e o contat
 ## Key Decisions Proposed
 - Diretorio publico (decidido no Discovery) — leitura anonima via view `profissionais_publicos`.
 - Fonte unica de categorias = tabela `categorias` (remove `CATEGORIAS` hard-coded do JS).
+- *(Nomes das telas de contratacao revistos pela D8 em 2026-10-23: `solicitar-pedido.html`, `contratacoes.html`, `espera-cliente.html` e `servico-andamento.html`; o item abaixo e o texto original da rev. 2.)*
 - Telas novas: `profissionais.html`, `profissional.html`, `completar-perfil.html`, `contratar.html`, `contratacoes.html` (lista do cliente ou do profissional), `contratacao.html` (detalhe + chat + acoes). Os stubs `solicitar-pedido`, `espera-cliente`, `servico-andamento` e o `feed-profissional` sao substituidos.
 - Contratacao (FR10–FR14) so inicia depois de FR01–FR09 prontos.
 - Contratacao direta substitui o pedido aberto para a categoria.

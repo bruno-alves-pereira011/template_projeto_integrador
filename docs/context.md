@@ -80,6 +80,13 @@ Comandos e gates:
 - Não há runner de testes, lint ou build configurado. Os `make` targets da seção 4 não se aplicam ainda (Nível 1).
 - Validação: testes manuais descritos em cada story (`docs/stories/`), roteiro de RLS do `supabase/README.md` e revisão manual de `docs/bdd/contratacao.feature`.
 - Execução local: abrir `helpme-app/` com Live Preview/Live Server (precisa de `http://` para o link de confirmação de e-mail).
+- Testes do agente (não versionados): harnesses em Node com DOM e Supabase falsos, usados na Sprint 02 para validar US-007 a US-009. Não substituem o teste manual no Supabase real. Versioná-los (ex.: `helpme-app/testes/`, rodando com `node`, sem dependência nova) depende de aprovação da equipe.
+
+Fluxo de branches (desde 2026-10-23, pedido do PO):
+
+- `developer` é a branch de integração: as branches de trabalho (`feat/`, `fix/`, `chore/`, `docs/`) saem dela e voltam por PR. A `main` recebe a `developer` por PR quando o incremento estiver testado.
+- Nunca commitar direto em `main` nem em `developer` (regra 2 do `AGENTS.md`); merges de integração ficam registrados no PR ou no `docs/sprints/` da sprint.
+- Quando uma story depende da anterior, as branches ficam empilhadas e cada PR usa a branch anterior como base, mesclados em ordem (ex.: Sprint 02: DEBT-006 → US-007 → US-008 → US-009).
 
 ## 3. Delegacao e Handoff
 

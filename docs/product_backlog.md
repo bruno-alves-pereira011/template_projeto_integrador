@@ -2,7 +2,7 @@
 
 **Produto:** HelpMe — Hub de Contatos de Emergencia para Servicos Residenciais
 **Product Owner:** Equipe do Projeto Integrador (IFES Campus Serra)
-**Ultima atualizacao:** 2026-10-16 (revisao geral do projeto para o Fluxo 3)
+**Ultima atualizacao:** 2026-10-23 (status do fim da Sprint 02)
 
 ---
 
@@ -78,7 +78,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
 | US-010 | - | Chat em tempo real na contratacao | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
 
-**Notas do Fluxo 3 (2026-10-16):** antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.
+**Notas do Fluxo 3 (2026-10-16, atualizadas em 2026-10-23):** telas pela decisao D8 — `solicitar-pedido.html` (US-007), `contratacoes.html` (US-008 e lista do cliente), `espera-cliente.html` e `servico-andamento.html` (US-009). Planejado originalmente: antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.
 
 #### [EPIC-006] Administracao e aprovacao de profissionais
 
@@ -143,9 +143,9 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | ID | Descricao | Prioridade | Estimativa | Impacto |
 |----|-----------|------------|------------|---------|
 | DEBT-003 | **Sprint 01 — implementado (a701e35), falta aplicar no Supabase real.** Revisar `supabase/migrations/001_schema.sql` antes de aplicar: `pedidos` → `contratacoes` (`profissional_id` obrigatorio, `data_desejada`, status `solicitada/aceita/recusada/cancelada/concluida`, trigger de transicao BR06, BR09, BR10), nova tabela `mensagens` (RLS so das partes, BR08, limite 1000 chars, Realtime), contato da outra parte so apos aceite (BR07), seed e `supabase/README.md`; registrar D5 em `docs/DECISOES.md`. Aplicar no Supabase real. | Alta (bloqueia US-001) | 3 | Sem isso nenhuma story roda contra o banco real |
-| DEBT-004 | Abrir e mesclar o PR `fix/sprint01-fechamento` → `main`. A `main` esta quebrada: `completar-perfil.js` chama `minha_data_nascimento()`, que so existe na branch (leva `e2be2b8`, `6bb2aa5`, `f603172` e a mudanca de caminhos dos docs) | **Critica (bloqueia tudo)** | 1 | `completar-perfil.html` falha em `main` |
+| DEBT-004 | **Integrado na `developer` (23/10); PR para `main` ainda sem merge (prazo de 20/10 vencido).** Abrir e mesclar o PR `fix/sprint01-fechamento` → `main`. A `main` esta quebrada: `completar-perfil.js` chama `minha_data_nascimento()`, que so existe na branch (leva `e2be2b8`, `6bb2aa5`, `f603172` e a mudanca de caminhos dos docs) | **Critica (bloqueia tudo)** | 1 | `completar-perfil.html` falha em `main` |
 | DEBT-005 | Decidir e mesclar (ou descartar) `origin/refactor/ui-polish` (reescreve `dashboard.css`, ~1.400 linhas) antes de criar telas novas | Alta (antes de US-007) | 1 | Conflito em todas as telas do Fluxo 3 e do admin |
-| DEBT-006 | **Sprint 02.** Remover o legado de pedidos (D5): `feed-profissional.html`, `js/profissional.js` (le `pedidos`, que nao existe, e nao usa `exigirSessao`), `solicitar-pedido.html`, `espera-cliente.html`, `servico-andamento.html` (so comentarios) | Alta (Sprint 02) | 1 | Codigo morto quebrado e contrario a FR09 |
+| DEBT-006 | **Sprint 02 — Review** (`chore/DEBT-006-remove-pedidos`). Remover o legado de pedidos (D5): `feed-profissional.html` e `js/profissional.js` (liam `pedidos`, que nao existe, e nao usavam `exigirSessao`). Pela D8, `solicitar-pedido.html`, `espera-cliente.html` e `servico-andamento.html` **ficam** e recebem as telas de contratacao | Alta (Sprint 02) | 1 | Codigo morto quebrado e contrario a FR09 |
 | DEBT-007 | Fixar versao exata da CDN `@supabase/supabase-js@2` em todos os HTML | Baixa | 1 | App pode quebrar sozinho com versao nova |
 | DEBT-008 | Banco real ja tem dados: daqui em diante so migrations incrementais (`003_*`, `004_*`); nao editar nem reaplicar o `001` (reaplicar apaga dados e desfaz o `002`). Toda tabela nova com RLS no mesmo script (o `001` da `grant ... on all tables to authenticated`) | Alta (regra de trabalho) | 0 | Perda de dados / tabela exposta |
 | DEBT-001 | README do projeto: rastreabilidade HU × tela × tabela (secao 9), contratacao no minimundo/HUs, secao "Como rodar o projeto" | Alta (DoD do Marco 2) | 2 | Avaliacao da disciplina cobra rastreabilidade |
@@ -174,7 +174,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 ### Ordem de execucao recomendada (revisao de 2026-10-16, aprovada pelo PO)
 
 1. **Fechamento da Sprint 01:** DEBT-004 → testes manuais US-001 a US-006 no Supabase real (recriar `prof1@helpme.test`) → `/sprint-retrospective` → DEBT-005.
-2. **Sprint 02 — nucleo do Fluxo 3:** DEBT-006, US-007, US-008, US-009 (~16 pts). Em paralelo, sem tocar no front: Discovery/Requirements rev. 3 do EPIC-006.
+2. **Sprint 02 — nucleo do Fluxo 3:** DEBT-006, US-007, US-008, US-009 (~16 pts) — **implementados em 23/10, em Review**. Em paralelo, sem tocar no front: Discovery/Requirements rev. 3 do EPIC-006.
 3. **Sprint 03:** US-010 (chat), US-014, US-015, US-013 — substitui o Table Editor.
 4. **Sprint 04:** US-016 + US-021 (triagem automatica), US-017, US-018, US-011, US-012, DEBT-001, DEBT-002 — fecha o Marco 2.
 5. **Marco 3:** EPIC-005, US-019, US-020, sinais pos-aprovacao (Nivel C).

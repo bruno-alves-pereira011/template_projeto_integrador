@@ -56,7 +56,7 @@ Ordem de execução: DEBT-006 → US-007 → US-008 → US-009.
 - **BDD:** -
 - **Behavior change esperado:** NO (remove telas que não funcionam; nenhuma é alcançável pelo roteamento atual)
 - **Critérios de Aceitação:**
-  - [ ] `feed-profissional.html`, `js/profissional.js`, `solicitar-pedido.html`, `espera-cliente.html` e `servico-andamento.html` removidos
+  - [ ] `feed-profissional.html` e `js/profissional.js` removidos (pela D8, `solicitar-pedido.html`, `espera-cliente.html` e `servico-andamento.html` ficam e recebem a contratação)
   - [ ] Nenhum link ou script restante aponta para esses arquivos (busca no `helpme-app/`)
   - [ ] Console sem erros nas páginas que sobraram
 
@@ -199,3 +199,16 @@ Ordem de execução: DEBT-006 → US-007 → US-008 → US-009.
 
 - `developer` atualizada com `main`, o conserto (DEBT-004) e o planejamento (`docs/fluxo3-admin-planejamento`). Branches empilhadas; PRs para `developer` mesclados na ordem DEBT-006 → US-007 → US-008 → US-009.
 - Validação feita pelo agente: harness com DOM e Supabase falsos (16 + 10 + 17 casos), `node --check`, colisão de globais, links e ids. **Falta para Done:** testes manuais no Supabase real (duas abas: cliente e profissional), 360px/acessibilidade, code review cruzado e validação do PO.
+
+## Situação no fim da sprint (2026-10-23)
+
+| Métrica | Valor |
+|---------|-------|
+| Pontos comprometidos | 16 |
+| Pontos implementados (em Review) | 16 |
+| Pontos em Done | 0 |
+| Pré-condições da retrospectiva 01 cumpridas | 0 de 3 (DEBT-004 sem merge na `main`, testes manuais da Sprint 01 não registrados, DEBT-005 sem decisão) |
+
+- **Bloqueio para Done:** nenhum item foi testado no Supabase real e nenhum PR foi aberto ou revisado. A meta da retrospectiva 01 (70% em Done, commits de 3+ integrantes) não foi atingida.
+- **Decisão pendente do PO:** estender a Sprint 02 (mesmo escopo, foco em teste, revisão e merge) ou encerrar com `/sprint-retrospective` e levar a validação para a Sprint 03.
+- **Lacuna nova para a US-010 (chat):** pela D8, o profissional não tem tela de detalhe enquanto a contratação está `solicitada` — registrado como ponto de esclarecimento na story.

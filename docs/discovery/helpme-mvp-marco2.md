@@ -79,7 +79,7 @@ Um avaliador consegue, no app rodando contra o Supabase real:
 
 ## Assumptions
 - [ASSUMPTION] Confirmacao de e-mail pode estar ativa no Supabase; o fluxo deve funcionar nos dois casos (perfil do profissional completado apos o primeiro login quando nao houver sessao no `signUp`).
-- [ASSUMPTION] Profissional aprovado cai no `feed-profissional.html`, com acesso a "editar meu perfil".
+- [ASSUMPTION] Profissional aprovado cai no `feed-profissional.html`, com acesso a "editar meu perfil". *(Superada: cai em `contratacoes.html` — A03 dos requisitos, US-008.)*
 - [ASSUMPTION] Uma unica migration (`001_schema.sql`) basta para o Marco 2, ja que o banco pode ser recriado (D3).
 - [ASSUMPTION] As cores/siglas das categorias passam a vir da tabela `categorias` (fonte unica).
 

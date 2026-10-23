@@ -19,21 +19,21 @@
 
 ### Contexto Adicional
 
-Adiciona o chat em `contratacao.html`, usando a tabela `mensagens` com Realtime. So as duas partes leem e escrevem; so enquanto a contratacao esta `solicitada` ou `aceita`.
+Adiciona o chat nas telas de detalhe da decisao D8 — `espera-cliente.html` (contratacao `solicitada`) e `servico-andamento.html` (`aceita`; somente leitura depois de `concluida`) —, usando a tabela `mensagens` com Realtime. So as duas partes leem e escrevem; so enquanto a contratacao esta `solicitada` ou `aceita`.
 
 - **Requisitos de origem:** FR14, BR08, NFR07 (`docs/requirements/helpme-mvp-marco2.md`)
-- **Dependencias:** US-007 (US-009 para a pagina de detalhe)
+- **Dependencias:** US-007, US-009 (paginas de detalhe; implementadas em 23/10, em Review)
 - **Repositorio de codigo:** `template_projeto_integrador/` (branch de trabalho a partir de `feat/mvp-marco2`)
 
 ### Pontos de Esclarecimento
 
-- Nenhum ponto pendente.
+- [PRECISA CLARIFICAR: Pela D8 o profissional nao tem tela de detalhe enquanto a contratacao esta `solicitada` (ele responde pela lista em `contratacoes.html`). Onde ele conversa nesse status? Sugestao: abrir `espera-cliente.html` tambem para o profissional, so com o chat (sem Cancelar).]
 
 ---
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** `contratacao.html` mostra o historico de mensagens em ordem cronologica, identificando quem enviou e o horario.
+- [ ] **Criterio 1:** `espera-cliente.html` e `servico-andamento.html` mostram o historico de mensagens em ordem cronologica, identificando quem enviou e o horario.
 - [ ] **Criterio 2:** Enviar uma mensagem faz ela aparecer para a outra parte sem recarregar (Realtime).
 - [ ] **Criterio 3:** Mensagem vazia ou com mais de 1000 caracteres nao e enviada (contador visivel).
 - [ ] **Criterio 4:** Em contratacao `recusada`, `cancelada` ou `concluida`, o campo de envio fica desabilitado e o historico permanece visivel.
@@ -58,7 +58,7 @@ Adiciona o chat em `contratacao.html`, usando a tabela `mensagens` com Realtime.
 - **Padrao de erro aplicavel:** N/A
 - **BDD previsto:** `docs/bdd/contratacao.feature` (revisao manual)
 - **Gates opcionais aplicaveis:** N/A (sem runner de testes no projeto)
-- **Touch List preliminar:** template_projeto_integrador/helpme-app/contratacao.html, template_projeto_integrador/helpme-app/js/chat.js (novo), template_projeto_integrador/helpme-app/assets/css/dashboard.css
+- **Touch List preliminar (D8):** helpme-app/espera-cliente.html, helpme-app/servico-andamento.html, helpme-app/js/chat.js (novo), helpme-app/assets/css/contratacao.css
 - **Task Issues previstas:** N/A
 
 ---
