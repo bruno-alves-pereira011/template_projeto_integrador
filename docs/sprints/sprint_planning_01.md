@@ -132,7 +132,7 @@ Todos Nivel 0, sem Spec/Contract/BDD. Com isso a sprint cobre o Fluxo 2 do Disco
 - **BDD a criar/atualizar:** `docs/bdd/contratacao.feature` (DEBT-003)
 - **Gates opcionais da sprint:** N/A (sem runner de testes no projeto)
 - **Task Issues a criar/atualizar:** N/A
-- **Repositorio/branch de codigo:** `template_projeto_integrador/`, branch `feat/mvp-marco2` (commits `63fd8b0` Fase 0 e `051e324` Fase 1 ja feitos)
+- **Repositorio/branch de codigo:** `template_projeto_integrador/`, branch `feat/mvp-marco2` (commits `63fd8b0` Fase 0 e `051e324` Fase 1 ja feitos), mergeada em `main` pelo PR #1
 
 ## Definition of Done
 
@@ -194,3 +194,11 @@ Todos Nivel 0, sem Spec/Contract/BDD. Com isso a sprint cobre o Fluxo 2 do Disco
 | US-004, US-005, US-006 | `0fe1791` | Review |
 
 Nenhuma story foi testada contra o Supabase real ainda. Para fechar como Done: aplicar `001_schema.sql` + criar usuarios de teste + `seed.sql`, executar os testes manuais de cada story e a checagem de mobile/acessibilidade.
+
+## Andamento (2026-10-16)
+
+- **DEBT-003:** schema aplicado no Supabase real. Fix `e2be2b8` (triggers antigos de `auth.users` quebravam o `signUp`), testado no Supabase do projeto: cadastro/login de cliente e profissional, completar perfil, bloqueios de RLS/triggers.
+- **Segurança (achado na análise do código de 15/10):** `data_nascimento` dos profissionais aprovados era legível pela API. Corrigido com SELECT por coluna e `minha_data_nascimento()` (`supabase/migrations/002_privacidade_data_nascimento.sql`), **já aplicado no Supabase real** e verificado pela API (visitante recebe `42501`; diretório e perfil seguem funcionando). Código na branch `fix/privacidade-data-nascimento`, aguardando PR para `main` (leva junto o `e2be2b8`). Até o merge, `completar-perfil.html` em `main` falha ao carregar o perfil.
+- **Usuários de teste:** `prof1@helpme.test` não existe no banco real; recriar pelo painel (Authentication → Add user) antes dos testes manuais.
+- **Pendente para Done:** testes manuais de US-001 a US-006 contra o Supabase real, checagem mobile (360px)/acessibilidade, code review cruzado e validação do PO.
+- **Processo:** ScrumAIDev instalado no repositório (PR #2); planejamento movido de `docs/planejamento/` para os caminhos padrão (`docs/sprints/`, `docs/stories/`, `docs/product_backlog.md`, `docs/discovery/`, `docs/requirements/`, `docs/bdd/`).

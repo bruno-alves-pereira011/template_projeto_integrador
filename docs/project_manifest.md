@@ -1,13 +1,13 @@
 # Project Manifest
 
 **Framework:** ScrumAIDev
-**Status do projeto:** UNDEFINED
-**Projeto atual:** A definir
-**Origem do contexto:** A definir (figma | código | usuário | híbrido)
-**Confiança do contexto:** baixa
-**Contexto processado:** não
-**Estado operacional:** Pré-inicialização — sem sprint ativa, sem backlog gerado
-**Última atualização:** N/A
+**Status do projeto:** ACTIVE_SPRINT
+**Projeto atual:** HelpMe — diretório de prestadores de serviço (Projeto Integrador, Marco 2)
+**Origem do contexto:** híbrido (código existente em `helpme-app/` + insumos em `arquivos/` + usuário)
+**Confiança do contexto:** alta
+**Contexto processado:** sim
+**Estado operacional:** Sprint 01 em fechamento (09/10 a 16/10/2026); US-001 a US-006 em Review
+**Última atualização:** 2026-10-16
 
 ## GitHub Planning Defaults
 
@@ -21,7 +21,7 @@
 
 ## Framework Maturity Defaults
 
-- `agileaidev_level`: `0`
+- `agileaidev_level`: `1`
 - `spec_bdd_governance`: `available`
 - `contract_first`: `docs_only`
 - `contract_validation`: `not_configured`
@@ -30,9 +30,9 @@
 - `mock_strategy`: `not_configured`
 - `type_generation`: `not_configured`
 - `ci_contract_gates`: `optional_noop`
-- `frontend_stack`: `undefined`
-- `backend_stack`: `undefined`
-- `database_stack`: `undefined`
+- `frontend_stack`: `html-css-js-vanilla` (sem build, em `helpme-app/`)
+- `backend_stack`: `none` (sem servidor próprio; regras no banco via RLS e triggers)
+- `database_stack`: `supabase-postgres` (em `supabase/`)
 
 ## Agent Delegation Defaults
 
@@ -84,8 +84,10 @@ Após o primeiro /sprint-planning de um projeto derivado, atualizar este manifes
 
 ## Estado Atual do Projeto
 
-- Sprint ativa: **nenhuma**
-- Backlog: **não gerado**
-- Próximo passo sugerido: iniciar com `/init-project`; depois, se aplicável, usar `/sprint-planning`
+- Sprint ativa: **Sprint 01** (`docs/sprints/sprint_planning_01.md`), termina em 2026-10-16
+- Backlog: **gerado** (`docs/product_backlog.md`): EPIC-001 a EPIC-004 no Marco 2, EPIC-005 no Marco 3
+- Discovery e requisitos: `docs/discovery/helpme-mvp-marco2.md` e `docs/requirements/helpme-mvp-marco2.md`
+- Decisões do projeto: `docs/DECISOES.md`
+- Próximo passo sugerido: testes manuais das US-001 a US-006 no Supabase real → `/sprint-retrospective` → `/sprint-planning` da Sprint 02 (EPIC-004 + débitos técnicos do frontend)
 
 > Atualize apenas ao final de cada sprint ou mudança relevante. Evite atualizações desnecessárias.
