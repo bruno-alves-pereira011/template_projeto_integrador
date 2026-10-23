@@ -1,0 +1,132 @@
+<!--
+  TELA: Completar / editar perfil do profissional (completar-perfil.html) — US-005
+  OBJETIVO: Criar (1ª vez) ou editar a linha em 'profissionais' + as categorias em 'profissional_categoria'.
+  REGRAS: exige sessão de profissional; pelo menos 1 categoria; 18 anos ou mais (o banco também valida);
+  o status de aprovação NUNCA é enviado pelo front (o banco força 'pendente' na criação).
+  ELEMENTOS (ids usados pelo js/completar-perfil.js):
+  - #perfil-carregando / #perfil-erro-carga (+ #btn-recarregar): estados de carga.
+  - #perfil-status: aviso conforme o status (aprovado mostra #link-perfil-publico).
+  - #form-perfil com #whatsapp, #telefone, #cidade, #bairro, #descricao, #data_nascimento e
+    #lista-categorias (checkboxes criados a partir do <template id="modelo-categoria">).
+  - Erros por campo: #erro-<campo> e #erro-categorias. Mensagem geral: #perfil-mensagem.
+  - #btn-sair encerra a sessão.
+  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/completar-perfil.js.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Meu perfil profissional</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="pagina-auth">
+
+    <main class="login-container largo">
+        <div class="barra-topo">
+            <a href="home-cliente.html" class="logo" aria-label="HelpMe - ir para a página inicial">
+                <span class="logo-icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </span>
+                HelpMe
+            </a>
+            <button type="button" id="btn-sair" class="btn btn-contorno">Sair</button>
+        </div>
+
+        <header class="login-header">
+            <h1 id="perfil-titulo">Complete seu perfil</h1>
+            <p id="perfil-subtitulo">Essas informações aparecem para os clientes quando seu cadastro for aprovado.</p>
+        </header>
+
+        <p id="perfil-carregando" role="status">Carregando seu perfil...</p>
+
+        <div id="perfil-erro-carga" class="mensagem mensagem-erro" role="alert" hidden>
+            <p id="perfil-erro-carga-texto">Não foi possível carregar seu perfil.</p>
+            <button type="button" id="btn-recarregar" class="btn btn-contorno">Tentar novamente</button>
+        </div>
+
+        <!-- Aviso de status (aprovado / em análise / recusado). Texto preenchido pelo JS. -->
+        <section id="perfil-status" class="mensagem" role="status" hidden>
+            <p id="perfil-status-texto"></p>
+            <p id="perfil-status-acoes" hidden>
+                <a id="link-perfil-publico" href="#" class="btn-link">Ver meu perfil público</a>
+            </p>
+        </section>
+
+        <form id="form-perfil" class="login-form" novalidate hidden>
+            <p id="perfil-mensagem" class="mensagem" role="alert" tabindex="-1" hidden></p>
+
+            <div class="linha-campos">
+                <div class="input-group">
+                    <label for="whatsapp">WhatsApp</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11) 91234-5678" required maxlength="20" autocomplete="tel" inputmode="tel" aria-describedby="erro-whatsapp">
+                    <p id="erro-whatsapp" class="campo-erro" hidden></p>
+                </div>
+
+                <div class="input-group">
+                    <label for="telefone">Telefone <span class="opcional">(opcional)</span></label>
+                    <input type="tel" id="telefone" name="telefone" placeholder="(11) 3456-7890" maxlength="20" inputmode="tel" aria-describedby="erro-telefone">
+                    <p id="erro-telefone" class="campo-erro" hidden></p>
+                </div>
+            </div>
+
+            <div class="linha-campos">
+                <div class="input-group">
+                    <label for="cidade">Cidade</label>
+                    <input type="text" id="cidade" name="cidade" placeholder="Ex.: São Paulo" required maxlength="80" autocomplete="address-level2" aria-describedby="erro-cidade">
+                    <p id="erro-cidade" class="campo-erro" hidden></p>
+                </div>
+
+                <div class="input-group">
+                    <label for="bairro">Bairro <span class="opcional">(opcional)</span></label>
+                    <input type="text" id="bairro" name="bairro" placeholder="Ex.: Centro" maxlength="80" autocomplete="address-level3">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="descricao">Descrição dos serviços <span class="opcional">(opcional)</span></label>
+                <textarea id="descricao" name="descricao" rows="4" maxlength="500" placeholder="Conte sua experiência e o que você faz." aria-describedby="dica-descricao"></textarea>
+                <p id="dica-descricao" class="dica-campo">Até 500 caracteres.</p>
+            </div>
+
+            <div class="input-group">
+                <label for="data_nascimento">Data de nascimento</label>
+                <input type="date" id="data_nascimento" name="data_nascimento" required aria-describedby="dica-nascimento erro-data_nascimento">
+                <p id="dica-nascimento" class="dica-campo">É preciso ter 18 anos ou mais. Não aparece no seu perfil público.</p>
+                <p id="erro-data_nascimento" class="campo-erro" hidden></p>
+            </div>
+
+            <fieldset class="grupo-opcoes" id="grupo-categorias" aria-describedby="erro-categorias">
+                <legend>Categorias em que você atua (marque pelo menos uma)</legend>
+                <div id="lista-categorias" class="lista-opcoes duas-colunas"></div>
+                <p id="erro-categorias" class="campo-erro" hidden></p>
+            </fieldset>
+
+            <div class="acoes">
+                <button type="submit" id="btn-salvar" class="btn btn-primario btn-bloco">Salvar perfil</button>
+                <a href="bloqueio.html" id="link-situacao" class="btn-link" hidden>Ver a situação do meu cadastro</a>
+            </div>
+        </form>
+    </main>
+
+    <!-- Um checkbox por categoria do banco (preenchido com textContent). -->
+    <template id="modelo-categoria">
+        <label class="opcao">
+            <input type="checkbox" name="categoria">
+            <span class="opcao-nome"></span>
+        </label>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/sessao.js"></script>
+    <script src="js/completar-perfil.js"></script>
+
+</body>
+</html>

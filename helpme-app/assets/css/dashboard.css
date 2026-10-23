@@ -1,0 +1,1272 @@
+/*
+  ESTILO DOS PAINÉIS (dashboard.css)
+  OBJETIVO: Estilizar as telas internas de navegação.
+  CONTEÚDO:
+  - Grid das categorias em home-cliente.html.
+  - Cards de pedidos do feed-profissional.html.
+  - Badges de status (Aberto, Em Andamento, Concluído).
+*/
+
+/* ==========================================
+   CORES DOS PAINÉIS (baseadas nos protótipos)
+   ========================================== */
+:root {
+    --painel-verde: #134e48;
+    --painel-verde-escuro: #0e3c37;
+    --painel-verde-claro: #e3eeec;
+    --painel-fundo: #f5f5f3;
+    --painel-branco: #ffffff;
+    --painel-borda: #e4e6e4;
+    --painel-texto: #1d2b29;
+    --painel-texto-suave: #5f6b69;
+    --painel-laranja: #e07b33;
+}
+
+/* ==========================================
+   LAYOUT GERAL (barra lateral + conteúdo)
+   ========================================== */
+body.painel {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    background: var(--painel-fundo);
+    color: var(--painel-texto);
+    font-family: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+body.painel *,
+body.painel *::before,
+body.painel *::after {
+    box-sizing: border-box;
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 240px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem 1rem;
+    background: var(--painel-branco);
+    border-right: 1px solid var(--painel-borda);
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0 0.5rem;
+    margin-bottom: 1.75rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--painel-verde);
+    text-decoration: none;
+}
+
+.logo-icone {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--painel-verde);
+    color: #fff;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--painel-texto-suave);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background: var(--painel-fundo);
+    color: var(--painel-verde);
+}
+
+.menu-item.ativo {
+    background: var(--painel-verde-claro);
+    color: var(--painel-verde);
+}
+
+.menu-sair {
+    margin-top: auto;
+    border-top: 1px solid var(--painel-borda);
+    border-radius: 0;
+    padding-top: 1.1rem;
+}
+
+.conteudo {
+    flex: 1;
+    min-width: 0;
+    padding: 2.25rem clamp(1rem, 5vw, 5.5rem);
+}
+
+.conteudo-cabecalho {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.conteudo-cabecalho h1 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.6rem;
+    color: var(--painel-verde-escuro);
+}
+
+.subtitulo {
+    margin: 0.3rem 0 0;
+    font-size: 0.9rem;
+    color: var(--painel-texto-suave);
+}
+
+.btn-secundario {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 8px;
+    background: var(--painel-branco);
+    font: inherit;
+    font-weight: 600;
+    color: var(--painel-verde);
+    cursor: pointer;
+}
+
+.btn-secundario:hover {
+    border-color: var(--painel-verde);
+}
+
+/* ==========================================
+   CARDS DE PEDIDOS (feed-profissional.html)
+   ========================================== */
+.grade-pedidos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.card-pedido {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.1rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: var(--painel-branco);
+    box-shadow: 0 1px 2px rgba(16, 40, 36, 0.05);
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.card-pedido:hover {
+    box-shadow: 0 6px 18px rgba(16, 40, 36, 0.09);
+    transform: translateY(-2px);
+}
+
+.card-topo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.avatar-categoria {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--cor-categoria, var(--painel-verde));
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: #fff;
+}
+
+.card-titulo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.badge-categoria {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: var(--painel-verde-claro);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--painel-verde-escuro);
+}
+
+.card-tempo {
+    font-size: 0.8rem;
+    color: var(--painel-texto-suave);
+}
+
+.card-cliente {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--painel-verde-escuro);
+}
+
+.card-descricao {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.45;
+    color: var(--painel-texto);
+    overflow-wrap: anywhere;
+}
+
+.card-endereco {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--painel-texto-suave);
+    overflow-wrap: anywhere;
+}
+
+.card-endereco svg {
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+}
+
+.btn-aceitar {
+    margin-top: auto;
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--painel-verde);
+    font: inherit;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-aceitar:hover {
+    background: var(--painel-verde-escuro);
+}
+
+.btn-aceitar:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* ==========================================
+   BADGES DE STATUS
+   ========================================== */
+.badge-status {
+    margin-left: auto;
+    align-self: flex-start;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-aberto {
+    background: #fdeee2;
+    color: #b25a17;
+}
+
+.status-em_andamento {
+    background: #e2ebf7;
+    color: #2d5b94;
+}
+
+.status-concluido {
+    background: #e1f3e8;
+    color: #1f7a45;
+}
+
+/* ==========================================
+   ESTADO VAZIO
+   ========================================== */
+.feed-vazio {
+    max-width: 420px;
+    margin: 3rem auto;
+    text-align: center;
+}
+
+.feed-vazio-icone {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: var(--painel-verde-claro);
+    color: var(--painel-verde);
+}
+
+.feed-vazio h2 {
+    margin: 0 0 0.4rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.15rem;
+    color: var(--painel-verde-escuro);
+}
+
+.feed-vazio p {
+    margin: 0;
+    color: var(--painel-texto-suave);
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* ==========================================
+   CELULAR: barra lateral vira barra no topo
+   ========================================== */
+@media (max-width: 760px) {
+    body.painel {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: static;
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        border-right: none;
+        border-bottom: 1px solid var(--painel-borda);
+    }
+
+    .sidebar-logo {
+        margin: 0 auto 0 0;
+        padding: 0;
+    }
+
+    .sidebar-menu {
+        order: 3;
+        flex-direction: row;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .menu-item {
+        width: auto;
+        white-space: nowrap;
+    }
+
+    .menu-sair {
+        margin: 0;
+        width: auto;
+        border-top: none;
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .conteudo {
+        padding: 1.5rem 1rem;
+    }
+
+    .grade-pedidos {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ==========================================
+   AVISO DE PEDIDO ATIVO (home-cliente.html)
+   ========================================== */
+.aviso-pedido {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--painel-borda);
+    border-left: 4px solid var(--painel-laranja);
+    border-radius: 12px;
+    background: var(--painel-branco);
+    box-shadow: 0 1px 2px rgba(16, 40, 36, 0.05);
+}
+
+.aviso-pedido-icone {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #fdeee2;
+    color: #b25a17;
+}
+
+.aviso-pedido-texto {
+    flex: 1;
+    min-width: 200px;
+}
+
+.aviso-pedido-titulo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    font-weight: 600;
+    color: var(--painel-texto);
+}
+
+.aviso-pedido-titulo .badge-status {
+    margin-left: 0;
+    align-self: center;
+}
+
+.aviso-pedido .btn-secundario {
+    text-decoration: none;
+}
+
+/* ==========================================
+   BUSCA DE CATEGORIAS (home-cliente.html)
+   ========================================== */
+.barra-busca {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding: 0 1rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 8px;
+    background: var(--painel-branco);
+    color: var(--painel-texto-suave);
+}
+
+.barra-busca:focus-within {
+    border-color: var(--painel-verde);
+}
+
+.barra-busca input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.75rem 0;
+    border: none;
+    outline: none;
+    background: none;
+    font: inherit;
+    color: var(--painel-texto);
+}
+
+/* ==========================================
+   CARDS DE CATEGORIAS (home-cliente.html)
+   Mesmo visual dos cards do feed profissional
+   ========================================== */
+.grade-categorias {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.card-categoria {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.1rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: var(--painel-branco);
+    box-shadow: 0 1px 2px rgba(16, 40, 36, 0.05);
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.card-categoria:hover {
+    box-shadow: 0 6px 18px rgba(16, 40, 36, 0.09);
+    transform: translateY(-2px);
+}
+
+.card-categoria-nome {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.1rem;
+    color: var(--painel-verde-escuro);
+}
+
+.card-categoria-descricao {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.45;
+    color: var(--painel-texto-suave);
+}
+
+.btn-solicitar {
+    margin-top: auto;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: var(--painel-verde);
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+}
+
+.card-categoria:hover .btn-solicitar {
+    background: var(--painel-verde-escuro);
+}
+
+@media (max-width: 760px) {
+    .grade-categorias {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.home-header {
+    background: #FFFFFF;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.home-header__content {
+    width: min(100% - 32px, 1120px);
+    margin: 0 auto;
+    min-height: 112px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+    padding: 24px 0;
+}
+
+.home-header__text {
+    min-width: 0;
+}
+
+.home-header__eyebrow {
+    margin: 0 0 4px;
+
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: #64748B;
+}
+
+.home-header__title {
+    margin: 0;
+
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0F172A;
+}
+
+.home-header__subtitle {
+    margin: 6px 0 0;
+
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: #64748B;
+}
+
+.home-header__avatar {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    border-radius: 50%;
+    background: #E0F2FE;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.home-header__avatar:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.15);
+}
+
+.home-header__avatar:focus-visible {
+    outline: 3px solid rgba(2, 132, 199, 0.25);
+    outline-offset: 3px;
+}
+
+.home-header__avatar img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* =========================================================
+   CONTEÚDO
+   ========================================================= */
+
+.home-content {
+    width: min(100% - 32px, 1120px);
+    margin: 0 auto;
+
+    padding: 24px 0 40px;
+}
+
+/* =========================================================
+   BUSCA
+   ========================================================= */
+
+.service-search {
+    width: 100%;
+    min-height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+    padding: 0 16px;
+
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.service-search__icon {
+    flex: 0 0 auto;
+
+    font-size: 21px;
+    color: #64748B;
+}
+
+.service-search__input {
+    width: 100%;
+    min-width: 0;
+
+    border: 0;
+    outline: 0;
+    background: transparent;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #0F172A;
+
+    cursor: default;
+}
+
+.service-search__input::placeholder {
+    color: #94A3B8;
+    opacity: 1;
+}
+
+/* =========================================================
+   HEADER DAS CATEGORIAS
+   ========================================================= */
+
+.categories-header {
+    margin: 32px 0 16px;
+}
+
+.categories-header__eyebrow {
+    margin: 0 0 4px;
+
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: #0284C7;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.categories-header__title {
+    margin: 0;
+
+    font-size: 20px;
+    line-height: 1.35;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0F172A;
+}
+
+/* =========================================================
+   GRID DE CATEGORIAS
+   ========================================================= */
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.category-card {
+    min-height: 148px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+    padding: 20px 12px;
+
+    background: #FFFFFF;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+    text-decoration: none;
+    color: inherit;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(2, 132, 199, 0.25);
+    box-shadow:
+        0 10px 20px -10px rgba(2, 132, 199, 0.18),
+        0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.category-card:active {
+    transform: translateY(-1px);
+}
+
+.category-card:focus-visible {
+    outline: 3px solid rgba(2, 132, 199, 0.25);
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   ÍCONE
+   ========================================================= */
+
+.category-card__icon {
+    width: 56px;
+    height: 56px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+    background: #E0F2FE;
+    color: #0284C7;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.category-card:hover .category-card__icon {
+    background: #BAE6FD;
+    transform: scale(1.05);
+}
+
+.category-card__icon i {
+    font-size: 30px;
+}
+
+/* =========================================================
+   NOME
+   ========================================================= */
+
+.category-card__name {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 600;
+    text-align: center;
+    color: #0F172A;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (min-width: 640px) {
+
+    .home-header__content,
+    .home-content {
+        width: min(100% - 48px, 1120px);
+    }
+
+    .home-header__content {
+        min-height: 128px;
+        padding: 28px 0;
+    }
+
+    .home-header__title {
+        font-size: 26px;
+    }
+
+    .home-header__subtitle {
+        font-size: 15px;
+    }
+
+    .home-content {
+        padding: 32px 0 56px;
+    }
+
+    .service-search {
+        max-width: 680px;
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .category-card {
+        min-height: 160px;
+    }
+}
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 1024px) {
+
+    .home-header__content,
+    .home-content {
+        width: min(100% - 64px, 1120px);
+    }
+
+    .home-header__content {
+        min-height: 144px;
+        padding: 32px 0;
+    }
+
+    .home-header__title {
+        font-size: 28px;
+    }
+
+    .home-content {
+        padding-top: 40px;
+    }
+
+    .service-search {
+        min-height: 56px;
+        padding: 0 18px;
+    }
+
+    .service-search__input {
+        font-size: 15px;
+    }
+
+    .categories-header {
+        margin-top: 40px;
+    }
+
+    .categories-header__title {
+        font-size: 22px;
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .category-card {
+        min-height: 180px;
+    }
+
+    .category-card__icon {
+        width: 64px;
+        height: 64px;
+    }
+
+    .category-card__icon i {
+        font-size: 34px;
+    }
+
+    .category-card__name {
+        font-size: 15px;
+    }
+}
+
+/* =========================================================
+   ACESSIBILIDADE
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .category-card,
+    .category-card__icon,
+    .home-header__avatar {
+        transition: none;
+    }
+}
+
+/* =========================================================
+   HOME PÚBLICA: ESTADOS, ACESSIBILIDADE E TOQUE (US-001)
+   ========================================================= */
+
+/* Esconde o texto na tela, mas o leitor de tela ainda lê (label da busca) */
+.visualmente-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Botão "Tentar novamente" dentro do aviso de erro */
+.feed-vazio .btn-secundario {
+    margin-top: 1rem;
+}
+
+/* Área de toque mínima de 44px (NFR04): itens de menu, botões e o campo de busca */
+.menu-item,
+.btn-secundario,
+.barra-busca input {
+    min-height: 44px;
+}
+
+.btn-secundario {
+    justify-content: center;
+}
+
+/* Foco visível para quem navega pelo teclado (NFR05) */
+body.painel a:focus-visible,
+body.painel button:focus-visible {
+    outline: 3px solid var(--painel-laranja);
+    outline-offset: 2px;
+}
+
+.barra-busca:focus-within {
+    box-shadow: 0 0 0 3px var(--painel-verde-claro);
+}
+
+/* =========================================================
+   DIRETÓRIO: LISTA E PERFIL DE PROFISSIONAIS (US-002 / US-003)
+   profissionais.html e profissional.html
+   ========================================================= */
+
+/* Link "Voltar" no topo do conteúdo */
+.link-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    margin: -0.5rem 0 0.75rem -0.35rem;
+    padding: 0 0.35rem;
+    border-radius: 8px;
+    color: var(--painel-verde);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.link-voltar:hover {
+    text-decoration: underline;
+}
+
+/* Filtros de cidade e bairro */
+.filtros-profissionais {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 0.75rem 1rem;
+    max-width: 680px;
+    margin-bottom: 1.25rem;
+}
+
+.filtro-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+.filtro-campo input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 8px;
+    background: var(--painel-branco);
+    color: var(--painel-texto);
+}
+
+.filtro-campo input:focus {
+    outline: none;
+    border-color: var(--painel-verde);
+    box-shadow: 0 0 0 3px var(--painel-verde-claro);
+}
+
+/* Cards de profissionais: mesmo visual dos cards de categoria */
+.grade-profissionais {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 1rem;
+}
+
+.card-profissional {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    min-width: 0;
+    padding: 1.1rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: var(--painel-branco);
+    box-shadow: 0 1px 2px rgba(16, 40, 36, 0.05);
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.card-profissional:hover {
+    box-shadow: 0 6px 18px rgba(16, 40, 36, 0.09);
+    transform: translateY(-2px);
+}
+
+.card-profissional:hover .btn-solicitar {
+    background: var(--painel-verde-escuro);
+}
+
+.card-profissional-nome {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.1rem;
+    color: var(--painel-verde-escuro);
+    overflow-wrap: anywhere;
+}
+
+.card-profissional-nota,
+.perfil-nota {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--painel-texto);
+}
+
+.card-profissional-nota.sem-avaliacoes {
+    font-weight: 400;
+    color: var(--painel-texto-suave);
+}
+
+.nota-estrela {
+    color: #b25a17;
+}
+
+.btn-solicitar {
+    min-height: 44px;
+}
+
+/* Perfil do profissional */
+.perfil-profissional {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 720px;
+    padding: 1.5rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 14px;
+    background: var(--painel-branco);
+    box-shadow: 0 1px 2px rgba(16, 40, 36, 0.05);
+}
+
+.perfil-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.perfil-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 1.3rem;
+}
+
+.perfil-identificacao {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.perfil-identificacao h1 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.5rem;
+    color: var(--painel-verde-escuro);
+    overflow-wrap: anywhere;
+}
+
+.perfil-secao h2 {
+    margin: 0 0 0.5rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1rem;
+    color: var(--painel-verde-escuro);
+}
+
+.perfil-descricao {
+    margin: 0;
+    line-height: 1.55;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.lista-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.chip-categoria {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+    border-radius: 999px;
+    background: var(--painel-verde-claro);
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--painel-verde-escuro);
+}
+
+.chip-categoria-sigla {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--cor-categoria, var(--painel-verde));
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Botões de contato: grandes e fáceis de tocar */
+.acoes-contato {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+    gap: 0.75rem;
+}
+
+.btn-contato {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0.8rem 1.25rem;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-contato-ligar {
+    background: var(--painel-verde);
+}
+
+.btn-contato-ligar:hover {
+    background: var(--painel-verde-escuro);
+}
+
+/* Verde escuro (e não o #25D366 da marca) para o texto branco ter contraste AA */
+.btn-contato-whatsapp {
+    background: #1b6e3f;
+}
+
+.btn-contato-whatsapp:hover {
+    background: #145531;
+}
+
+.acoes-contratacao:empty {
+    display: none;
+}
+
+.acoes-contratacao {
+    margin-top: 0.75rem;
+}
+
+/* Título "Profissional não encontrado" no estado vazio */
+.feed-vazio .titulo-estado {
+    margin: 0 0 0.4rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.15rem;
+    color: var(--painel-verde-escuro);
+}
+
+.feed-vazio a.btn-secundario {
+    margin-top: 1rem;
+    text-decoration: none;
+}
+
+@media (max-width: 760px) {
+    .perfil-profissional {
+        padding: 1.1rem;
+    }
+
+    .perfil-identificacao h1 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Logo da barra lateral também é link: área de toque mínima de 44px (NFR04) */
+.sidebar-logo {
+    min-height: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-profissional {
+        transition: none;
+    }
+
+    .card-profissional:hover {
+        transform: none;
+    }
+}

@@ -1,0 +1,342 @@
+/*
+  ESTILO DE AUTENTICAÇÃO (auth.css)
+  OBJETIVO: Layout centralizado em cartão para index.html, cadastro.html,
+  completar-perfil.html e bloqueio.html.
+  Usa SOMENTE as variáveis de global.css (antes usava --primary/--bg-surface,
+  que não existiam, e as cores caíam no padrão do navegador).
+  Regras de acessibilidade/mobile: alvos de toque com 44px, foco visível,
+  nada mais largo que a tela em 360px.
+*/
+
+@keyframes subirSuave {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= LAYOUT BASE ================= */
+body.pagina-auth {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-x: hidden;
+}
+
+@media (min-height: 700px) and (min-width: 600px) {
+    body.pagina-auth { align-items: center; }
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    background: var(--cor-branco);
+    padding: 32px 24px;
+    border-radius: var(--raio-card);
+    border: 1px solid var(--cor-borda);
+    box-shadow: 0 12px 32px -12px rgba(16, 40, 36, 0.18);
+    animation: subirSuave 0.4s ease-out both;
+}
+
+/* Formulário de perfil é maior: cartão mais largo. */
+.login-container.largo {
+    max-width: 620px;
+}
+
+@media (max-width: 400px) {
+    .login-container { padding: 24px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-container { animation: none; }
+}
+
+/* ================= CABEÇALHO ================= */
+.login-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.login-header .logo {
+    margin-bottom: 16px;
+}
+
+.login-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+}
+
+.login-header p {
+    color: var(--cor-texto-suave);
+}
+
+/* ================= FORMULÁRIO ================= */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Duas colunas lado a lado no desktop (cidade/bairro), uma no celular. */
+.linha-campos {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+}
+
+@media (min-width: 520px) {
+    .linha-campos { grid-template-columns: 1fr 1fr; }
+}
+
+.input-group input,
+.input-group textarea {
+    min-height: 44px;
+}
+
+.input-group textarea {
+    resize: vertical;
+    min-height: 96px;
+}
+
+.opcional {
+    font-weight: 400;
+    color: var(--cor-texto-suave);
+}
+
+.dica-campo {
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+}
+
+/* Campo de senha com botão "Mostrar" dentro. */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input {
+    padding-right: 92px;
+}
+
+.btn-mostrar-senha {
+    position: absolute;
+    right: 4px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: none;
+    border-radius: var(--raio);
+    background: transparent;
+    color: var(--cor-primaria);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-mostrar-senha:hover {
+    background: var(--cor-primaria-clara);
+}
+
+/* Campo inválido: borda vermelha + mensagem logo abaixo (ligada por aria-describedby). */
+.input-group input[aria-invalid="true"],
+.input-group textarea[aria-invalid="true"],
+fieldset[aria-invalid="true"] {
+    border-color: var(--cor-perigo);
+}
+
+.campo-erro {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--cor-perigo);
+}
+
+/* ================= OPÇÕES (rádio do tipo / checkbox de categorias) ================= */
+.grupo-opcoes {
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    padding: 12px;
+    min-width: 0;
+}
+
+.grupo-opcoes legend {
+    padding: 0 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.lista-opcoes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+@media (min-width: 520px) {
+    .lista-opcoes.duas-colunas { grid-template-columns: 1fr 1fr; }
+}
+
+/* O label inteiro é clicável e tem no mínimo 44px de altura (alvo de toque). */
+.opcao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    background: var(--cor-branco);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.opcao:hover {
+    border-color: var(--cor-primaria);
+}
+
+.opcao input {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    accent-color: var(--cor-primaria);
+}
+
+.opcao:has(input:checked) {
+    border-color: var(--cor-primaria);
+    background: var(--cor-primaria-clara);
+}
+
+/* ================= BOTÕES ================= */
+.pagina-auth .btn {
+    min-height: 44px;
+}
+
+.acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.btn-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 4px;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* ================= MENSAGENS ================= */
+.mensagem {
+    padding: 12px 14px;
+    border-radius: var(--raio);
+    border: 1px solid transparent;
+    font-weight: 600;
+}
+
+.mensagem-erro {
+    background: #fdecea;
+    border-color: #f5c2bd;
+    color: #8e2a20;
+}
+
+.mensagem-sucesso {
+    background: var(--cor-primaria-clara);
+    border-color: #b9d4cf;
+    color: var(--cor-primaria-escura);
+}
+
+.mensagem-info {
+    background: #fdf3e9;
+    border-color: #f2d2b4;
+    color: #6b3a12;
+}
+
+.mensagem a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+/* ================= STATUS (bloqueio / aviso de perfil) ================= */
+.status-painel {
+    text-align: center;
+}
+
+.status-painel h2 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+}
+
+.status-painel p {
+    color: var(--cor-texto-suave);
+}
+
+.status-painel p + p {
+    margin-top: 8px;
+}
+
+.selo-status {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: #fdf3e9;
+    color: #6b3a12;
+}
+
+.selo-status.recusado {
+    background: #fdecea;
+    color: #8e2a20;
+}
+
+.selo-status.aprovado {
+    background: var(--cor-primaria-clara);
+    color: var(--cor-primaria-escura);
+}
+
+/* ================= RODAPÉ ================= */
+.login-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 24px;
+    text-align: center;
+    color: var(--cor-texto-suave);
+}
+
+.login-footer p {
+    margin: 0;
+}
+
+/* Barra superior das páginas logadas (completar-perfil): logo + Sair. */
+.barra-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* ================= FOCO VISÍVEL ================= */
+/* Contorno escuro com afastamento: visível tanto no fundo branco quanto sobre o botão verde. */
+.pagina-auth a:focus-visible,
+.pagina-auth button:focus-visible,
+.pagina-auth .opcao:has(input:focus-visible) {
+    outline: 3px solid var(--cor-primaria-escura);
+    outline-offset: 2px;
+}
+
+.pagina-auth .opcao input:focus-visible {
+    outline: none;
+}

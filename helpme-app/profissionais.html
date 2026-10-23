@@ -1,0 +1,168 @@
+<!--
+  TELA: Lista de profissionais por categoria (profissionais.html?categoria=<slug>) — PÚBLICA, não exige login.
+  OBJETIVO: Mostrar os profissionais APROVADOS de uma categoria (US-002 / HU01), com filtro por cidade e bairro.
+  ELEMENTOS (ids usados pelo js/profissionais.js):
+  - #link-entrar (visitante) / #btn-sair (logado) no cabeçalho, como na home.
+  - #titulo-categoria recebe o nome da categoria; #subtitulo-categoria a descrição.
+  - #filtro-cidade e #filtro-bairro filtram os cards (sem diferenciar maiúsculas/minúsculas e acentos).
+  - #lista-profissionais recebe os cards do <template id="modelo-card-profissional">.
+  - Cada card leva para 'profissional.html?id=<id>&categoria=<slug>'.
+  - Estados: #profissionais-carregando, #profissionais-erro (+ #btn-tentar-novamente),
+    #profissionais-vazio (categoria sem aprovados), #profissionais-sem-resultado (filtro sem resultado)
+    e #categoria-nao-encontrada (slug inexistente).
+  - Dados lidos SÓ da view 'profissionais_publicos' (nunca da tabela 'profissionais').
+  - Scripts no final: Supabase CDN -> js/supabase-config.js -> js/categorias.js -> js/profissionais.js.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Profissionais</title>
+
+    <!-- Fontes (mesmas dos protótipos) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body class="painel">
+
+    <!-- Barra lateral de navegação -->
+    <aside class="sidebar">
+        <a href="home-cliente.html" class="sidebar-logo">
+            <span class="logo-icone">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </span>
+            HelpMe
+        </a>
+
+        <nav class="sidebar-menu">
+            <a href="home-cliente.html" class="menu-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+                Início
+            </a>
+        </nav>
+
+        <!-- Visitante vê "Entrar"; quem tem sessão vê "Sair" (o JS troca).
+             "Entrar" começa visível para o login continuar acessível mesmo se o JS falhar. -->
+        <a href="index.html" id="link-entrar" class="menu-item menu-sair">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+            Entrar
+        </a>
+
+        <button type="button" id="btn-sair" class="menu-item menu-sair" hidden>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Sair
+        </button>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="conteudo">
+        <a href="home-cliente.html" class="link-voltar">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            Voltar para as categorias
+        </a>
+
+        <header class="conteudo-cabecalho">
+            <div>
+                <h1 id="titulo-categoria">Profissionais</h1>
+                <p id="subtitulo-categoria" class="subtitulo">Profissionais aprovados que atendem nesta categoria.</p>
+            </div>
+        </header>
+
+        <!-- Filtros por cidade e bairro (só aparecem quando a categoria existe) -->
+        <form id="filtros-profissionais" class="filtros-profissionais" role="search" aria-label="Filtrar profissionais" hidden>
+            <div class="filtro-campo">
+                <label for="filtro-cidade">Cidade</label>
+                <input type="search" id="filtro-cidade" placeholder="Ex.: São Paulo" autocomplete="address-level2">
+            </div>
+            <div class="filtro-campo">
+                <label for="filtro-bairro">Bairro</label>
+                <input type="search" id="filtro-bairro" placeholder="Ex.: Centro" autocomplete="off">
+            </div>
+        </form>
+
+        <!-- Enquanto a consulta ao banco não termina -->
+        <p id="profissionais-carregando" class="subtitulo" role="status">Carregando profissionais...</p>
+
+        <!-- Os cards de profissionais são inseridos aqui pelo js/profissionais.js -->
+        <section id="lista-profissionais" class="grade-profissionais" aria-label="Profissionais da categoria" aria-live="polite"></section>
+
+        <!-- Erro ao consultar o Supabase: mensagem amigável em vez de lista vazia -->
+        <div id="profissionais-erro" class="feed-vazio" role="alert" hidden>
+            <div class="feed-vazio-icone">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+            </div>
+            <h2>Não foi possível carregar os profissionais</h2>
+            <p>Verifique sua conexão com a internet e tente novamente.</p>
+            <button type="button" id="btn-tentar-novamente" class="btn-secundario">Tentar novamente</button>
+        </div>
+
+        <!-- Categoria existe, mas ainda não tem profissional aprovado -->
+        <div id="profissionais-vazio" class="feed-vazio" hidden>
+            <div class="feed-vazio-icone">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            </div>
+            <h2>Nenhum profissional nesta categoria ainda</h2>
+            <p>Volte mais tarde ou escolha outro serviço.</p>
+            <a href="home-cliente.html" class="btn-secundario">Ver outras categorias</a>
+        </div>
+
+        <!-- Há profissionais, mas o filtro de cidade/bairro não encontrou nenhum -->
+        <div id="profissionais-sem-resultado" class="feed-vazio" role="status" hidden>
+            <div class="feed-vazio-icone">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+            <h2>Nenhum profissional encontrado</h2>
+            <p>Nenhum profissional atende nessa cidade ou bairro. Tente outro nome.</p>
+            <button type="button" id="btn-limpar-filtros" class="btn-secundario">Limpar filtros</button>
+        </div>
+
+        <!-- Slug da URL não existe na tabela 'categorias' -->
+        <div id="categoria-nao-encontrada" class="feed-vazio" hidden>
+            <div class="feed-vazio-icone">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17h.01"/></svg>
+            </div>
+            <h2>Categoria não encontrada</h2>
+            <p>O serviço que você procurou não existe ou foi removido.</p>
+            <a href="home-cliente.html" class="btn-secundario">Voltar para a página inicial</a>
+        </div>
+    </main>
+
+    <!-- Modelo de card (clonado pelo JS para cada profissional) -->
+    <template id="modelo-card-profissional">
+        <a class="card-profissional">
+            <div class="card-topo">
+                <span class="avatar-categoria avatar-profissional" aria-hidden="true"></span>
+                <div class="card-titulo">
+                    <h2 class="card-profissional-nome"></h2>
+                    <p class="card-endereco">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                        <span class="card-profissional-local"></span>
+                    </p>
+                </div>
+            </div>
+
+            <p class="card-profissional-nota"></p>
+
+            <span class="btn-solicitar">Ver perfil</span>
+        </a>
+    </template>
+
+    <!-- 1. Biblioteca do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- 2. Chaves públicas e cliente (supabaseClient) -->
+    <script src="js/supabase-config.js"></script>
+
+    <!-- 3. Busca as categorias na tabela 'categorias' (nome/cor da categoria do título) -->
+    <script src="js/categorias.js"></script>
+
+    <!-- 4. Lógica desta página -->
+    <script src="js/profissionais.js"></script>
+
+</body>
+</html>
