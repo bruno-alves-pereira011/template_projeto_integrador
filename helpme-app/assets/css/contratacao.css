@@ -117,3 +117,92 @@ input[type="datetime-local"] {
 .status-concluida  { background: #e1f3e8; color: #17603a; }
 .status-recusada,
 .status-cancelada  { background: #eeeeec; color: #4a4f4e; }
+
+/* ==========================================
+   DETALHE DA CONTRATAÇÃO (espera-cliente.html e servico-andamento.html)
+   ========================================== */
+.situacao-contratacao {
+    margin: 0;
+    font-weight: 600;
+    color: var(--cor-primaria-escura);
+}
+
+.detalhe-contratacao {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 14px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    background: var(--cor-branco);
+}
+
+.detalhe-contratacao dt {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+}
+
+.detalhe-contratacao dd {
+    margin: 2px 0 0;
+    overflow-wrap: anywhere;
+}
+
+/* Selo de status nas telas sem dashboard.css (mesmo visual do .badge-status de lá) */
+.pagina-auth .badge-status {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.acoes-contato-detalhe {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.acoes-contato-detalhe .btn {
+    flex: 1 1 140px;
+}
+
+.acoes-contato-detalhe:not(:has(.btn:not([hidden]))) {
+    display: none;
+}
+
+/* Verde escuro (e não o #25D366 da marca) para o texto branco ter contraste AA */
+.btn-whatsapp {
+    background: #1b6e3f;
+    color: #fff;
+}
+
+.btn-whatsapp:hover {
+    background: #145531;
+}
+
+.btn-perigo {
+    color: #8e2a20;
+}
+
+.btn-perigo:hover {
+    border-color: #8e2a20;
+}
+
+/* Link "Acompanhar" / "Ver contato" nos cards da lista */
+.link-card {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-height: 44px;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--cor-primaria);
+    border-radius: 8px;
+    color: var(--cor-primaria);
+    font-weight: 700;
+}
+
+.link-card:hover {
+    background: var(--cor-primaria-clara);
+}

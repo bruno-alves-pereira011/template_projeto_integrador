@@ -57,6 +57,7 @@ async function atualizarCabecalhoSessao() {
 
     document.getElementById('link-entrar').hidden = true;
     document.getElementById('btn-sair').hidden = false;
+    document.getElementById('link-minhas-contratacoes').hidden = false;
 
     // O nome vem do próprio login (enviado no cadastro), sem precisar consultar outra tabela
     const nome = sessao.user.user_metadata && sessao.user.user_metadata.nome;

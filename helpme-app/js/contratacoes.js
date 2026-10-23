@@ -1,25 +1,17 @@
-// CONTRATAÇÕES (contratacoes.js) — US-008 / FR12 (visão do profissional)
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js.
+// CONTRATAÇÕES (contratacoes.js) — US-008 / FR12 (profissional) e US-009 / FR11 (cliente)
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js -> js/contratacao-comum.js.
 // Fluxo:
-//   1. exigirSessao('profissional').
-//   2. Lê as contratações do próprio profissional (o RLS já filtra; o .eq é só para deixar claro)
+//   1. exigirSessao(). Profissional precisa estar aprovado e com perfil completo (BR03).
+//   2. Lê as contratações de que a pessoa é parte (o RLS já filtra; o .eq deixa a intenção clara)
 //      e agrupa: aguardando resposta (solicitada), aceitas e encerradas (recusada/cancelada/concluida).
-//   3. "Aceitar"/"Recusar" fazem update condicionado a status = 'solicitada'. Se nenhuma linha mudar,
-//      o cliente cancelou antes (ou outra aba respondeu): mostra aviso e recarrega.
-//   4. Realtime: qualquer mudança nas contratações do profissional recarrega a lista.
+//   3. Profissional: "Aceitar"/"Recusar" com update condicionado a status = 'solicitada'. Se nenhuma linha
+//      mudar, o cliente cancelou antes (ou outra aba respondeu): aviso e recarga.
+//      Cliente: cada card leva ao acompanhamento (espera-cliente.html ou servico-andamento.html — D8).
+//   4. Realtime: qualquer mudança nas contratações da pessoa recarrega a lista.
 // SEGURANÇA: o trigger validar_contratacao (BR06) recusa qualquer outra transição, inclusive pelo console.
 
 (function () {
     'use strict';
-
-    // Texto do selo de status (a classe CSS é status-<status>, em contratacao.css)
-    const ROTULO_STATUS = {
-        solicitada: 'Aguardando resposta',
-        aceita: 'Aceita',
-        recusada: 'Recusada',
-        cancelada: 'Cancelada pelo cliente',
-        concluida: 'Concluída'
-    };
 
     // Grupo da tela em que cada status aparece
     const GRUPO_DO_STATUS = {
@@ -32,9 +24,26 @@
 
     const GRUPOS = ['grupo-solicitadas', 'grupo-aceitas', 'grupo-encerradas'];
 
+    // Textos que mudam conforme quem está vendo
+    const TEXTOS = {
+        profissional: {
+            titulo: 'Contratações recebidas',
+            subtitulo: 'Novas solicitações aparecem aqui automaticamente.',
+            vazio: 'Quando um cliente contratar você pelo seu perfil, a solicitação aparece aqui.',
+            grupos: { 'grupo-solicitadas': 'Aguardando sua resposta', 'grupo-aceitas': 'Aceitas', 'grupo-encerradas': 'Encerradas' }
+        },
+        cliente: {
+            titulo: 'Minhas contratações',
+            subtitulo: 'O status se atualiza sozinho quando o profissional responder.',
+            vazio: 'Você ainda não contratou ninguém. Escolha uma categoria na página inicial e contrate pelo perfil do profissional.',
+            grupos: { 'grupo-solicitadas': 'Aguardando o profissional', 'grupo-aceitas': 'Aceitas', 'grupo-encerradas': 'Encerradas' }
+        }
+    };
+
     const el = (id) => document.getElementById(id);
 
     let uid = null;
+    let papel = null;            // 'cliente' | 'profissional'
     let consultaAtual = 0;       // descarta respostas antigas (Realtime + "Tentar novamente")
     let recargaAgendada = null;  // junta vários eventos do Realtime em uma recarga só
 
@@ -60,22 +69,13 @@
         return grupos;
     }
 
-    // "sex., 24/10 às 10:00"
-    function textoData(iso) {
-        const data = new Date(iso);
-        if (Number.isNaN(data.getTime())) return 'Data não informada';
-        const dia = data.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
-        const hora = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        return `${dia} às ${hora}`;
-    }
-
     // Traduz erros do banco/rede. Detalhe técnico fica no console.
     function traduzirErroBanco(erro) {
         const texto = ((erro && erro.message) || '').toLowerCase();
         if (texto.includes('somente profissional aprovado')) {
             return 'Seu cadastro não está aprovado no momento, então não é possível aceitar novas contratações.';
         }
-        if (texto.includes('transição de status inválida') || texto.includes('transicao de status invalida')) {
+        if (texto.includes('transição de status inválida')) {
             return 'Esta solicitação já foi respondida ou cancelada. A lista foi atualizada.';
         }
         if (texto.includes('failed to fetch') || texto.includes('network')) {
@@ -101,48 +101,81 @@
         aviso.hidden = !texto;
     }
 
-    function montarCard(c) {
+    // Textos e menu conforme o papel
+    function configurarPapel() {
+        const textos = TEXTOS[papel];
+        document.title = `HelpMe - ${textos.titulo}`;
+        el('titulo-pagina').textContent = textos.titulo;
+        el('subtitulo-pagina').textContent = textos.subtitulo;
+        el('texto-vazio').textContent = textos.vazio;
+        GRUPOS.forEach((id) => { el(id).querySelector('.titulo-grupo').textContent = textos.grupos[id]; });
+
+        el('menu-inicio').hidden = papel !== 'cliente';
+        el('menu-editar-perfil').hidden = papel !== 'profissional';
+        el('link-perfil-publico').hidden = papel !== 'profissional';
+        if (papel === 'profissional') {
+            el('link-perfil-publico').href = `profissional.html?id=${encodeURIComponent(uid)}`;
+        }
+    }
+
+    function criarBotao(classe, texto, rotulo, aoClicar) {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = classe;
+        botao.textContent = texto;
+        botao.setAttribute('aria-label', rotulo);
+        botao.addEventListener('click', aoClicar);
+        return botao;
+    }
+
+    function criarLink(texto, rotulo, href) {
+        const link = document.createElement('a');
+        link.className = 'link-card';
+        link.textContent = texto;
+        link.setAttribute('aria-label', rotulo);
+        link.href = href;
+        return link;
+    }
+
+    // nomes: { profissional_id: nome } (só na visão do cliente)
+    function montarCard(c, nomes) {
         const card = el('modelo-card-contratacao').content.cloneNode(true);
 
         card.querySelector('.card-numero').textContent = `Solicitação nº ${c.id}`;
-        card.querySelector('.card-tempo').textContent = `Recebida em ${new Date(c.created_at).toLocaleDateString('pt-BR')}`;
+        card.querySelector('.card-tempo').textContent = papel === 'cliente'
+            ? `Para ${nomes[c.profissional_id] || 'Profissional'}`
+            : `Recebida em ${new Date(c.created_at).toLocaleDateString('pt-BR')}`;
 
         const selo = card.querySelector('.badge-status');
-        selo.textContent = ROTULO_STATUS[c.status] || c.status;
+        selo.textContent = rotuloStatusContratacao(c.status, papel);
         selo.classList.add('status-' + c.status);
 
-        card.querySelector('.card-data').textContent = `Para: ${textoData(c.data_desejada)}`;
+        card.querySelector('.card-data').textContent = `Para: ${textoDataContratacao(c.data_desejada)}`;
         card.querySelector('.card-descricao').textContent = c.descricao;
         card.querySelector('.texto-endereco').textContent = c.endereco;
 
         const acoes = card.querySelector('.acoes-card');
-        if (c.status === 'solicitada') {
-            const aceitar = document.createElement('button');
-            aceitar.type = 'button';
-            aceitar.className = 'btn-aceitar';
-            aceitar.textContent = 'Aceitar';
-            aceitar.setAttribute('aria-label', `Aceitar a solicitação nº ${c.id}`);
-            aceitar.addEventListener('click', () => responder(c.id, 'aceita', [aceitar, recusar]));
 
-            const recusar = document.createElement('button');
-            recusar.type = 'button';
-            recusar.className = 'btn-recusar';
-            recusar.textContent = 'Recusar';
-            recusar.setAttribute('aria-label', `Recusar a solicitação nº ${c.id}`);
-            recusar.addEventListener('click', () => {
+        if (papel === 'profissional' && c.status === 'solicitada') {
+            const botoes = [];
+            botoes.push(criarBotao('btn-aceitar', 'Aceitar', `Aceitar a solicitação nº ${c.id}`,
+                () => responder(c.id, 'aceita', botoes)));
+            botoes.push(criarBotao('btn-recusar', 'Recusar', `Recusar a solicitação nº ${c.id}`, () => {
                 if (window.confirm(`Recusar a solicitação nº ${c.id}? O cliente verá que ela foi recusada.`)) {
-                    responder(c.id, 'recusada', [aceitar, recusar]);
+                    responder(c.id, 'recusada', botoes);
                 }
-            });
-
-            acoes.appendChild(aceitar);
-            acoes.appendChild(recusar);
+            }));
+            botoes.forEach((b) => acoes.appendChild(b));
+        } else if (papel === 'profissional' && (c.status === 'aceita' || c.status === 'concluida')) {
+            acoes.appendChild(criarLink('Ver contato e detalhes', `Ver contato e detalhes da solicitação nº ${c.id}`, paginaDaContratacao(c)));
+        } else if (papel === 'cliente') {
+            acoes.appendChild(criarLink('Acompanhar', `Acompanhar a solicitação nº ${c.id}`, paginaDaContratacao(c)));
         }
 
         return card;
     }
 
-    function renderizar(contratacoes) {
+    function renderizar(contratacoes, nomes) {
         if (!contratacoes.length) {
             mostrarEstado('vazio');
             return;
@@ -153,10 +186,9 @@
 
         GRUPOS.forEach((id) => {
             const secao = el(id);
-            const grade = secao.querySelector('.grade-pedidos');
             const itens = grupos[id];
 
-            grade.replaceChildren(...itens.map(montarCard));
+            secao.querySelector('.grade-pedidos').replaceChildren(...itens.map((c) => montarCard(c, nomes)));
             secao.querySelector('.contador-grupo').textContent = `(${itens.length})`;
             secao.hidden = itens.length === 0;
         });
@@ -166,20 +198,45 @@
     // BANCO
     // ==========================================
 
+    // Nome de cada profissional (visão do cliente), pela view pública. Falha não impede a lista.
+    async function buscarNomesProfissionais(contratacoes) {
+        const ids = [...new Set(contratacoes.map((c) => c.profissional_id))];
+        if (!ids.length) return {};
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('profissionais_publicos')
+                .select('id, nome')
+                .in('id', ids);
+            if (error) throw error;
+
+            const nomes = {};
+            (data || []).forEach((p) => { nomes[p.id] = p.nome; });
+            return nomes;
+        } catch (falha) {
+            console.error('Erro ao ler os nomes dos profissionais (a lista aparece sem eles):', falha);
+            return {};
+        }
+    }
+
     async function carregar() {
         const minhaConsulta = ++consultaAtual;
+        const coluna = papel === 'cliente' ? 'cliente_id' : 'profissional_id';
 
         try {
             const { data, error } = await supabaseClient
                 .from('contratacoes')
-                .select('id, descricao, endereco, data_desejada, status, created_at, updated_at')
-                .eq('profissional_id', uid)
+                .select('id, profissional_id, descricao, endereco, data_desejada, status, created_at, updated_at')
+                .eq(coluna, uid)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
+
+            const contratacoes = data || [];
+            const nomes = papel === 'cliente' ? await buscarNomesProfissionais(contratacoes) : {};
             if (minhaConsulta !== consultaAtual) return;
 
-            renderizar(data || []);
+            renderizar(contratacoes, nomes);
         } catch (falha) {
             if (minhaConsulta !== consultaAtual) return;
             console.error('Erro ao carregar as contratações:', falha);
@@ -187,26 +244,19 @@
         }
     }
 
-    // Aceita ou recusa. O .eq('status', 'solicitada') faz o banco só mudar se ainda estiver solicitada.
+    // Profissional aceita ou recusa (só muda se ainda estiver 'solicitada').
     async function responder(id, novoStatus, botoes) {
         botoes.forEach((b) => { b.disabled = true; });
         mostrarAviso('');
 
         try {
-            const { data, error } = await supabaseClient
-                .from('contratacoes')
-                .update({ status: novoStatus })
-                .eq('id', id)
-                .eq('status', 'solicitada')
-                .select('id');
+            const mudou = await mudarStatusContratacao(id, 'solicitada', novoStatus);
 
-            if (error) throw error;
-
-            if (!data || data.length === 0) {
+            if (!mudou) {
                 mostrarAviso('Esta solicitação foi cancelada pelo cliente (ou já foi respondida). A lista foi atualizada.');
             } else {
                 mostrarAviso(novoStatus === 'aceita'
-                    ? `Solicitação nº ${id} aceita. O contato do cliente agora está liberado.`
+                    ? `Solicitação nº ${id} aceita. O contato do cliente agora está liberado em "Ver contato e detalhes".`
                     : `Solicitação nº ${id} recusada.`);
             }
         } catch (falha) {
@@ -218,13 +268,14 @@
         await carregar();
     }
 
-    // Realtime: o RLS faz o profissional receber só eventos das próprias contratações;
+    // Realtime: o RLS faz cada pessoa receber só eventos das próprias contratações;
     // o filtro reduz o tráfego. Vários eventos seguidos viram uma recarga só.
     function assinarRealtime() {
+        const coluna = papel === 'cliente' ? 'cliente_id' : 'profissional_id';
         supabaseClient
-            .channel('contratacoes-profissional-' + uid)
+            .channel(`contratacoes-${papel}-${uid}`)
             .on('postgres_changes',
-                { event: '*', schema: 'public', table: 'contratacoes', filter: `profissional_id=eq.${uid}` },
+                { event: '*', schema: 'public', table: 'contratacoes', filter: `${coluna}=eq.${uid}` },
                 () => {
                     clearTimeout(recargaAgendada);
                     recargaAgendada = setTimeout(carregar, 300);
@@ -240,15 +291,20 @@
         mostrarEstado('carregando');
 
         try {
-            const sessao = await exigirSessao('profissional');
-            if (!sessao) return; // já redirecionou
+            const sessao = await exigirSessao();
+            if (!sessao) return; // já redirecionou para o login
 
-            // Só profissional aprovado e com perfil completo usa esta tela (BR03); os outros vão
-            // para onde o login os levaria (completar perfil ou bloqueio.html).
-            const situacao = await buscarSituacaoProfissional(sessao.user.id);
-            if (situacao.status !== 'aprovado' || !situacao.totalCategorias) {
-                window.location.replace(calcularDestino({ tipo: 'profissional', ...situacao }, null));
-                return;
+            if (sessao.usuario.tipo_usuario === 'profissional') {
+                // Só profissional aprovado e com perfil completo usa esta tela (BR03); os outros vão
+                // para onde o login os levaria (completar perfil ou bloqueio.html).
+                const situacao = await buscarSituacaoProfissional(sessao.user.id);
+                if (situacao.status !== 'aprovado' || !situacao.totalCategorias) {
+                    window.location.replace(calcularDestino({ tipo: 'profissional', ...situacao }, null));
+                    return;
+                }
+                papel = 'profissional';
+            } else {
+                papel = 'cliente';
             }
 
             uid = sessao.user.id;
@@ -258,8 +314,7 @@
             return;
         }
 
-        el('link-perfil-publico').href = `profissional.html?id=${encodeURIComponent(uid)}`;
-
+        configurarPapel();
         await carregar();
         assinarRealtime();
     }

@@ -73,9 +73,9 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-007 | - | Contratar profissional pelo perfil | 5 | Sprint 02 | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Sprint 02 | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Sprint 02 | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-007 | - | Contratar profissional pelo perfil | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
 | US-010 | - | Chat em tempo real na contratacao | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
 
 **Notas do Fluxo 3 (2026-10-16):** antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.

@@ -7,6 +7,7 @@
 //   2. Lê o profissional na view 'profissionais_publicos' (só aprovados). Fora dela = "não disponível".
 //   3. Valida no front e grava em 'contratacoes'. O banco valida de novo:
 //      RLS "cliente contrata profissional aprovado" (BR10) e trigger validar_contratacao (BR09).
+//   4. Deu certo: vai para espera-cliente.html?id=<id> (acompanhamento, US-009 / D8).
 // SEGURANÇA: status, created_at e updated_at NUNCA são enviados (o banco usa 'solicitada' e now()).
 
 (function () {
@@ -33,9 +34,6 @@
         data: document.getElementById('data_desejada'),
         btnEnviar: document.getElementById('btn-enviar'),
         linkVoltarPerfil: document.getElementById('link-voltar-perfil'),
-        sucesso: document.getElementById('contratar-sucesso'),
-        sucessoTexto: document.getElementById('contratar-sucesso-texto'),
-        linkVoltarPerfilSucesso: document.getElementById('link-voltar-perfil-sucesso'),
         btnSair: document.getElementById('btn-sair')
     };
 
@@ -102,7 +100,6 @@
         el.erroCarga.hidden = estado !== 'erro';
         el.naoEncontrado.hidden = estado !== 'nao-encontrado';
         el.form.hidden = estado !== 'formulario';
-        el.sucesso.hidden = estado !== 'sucesso';
     }
 
     function mostrarMensagem(texto, tipo) {
@@ -188,7 +185,6 @@
 
             const linkPerfil = `profissional.html?id=${encodeURIComponent(prof.id)}`;
             el.linkVoltarPerfil.href = linkPerfil;
-            el.linkVoltarPerfilSucesso.href = linkPerfil;
 
             // Não deixa escolher data no passado no seletor (o JS e o banco validam de novo)
             el.data.min = paraValorLocal(new Date());
@@ -245,11 +241,8 @@
 
             if (error) throw error;
 
-            // TEMPORÁRIO até a US-009: quando espera-cliente.html estiver pronta, trocar o painel abaixo por
-            //   window.location.replace('espera-cliente.html?id=' + data.id);
-            el.sucessoTexto.textContent = `Solicitação nº ${data.id} enviada para ${el.resumoNome.textContent}!`;
-            mostrarEstado('sucesso');
-            el.sucesso.focus();
+            // Acompanhamento da solicitação (replace: o "voltar" do navegador não reenvia o formulário)
+            window.location.replace('espera-cliente.html?id=' + encodeURIComponent(data.id));
         } catch (falha) {
             console.error('Erro ao criar a contratação:', falha);
             const traduzido = traduzirErroBanco(falha);

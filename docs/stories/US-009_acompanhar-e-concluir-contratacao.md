@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Alta
 **Story Points:** 5
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 02
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -19,7 +19,7 @@
 
 ### Contexto Adicional
 
-Nova pagina `contratacao.html?id=` (detalhe; o chat entra na US-010) e a visao do cliente em `contratacoes.html`. Substitui os stubs `espera-cliente.html` e `servico-andamento.html`.
+Pela decisao D8, o detalhe fica em duas telas com os nomes antigos: `espera-cliente.html?id=` (contratacao `solicitada`, cancelar; desfecho recusada/cancelada) e `servico-andamento.html?id=` (`aceita`/`concluida`, contato e concluir). A visao do cliente fica em `contratacoes.html`. O chat entra na US-010.
 
 - **Requisitos de origem:** FR11, FR13, BR06, BR07 (`docs/requirements/helpme-mvp-marco2.md`)
 - **Dependencias:** US-008
@@ -34,11 +34,11 @@ Nova pagina `contratacao.html?id=` (detalhe; o chat entra na US-010) e a visao d
 ## Criterios de Aceitacao
 
 - [ ] **Criterio 1:** O cliente ve em `contratacoes.html` a lista das proprias contratacoes com status atualizado em tempo real.
-- [ ] **Criterio 2:** `contratacao.html` mostra profissional, descricao, endereco, data desejada e status, atualizando sem recarregar quando a outra parte muda o status.
+- [ ] **Criterio 2:** `espera-cliente.html` / `servico-andamento.html` (D8) mostram profissional, descricao, endereco, data desejada e status, atualizando sem recarregar quando a outra parte muda o status.
 - [ ] **Criterio 3:** Enquanto `solicitada`, o cliente pode cancelar (status `cancelada`).
 - [ ] **Criterio 4:** Quando `aceita`, cada parte ve nome, telefone e WhatsApp da outra (botoes `tel:`/`wa.me` com a normalizacao da US-003); antes do aceite, o contato do cliente nao aparece para o profissional.
 - [ ] **Criterio 5:** Quando `aceita`, qualquer das partes pode marcar como `concluida`; depois disso nao ha mais acoes.
-- [ ] **Criterio 6:** Um terceiro usuario logado que abrir `contratacao.html?id=` de outra pessoa ve "Contratacao nao encontrada".
+- [ ] **Criterio 6:** Um terceiro usuario logado que abrir `espera-cliente.html?id=` ou `servico-andamento.html?id=` de outra pessoa ve "Contratacao nao encontrada".
 - [ ] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
 - [ ] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
 - [ ] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
@@ -58,7 +58,7 @@ Nova pagina `contratacao.html?id=` (detalhe; o chat entra na US-010) e a visao d
 - **Padrao de erro aplicavel:** N/A
 - **BDD previsto:** `docs/bdd/contratacao.feature` (revisao manual)
 - **Gates opcionais aplicaveis:** N/A (sem runner de testes no projeto)
-- **Touch List preliminar:** template_projeto_integrador/helpme-app/contratacao.html (novo), template_projeto_integrador/helpme-app/js/contratacao.js (novo), template_projeto_integrador/helpme-app/contratacoes.html, template_projeto_integrador/helpme-app/js/contratacoes.js; remove stubs template_projeto_integrador/helpme-app/espera-cliente.html e template_projeto_integrador/helpme-app/servico-andamento.html
+- **Touch List preliminar (D8):** ver `docs/tasks/breakdown_US-009.md` — `espera-cliente.html`, `servico-andamento.html`, `js/espera-cliente.js`, `js/servico-andamento.js`, `js/contratacao-comum.js`, `contratacoes.html`, `js/contratacoes.js`, `home-cliente.html`, `js/cliente.js`, `solicitar-pedido.html`, `js/solicitar-pedido.js`, `assets/css/contratacao.css`
 - **Task Issues previstas:** N/A
 
 ---
@@ -159,6 +159,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-10-23: implementada na branch `feat/US-009-acompanhar-contratacao` (empilhada sobre a US-008), com as telas da decisao D8. Breakdown em `docs/tasks/breakdown_US-009.md`.
 
 ---
 

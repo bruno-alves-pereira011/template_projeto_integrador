@@ -9,7 +9,7 @@
   - #contratar-carregando / #contratar-erro-carga (+ #btn-recarregar) / #contratar-nao-encontrado.
   - #resumo-profissional com #resumo-nome e #resumo-local.
   - #form-contratar com #descricao, #endereco, #data_desejada. Erros: #erro-<campo>. Mensagem geral: #contratar-mensagem.
-  - #contratar-sucesso (+ #link-voltar-perfil-sucesso) depois do envio.
+  - Depois do envio, o JS vai para espera-cliente.html?id=<id> (acompanhamento, US-009).
   - #link-voltar-perfil e #btn-sair na barra do topo.
   - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/solicitar-pedido.js.
 -->
@@ -95,13 +95,6 @@
             </div>
         </form>
 
-        <!-- Depois do envio. TEMPORÁRIO até a US-009: quando espera-cliente.html estiver pronta,
-             o js/solicitar-pedido.js passa a redirecionar para lá em vez de mostrar este painel. -->
-        <section id="contratar-sucesso" class="mensagem mensagem-sucesso" role="status" tabindex="-1" hidden>
-            <p id="contratar-sucesso-texto">Solicitação enviada!</p>
-            <p>Status: <strong>solicitada</strong>. Agora é só aguardar o profissional aceitar ou recusar.</p>
-            <p><a href="home-cliente.html" id="link-voltar-perfil-sucesso" class="btn-link">Voltar ao perfil do profissional</a></p>
-        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
