@@ -48,6 +48,9 @@
         el('btn-cancelar').hidden = c.status !== 'solicitada';
         el('btn-cancelar').disabled = false;
         el('link-buscar-outro').hidden = c.status === 'solicitada';
+
+        el('link-chat').href = linkDoChat(c.id);
+        el('link-chat').textContent = c.status === 'solicitada' ? 'Conversar com o profissional' : 'Ver conversa';
     }
 
     async function carregar() {

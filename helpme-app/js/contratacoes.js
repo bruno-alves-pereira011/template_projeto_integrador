@@ -172,6 +172,10 @@
             acoes.appendChild(criarLink('Acompanhar', `Acompanhar a solicitação nº ${c.id}`, paginaDaContratacao(c)));
         }
 
+        // Conversa (US-010): disponível em todo status; depois do fim, só para ler.
+        const ativa = c.status === 'solicitada' || c.status === 'aceita';
+        acoes.appendChild(criarLink(ativa ? 'Conversar' : 'Ver conversa', `Abrir a conversa da solicitação nº ${c.id}`, linkDoChat(c.id)));
+
         return card;
     }
 

@@ -1,7 +1,7 @@
 /* ==========================================
    CONTRATAÇÃO (contratacao.css) — Fluxo 3
    Estilos das telas de contratação (solicitar-pedido.html, contratacoes.html,
-   espera-cliente.html e servico-andamento.html). Carregar DEPOIS de global.css e auth.css/dashboard.css.
+   espera-cliente.html, servico-andamento.html e contratacao.html). Carregar DEPOIS de global.css e auth.css/dashboard.css.
    Arquivo separado para não mexer nos blocos de global.css/auth.css que a branch
    refactor/ui-polish está reescrevendo (DEBT-005).
    ========================================== */
@@ -68,6 +68,7 @@ input[type="datetime-local"] {
 
 .acoes-card {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: auto;
 }
@@ -205,4 +206,92 @@ input[type="datetime-local"] {
 
 .link-card:hover {
     background: var(--cor-primaria-clara);
+}
+
+/* ==========================================
+   CHAT DA CONTRATAÇÃO (contratacao.html) — US-010
+   ========================================== */
+.chat-cabecalho {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.chat-outra-parte {
+    margin: 0;
+    font-family: var(--fonte-titulo);
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+    overflow-wrap: anywhere;
+}
+
+.chat-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 200px;
+    max-height: min(55vh, 440px);
+    margin: 0;
+    padding: 12px;
+    overflow-y: auto;
+    list-style: none;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    background: var(--cor-fundo);
+}
+
+.chat-lista:focus-visible {
+    outline: 3px solid var(--cor-primaria-escura);
+    outline-offset: 2px;
+}
+
+.chat-msg {
+    align-self: flex-start;
+    max-width: 85%;
+    padding: 8px 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    background: var(--cor-branco);
+}
+
+.chat-msg-minha {
+    align-self: flex-end;
+    border-color: #b9d4cf;
+    background: var(--cor-primaria-clara);
+}
+
+.chat-msg-autor {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+}
+
+/* pre-wrap mantém as quebras de linha; anywhere impede rolagem horizontal com texto sem espaços */
+.chat-msg-texto {
+    margin: 2px 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.chat-msg-hora {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--cor-texto-suave);
+}
+
+.chat-form {
+    display: grid;
+    gap: 10px;
+}
+
+.chat-form .input-group textarea {
+    min-height: 72px;
+}
+
+.chat-contador-excedido {
+    color: #8e2a20;
+    font-weight: 700;
 }

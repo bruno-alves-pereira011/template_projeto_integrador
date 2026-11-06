@@ -4,7 +4,8 @@
 // COMO USAR: script clássico, depois de js/supabase-config.js e antes do script da página.
 // API PÚBLICA (globais): lerIdContratacaoDaUrl, buscarContratacao, buscarContatoContraparte,
 //   mudarStatusContratacao, assinarContratacao, rotuloStatusContratacao, textoDataContratacao,
-//   PAGINA_ESPERA_CLIENTE, PAGINA_SERVICO_ANDAMENTO, PAGINA_CONTRATACOES, paginaDaContratacao.
+//   PAGINA_ESPERA_CLIENTE, PAGINA_SERVICO_ANDAMENTO, PAGINA_CONTRATACOES, PAGINA_CHAT,
+//   paginaDaContratacao, linkDoChat.
 // SEGURANÇA: quem decide o que cada um lê e quais transições valem é o banco (RLS, trigger
 // validar_contratacao e função contato_contraparte). Aqui só se consome.
 
@@ -12,6 +13,7 @@
 const PAGINA_ESPERA_CLIENTE = 'espera-cliente.html';       // 'solicitada' (e o desfecho recusada/cancelada)
 const PAGINA_SERVICO_ANDAMENTO = 'servico-andamento.html'; // 'aceita' e 'concluida'
 const PAGINA_CONTRATACOES = 'contratacoes.html';           // listas do cliente e do profissional
+const PAGINA_CHAT = 'contratacao.html';                    // conversa das partes, em qualquer status (D9)
 
 // Colunas lidas em todas as telas
 const COLUNAS_CONTRATACAO = 'id, cliente_id, profissional_id, descricao, endereco, data_desejada, status, created_at, updated_at';
@@ -23,6 +25,12 @@ function paginaDaContratacao(contratacao) {
         ? PAGINA_SERVICO_ANDAMENTO
         : PAGINA_ESPERA_CLIENTE;
     return `${pagina}?id=${encodeURIComponent(contratacao.id)}`;
+}
+
+
+// Conversa da contratação (US-010).
+function linkDoChat(id) {
+    return `${PAGINA_CHAT}?id=${encodeURIComponent(id)}`;
 }
 
 
