@@ -2,7 +2,7 @@
 
 **Produto:** HelpMe — Hub de Contatos de Emergencia para Servicos Residenciais
 **Product Owner:** Equipe do Projeto Integrador (IFES Campus Serra)
-**Ultima atualizacao:** 2026-10-16 (revisao geral do projeto para o Fluxo 3)
+**Ultima atualizacao:** 2026-11-06 (US-001 a US-006 em Done; US-007 a US-009 em Review)
 
 ---
 
@@ -31,7 +31,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-001 | - | Ver categorias reais na home publica | 5 | Review | Sprint 01 | - | - | - |
+| US-001 | - | Ver categorias reais na home publica | 5 | Done | Sprint 01 | - | - | - |
 
 #### [EPIC-002] Diretorio e contato (HU01–HU03)
 
@@ -44,8 +44,8 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-002 | - | Listar profissionais aprovados por categoria | 5 | Review | Sprint 01 | - | - | - |
-| US-003 | - | Ver perfil e contatar profissional | 5 | Review | Sprint 01 | - | - | - |
+| US-002 | - | Listar profissionais aprovados por categoria | 5 | Done | Sprint 01 | - | - | - |
+| US-003 | - | Ver perfil e contatar profissional | 5 | Done | Sprint 01 | - | - | - |
 
 #### [EPIC-003] Conta e acesso
 
@@ -58,9 +58,9 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-004 | - | Cadastro e login com roteamento por tipo | 5 | Review | Sprint 01 | - | - | - |
-| US-005 | - | Completar e editar perfil do profissional | 5 | Review | Sprint 01 | - | - | - |
-| US-006 | - | Tela de cadastro em analise | 2 | Review | Sprint 01 | - | - | - |
+| US-004 | - | Cadastro e login com roteamento por tipo | 5 | Done | Sprint 01 | - | - | - |
+| US-005 | - | Completar e editar perfil do profissional | 5 | Done | Sprint 01 | - | - | - |
+| US-006 | - | Tela de cadastro em analise | 2 | Done | Sprint 01 | - | - | - |
 
 #### [EPIC-004] Contratacao no app
 
@@ -165,9 +165,9 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 ### Marco 2 (atual)
 
-- [ ] DEBT-003 + EPIC-001 + EPIC-002 — primeiro vertical slice (visitante → categoria → perfil → WhatsApp) — implementado, em Review
-- [ ] EPIC-003 — conta e acesso — implementado, em Review
-- [ ] EPIC-004 — contratacao no app + chat (Fluxo 3)
+- [ ] DEBT-003 + EPIC-001 + EPIC-002 — primeiro vertical slice (visitante → categoria → perfil → WhatsApp) — US-001 a US-003 em Done; DEBT-003 a confirmar
+- [x] EPIC-003 — conta e acesso — concluido (US-004 a US-006 em Done)
+- [ ] EPIC-004 — contratacao no app + chat (Fluxo 3) — US-007 a US-009 em Review; US-010 no Backlog
 - [ ] EPIC-006 — administracao e aprovacao (pendente Discovery/Requirements rev. 3)
 - [ ] DEBT-001 e DEBT-002
 
