@@ -195,21 +195,27 @@
 
             uid = sessao.user.id;
 
-            // As três leituras são independentes: em paralelo.
-            const [respCategorias, respPerfil, respVinculos] = await Promise.all([
+            // As quatro leituras são independentes: em paralelo.
+            // data_nascimento não tem SELECT liberado na tabela (dado pessoal): vem da função
+            // minha_data_nascimento(), que só devolve a do próprio usuário.
+            const [respCategorias, respPerfil, respVinculos, respNascimento] = await Promise.all([
                 supabaseClient.from('categorias').select('id, slug, nome, descricao, sigla, cor').order('nome', { ascending: true }),
                 supabaseClient.from('profissionais')
-                    .select('whatsapp, telefone, cidade, bairro, descricao, data_nascimento, status_aprovacao')
+                    .select('whatsapp, telefone, cidade, bairro, descricao, status_aprovacao')
                     .eq('id', uid)
                     .maybeSingle(),
-                supabaseClient.from('profissional_categoria').select('categoria_id').eq('profissional_id', uid)
+                supabaseClient.from('profissional_categoria').select('categoria_id').eq('profissional_id', uid),
+                supabaseClient.rpc('minha_data_nascimento')
             ]);
 
             if (respCategorias.error) throw respCategorias.error;
             if (respPerfil.error) throw respPerfil.error;
             if (respVinculos.error) throw respVinculos.error;
+            if (respNascimento.error) throw respNascimento.error;
 
-            const perfil = respPerfil.data;
+            const perfil = respPerfil.data
+                ? { ...respPerfil.data, data_nascimento: respNascimento.data }
+                : null;
             perfilExiste = Boolean(perfil);
             primeiroCadastro = !perfilExiste;
             categoriasAtuais = new Set((respVinculos.data || []).map((v) => v.categoria_id));

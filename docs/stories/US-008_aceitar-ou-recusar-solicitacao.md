@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Alta
 **Story Points:** 5
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 02
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -155,6 +155,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-10-23: implementada na branch `feat/US-008-solicitacoes-recebidas` (empilhada sobre a US-007). Breakdown em `docs/tasks/breakdown_US-008.md`. O card "Aceita" ganha o link para `servico-andamento.html?id=` (D8) na US-009. Profissional nao aprovado que abre a pagina e redirecionado (BR03).
 
 ---
 

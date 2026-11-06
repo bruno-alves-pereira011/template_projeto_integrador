@@ -3,6 +3,7 @@
 | Arquivo | Para que serve |
 |---|---|
 | `migrations/001_schema.sql` | Cria tabelas, triggers, view, função de contato, políticas RLS, Realtime e as 6 categorias. **Apaga e recria** as tabelas do schema `public` (inclusive a antiga `pedidos`, se existir). |
+| `migrations/002_privacidade_data_nascimento.sql` | Esconde `data_nascimento` da API (SELECT por coluna) e cria `minha_data_nascimento()`. **Só para bancos que rodaram o 001 antes dessa correção**; não apaga dados. O 001 atual já inclui isso. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 
 ## Como aplicar (ordem)
@@ -129,6 +130,15 @@ set local role anon;
 select count(*) from public.profissionais;   -- esperado: 2
 select count(*) from public.contratacoes;    -- esperado: 0
 select count(*) from public.mensagens;       -- esperado: 0
+rollback;
+```
+
+```sql
+-- 2.1b Data de nascimento é privada: ERRO "permission denied for table profissionais"
+-- (troque anon por authenticated e o resultado é o mesmo)
+begin;
+set local role anon;
+select data_nascimento from public.profissionais;
 rollback;
 ```
 

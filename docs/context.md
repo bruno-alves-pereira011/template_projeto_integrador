@@ -65,6 +65,22 @@ Use `docs/maturity_model.md` para decidir o menor nivel suficiente:
 
 O projeto derivado deve registrar o nivel atual e as capacidades no `docs/project_manifest.md`. Niveis 3 e 4 exigem comando real documentado neste arquivo; caso contrario, os gates devem retornar sucesso com mensagem explicita.
 
+## 2.3. Estrutura do Projeto HelpMe
+
+O HelpMe nasceu antes do ScrumAIDev e nao usa `frontend/`, `backend/` e `database/`. Os caminhos reais sao:
+
+- `helpme-app/` → frontend (HTML, CSS e JS puro, sem build, sem `package.json`). Scripts clássicos carregados por `<script>`; a ordem de carga está documentada no topo de `helpme-app/js/supabase-config.js` e `helpme-app/js/sessao.js`.
+- `supabase/` → banco (Supabase/Postgres): `migrations/` (aplicadas manualmente no SQL Editor, em ordem numérica), `seed.sql` e o roteiro de verificação em `supabase/README.md`.
+- Sem backend próprio: autorização e regras de negócio ficam no banco (RLS, triggers e funções).
+- `arquivos/` → insumos da disciplina (personas, requisitos, Balsamiq), apenas consulta.
+- `docs/DECISOES.md` → decisões do projeto (D1, D2...).
+
+Comandos e gates:
+
+- Não há runner de testes, lint ou build configurado. Os `make` targets da seção 4 não se aplicam ainda (Nível 1).
+- Validação: testes manuais descritos em cada story (`docs/stories/`), roteiro de RLS do `supabase/README.md` e revisão manual de `docs/bdd/contratacao.feature`.
+- Execução local: abrir `helpme-app/` com Live Preview/Live Server (precisa de `http://` para o link de confirmação de e-mail).
+
 ## 3. Delegacao e Handoff
 
 Modelo recomendado:

@@ -1,8 +1,98 @@
-<!-- 
-  TELA: Acompanhamento e Conexão (servico-andamento.html)
-  OBJETIVO: Conectar cliente e profissional e permitir encerramento do serviço.
-  O QUE FAZER AQUI:
-  - Mostrar dados do contato (Nome e Telefone da outra parte).
-  - Botão "Conversar no WhatsApp" (abre link `https://wa.me/NUMERO`).
-  - Botão "Finalizar Serviço" (altera status do pedido para 'concluido' no Supabase).
+<!--
+  TELA: Serviço em andamento (servico-andamento.html?id=<id da contratação>) — US-009 (decisão D8)
+  OBJETIVO: Contratação 'aceita': cliente e profissional veem o contato um do outro (Ligar / WhatsApp)
+  e qualquer um marca como concluída. 'concluida': mostra o resumo, sem ações.
+  (O nome antigo foi mantido; agora lê a tabela 'contratacoes', não a antiga 'pedidos'.)
+  REGRAS: exige sessão. Só as partes enxergam a contratação (RLS). O contato vem da função
+  contato_contraparte (BR07: o telefone do cliente só é liberado ao profissional depois do aceite).
+  Status 'solicitada'/'recusada'/'cancelada' não ficam aqui: cliente vai para espera-cliente.html,
+  profissional para contratacoes.html.
+  ELEMENTOS (ids usados pelo js/servico-andamento.js):
+  - #servico-carregando / #servico-erro (+ #btn-tentar-novamente) / #servico-nao-encontrada.
+  - #servico-detalhe: #rotulo-outra-parte, #detalhe-outra-parte, #detalhe-status, #detalhe-data,
+    #detalhe-descricao, #detalhe-endereco, #servico-situacao.
+  - Contato: #btn-ligar, #btn-whatsapp, #contato-indisponivel. Ação: #btn-concluir.
+  - #servico-aviso: avisos de ação. #btn-sair na barra do topo.
+  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/telefone.js ->
+    js/contratacao-comum.js -> js/servico-andamento.js.
 -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Serviço em andamento</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/contratacao.css">
+</head>
+<body class="pagina-auth">
+
+    <main class="login-container largo">
+        <div class="barra-topo">
+            <a href="home-cliente.html" class="logo" aria-label="HelpMe - ir para a página inicial">
+                <span class="logo-icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </span>
+                HelpMe
+            </a>
+            <button type="button" id="btn-sair" class="btn btn-contorno">Sair</button>
+        </div>
+
+        <header class="login-header">
+            <h1>Serviço em andamento</h1>
+            <p>Combine os detalhes pelo telefone ou WhatsApp e marque como concluído quando terminar.</p>
+        </header>
+
+        <p id="servico-carregando" role="status">Carregando...</p>
+
+        <div id="servico-erro" class="mensagem mensagem-erro" role="alert" hidden>
+            <p>Não foi possível carregar a contratação. Verifique sua conexão.</p>
+            <button type="button" id="btn-tentar-novamente" class="btn btn-contorno">Tentar novamente</button>
+        </div>
+
+        <div id="servico-nao-encontrada" class="mensagem mensagem-info" role="alert" hidden>
+            <p>Contratação não encontrada.</p>
+            <p><a href="contratacoes.html" class="btn-link">Ver minhas contratações</a></p>
+        </div>
+
+        <section id="servico-detalhe" class="login-form" aria-labelledby="servico-situacao" hidden>
+            <p id="servico-aviso" class="mensagem mensagem-info" role="status" tabindex="-1" hidden></p>
+
+            <p id="servico-situacao" class="situacao-contratacao"></p>
+
+            <dl class="detalhe-contratacao">
+                <div><dt id="rotulo-outra-parte">Contato</dt><dd id="detalhe-outra-parte"></dd></div>
+                <div><dt>Status</dt><dd><span id="detalhe-status" class="badge-status"></span></dd></div>
+                <div><dt>Data e horário desejados</dt><dd id="detalhe-data"></dd></div>
+                <div><dt>Serviço</dt><dd id="detalhe-descricao"></dd></div>
+                <div><dt>Endereço</dt><dd id="detalhe-endereco"></dd></div>
+            </dl>
+
+            <div class="acoes-contato-detalhe">
+                <a id="btn-ligar" class="btn btn-primario" hidden>Ligar</a>
+                <a id="btn-whatsapp" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer" hidden>WhatsApp</a>
+            </div>
+            <p id="contato-indisponivel" class="dica-campo" hidden></p>
+
+            <div class="acoes">
+                <button type="button" id="btn-concluir" class="btn btn-primario btn-bloco" hidden>Marcar como concluído</button>
+                <a href="contratacoes.html" class="btn-link">Ver minhas contratações</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/sessao.js"></script>
+    <script src="js/telefone.js"></script>
+    <script src="js/contratacao-comum.js"></script>
+    <script src="js/servico-andamento.js"></script>
+
+</body>
+</html>
