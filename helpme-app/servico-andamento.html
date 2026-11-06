@@ -11,7 +11,7 @@
   - #servico-carregando / #servico-erro (+ #btn-tentar-novamente) / #servico-nao-encontrada.
   - #servico-detalhe: #rotulo-outra-parte, #detalhe-outra-parte, #detalhe-status, #detalhe-data,
     #detalhe-descricao, #detalhe-endereco, #servico-situacao.
-  - Contato: #btn-ligar, #btn-whatsapp, #contato-indisponivel. Ação: #btn-concluir.
+  - Contato: #btn-ligar, #btn-whatsapp, #contato-indisponivel, #link-chat. Ação: #btn-concluir.
   - #servico-aviso: avisos de ação. #btn-sair na barra do topo.
   - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/telefone.js ->
     js/contratacao-comum.js -> js/servico-andamento.js.
@@ -46,7 +46,7 @@
 
         <header class="login-header">
             <h1>Serviço em andamento</h1>
-            <p>Combine os detalhes pelo telefone ou WhatsApp e marque como concluído quando terminar.</p>
+            <p>Combine os detalhes pelo chat, telefone ou WhatsApp e marque como concluído quando terminar.</p>
         </header>
 
         <p id="servico-carregando" role="status">Carregando...</p>
@@ -81,6 +81,7 @@
             <p id="contato-indisponivel" class="dica-campo" hidden></p>
 
             <div class="acoes">
+                <a id="link-chat" class="btn btn-contorno btn-bloco">Abrir conversa</a>
                 <button type="button" id="btn-concluir" class="btn btn-primario btn-bloco" hidden>Marcar como concluído</button>
                 <a href="contratacoes.html" class="btn-link">Ver minhas contratações</a>
             </div>

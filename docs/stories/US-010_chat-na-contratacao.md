@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Alta
 **Story Points:** 5
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** - (Sprint 03 ainda sem planejamento; ver `docs/tasks/breakdown_US-010.md`)
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -19,11 +19,11 @@
 
 ### Contexto Adicional
 
-Adiciona o chat em `contratacao.html`, usando a tabela `mensagens` com Realtime. So as duas partes leem e escrevem; so enquanto a contratacao esta `solicitada` ou `aceita`.
+Adiciona o chat em uma tela propria, `contratacao.html` (D9), usando a tabela `mensagens` com Realtime. So as duas partes leem e escrevem; so enquanto a contratacao esta `solicitada` ou `aceita`.
 
 - **Requisitos de origem:** FR14, BR08, NFR07 (`docs/requirements/helpme-mvp-marco2.md`)
 - **Dependencias:** US-007 (US-009 para a pagina de detalhe)
-- **Repositorio de codigo:** `template_projeto_integrador/` (branch de trabalho a partir de `feat/mvp-marco2`)
+- **Repositorio de codigo:** `template_projeto_integrador/` (branch `feat/US-010-chat`, a partir de `main`)
 
 ### Pontos de Esclarecimento
 
@@ -58,7 +58,7 @@ Adiciona o chat em `contratacao.html`, usando a tabela `mensagens` com Realtime.
 - **Padrao de erro aplicavel:** N/A
 - **BDD previsto:** `docs/bdd/contratacao.feature` (revisao manual)
 - **Gates opcionais aplicaveis:** N/A (sem runner de testes no projeto)
-- **Touch List preliminar:** template_projeto_integrador/helpme-app/contratacao.html, template_projeto_integrador/helpme-app/js/chat.js (novo), template_projeto_integrador/helpme-app/assets/css/dashboard.css
+- **Touch List preliminar:** template_projeto_integrador/helpme-app/contratacao.html, template_projeto_integrador/helpme-app/js/chat.js (novo), template_projeto_integrador/helpme-app/assets/css/contratacao.css, links em espera-cliente, servico-andamento e contratacoes (lista completa em `docs/tasks/breakdown_US-010.md`)
 - **Task Issues previstas:** N/A
 
 ---
@@ -156,6 +156,8 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-11-06: desenvolvimento iniciado. Tela `contratacao.html` confirmada pelo usuario (D9), porque o profissional nao tem tela de detalhe em `solicitada`, `recusada` e `cancelada`. Sprint 03 e publicacao no GitHub dispensadas por enquanto, por decisao do usuario.
+- 2026-11-06: TASK-001 a TASK-005 implementadas na branch `feat/US-010-chat`, ainda sem commit. Validacao feita: 45 verificacoes no Chrome com Supabase falso (criterios 1 a 5, 7, 8 e a parte de tela do 6). **Falta:** roteiro manual com duas abas no Supabase real, incluindo Realtime com RLS e o criterio 6 via console; code review cruzado; validacao do PO. Criterios seguem desmarcados ate o teste real.
 
 ---
 

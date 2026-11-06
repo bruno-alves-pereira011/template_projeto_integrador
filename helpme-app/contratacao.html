@@ -1,0 +1,102 @@
+<!--
+  TELA: Conversa da contratação (contratacao.html?id=<id da contratação>) — US-010 (decisão D9)
+  OBJETIVO: Cliente e profissional trocam mensagens de texto em tempo real, em qualquer status.
+  REGRAS: exige sessão. Só as partes enxergam a contratação e as mensagens (RLS). O envio só vale em
+  'solicitada' e 'aceita' (BR08); nos outros status o campo fica desabilitado e o histórico continua visível.
+  ELEMENTOS (ids usados pelo js/chat.js):
+  - #chat-carregando / #chat-erro (+ #btn-tentar-novamente) / #chat-nao-encontrada.
+  - #chat-detalhe: #detalhe-outra-parte, #detalhe-status, #chat-conexao, #chat-lista, #chat-vazio.
+  - #modelo-mensagem: <template> de cada mensagem (.chat-msg-autor, .chat-msg-texto, .chat-msg-hora).
+  - #chat-form: #chat-texto, #chat-contador, #btn-enviar. #chat-encerrado: aviso de conversa encerrada.
+  - #chat-aviso: falhas de envio. #link-voltar: tela de detalhe certa. #btn-sair na barra do topo.
+  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/contratacao-comum.js -> js/chat.js.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Conversa da contratação</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/contratacao.css">
+</head>
+<body class="pagina-auth">
+
+    <main class="login-container largo">
+        <div class="barra-topo">
+            <a href="home-cliente.html" class="logo" aria-label="HelpMe - ir para a página inicial">
+                <span class="logo-icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </span>
+                HelpMe
+            </a>
+            <button type="button" id="btn-sair" class="btn btn-contorno">Sair</button>
+        </div>
+
+        <header class="login-header">
+            <h1>Conversa da contratação</h1>
+        </header>
+
+        <p id="chat-carregando" role="status">Carregando...</p>
+
+        <div id="chat-erro" class="mensagem mensagem-erro" role="alert" hidden>
+            <p>Não foi possível carregar a conversa. Verifique sua conexão.</p>
+            <button type="button" id="btn-tentar-novamente" class="btn btn-contorno">Tentar novamente</button>
+        </div>
+
+        <div id="chat-nao-encontrada" class="mensagem mensagem-info" role="alert" hidden>
+            <p>Contratação não encontrada.</p>
+            <p><a href="contratacoes.html" class="btn-link">Ver minhas contratações</a></p>
+        </div>
+
+        <section id="chat-detalhe" class="login-form" aria-label="Conversa" hidden>
+            <div class="chat-cabecalho">
+                <p id="detalhe-outra-parte" class="chat-outra-parte"></p>
+                <span id="detalhe-status" class="badge-status"></span>
+            </div>
+
+            <p id="chat-conexao" class="mensagem mensagem-info" role="status" hidden>Reconectando. Novas mensagens podem demorar a aparecer.</p>
+
+            <p id="chat-vazio" class="dica-campo" hidden>Nenhuma mensagem ainda.</p>
+            <ol id="chat-lista" class="chat-lista" role="log" aria-label="Mensagens da conversa" tabindex="0"></ol>
+
+            <p id="chat-encerrado" class="mensagem mensagem-info" hidden></p>
+            <p id="chat-aviso" class="mensagem mensagem-erro" role="alert" hidden></p>
+
+            <form id="chat-form" class="chat-form" novalidate>
+                <div class="input-group">
+                    <label for="chat-texto">Sua mensagem</label>
+                    <textarea id="chat-texto" name="conteudo" rows="2" aria-describedby="chat-contador"></textarea>
+                    <p id="chat-contador" class="dica-campo">0/1000</p>
+                </div>
+                <button type="submit" id="btn-enviar" class="btn btn-primario btn-bloco" disabled>Enviar</button>
+            </form>
+
+            <div class="acoes">
+                <a id="link-voltar" href="contratacoes.html" class="btn-link">Voltar para a contratação</a>
+            </div>
+        </section>
+    </main>
+
+    <template id="modelo-mensagem">
+        <li class="chat-msg">
+            <p class="chat-msg-autor"></p>
+            <p class="chat-msg-texto"></p>
+            <time class="chat-msg-hora"></time>
+        </li>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/sessao.js"></script>
+    <script src="js/contratacao-comum.js"></script>
+    <script src="js/chat.js"></script>
+
+</body>
+</html>

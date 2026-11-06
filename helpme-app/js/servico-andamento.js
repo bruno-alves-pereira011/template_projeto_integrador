@@ -86,6 +86,9 @@
 
         el('btn-concluir').hidden = c.status !== 'aceita';
         el('btn-concluir').disabled = false;
+
+        el('link-chat').href = linkDoChat(c.id);
+        el('link-chat').textContent = c.status === 'aceita' ? 'Abrir conversa' : 'Ver conversa';
     }
 
     async function carregar() {
