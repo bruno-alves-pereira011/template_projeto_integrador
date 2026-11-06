@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** - (Sprint 03 ainda sem planejamento; ver `docs/tasks/breakdown_US-010.md`)
-**Status:** In Progress
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -158,6 +158,8 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
 - 2026-11-06: desenvolvimento iniciado. Tela `contratacao.html` confirmada pelo usuario (D9), porque o profissional nao tem tela de detalhe em `solicitada`, `recusada` e `cancelada`. Sprint 03 e publicacao no GitHub dispensadas por enquanto, por decisao do usuario.
 - 2026-11-06: TASK-001 a TASK-005 implementadas na branch `feat/US-010-chat`, ainda sem commit. Validacao feita: 45 verificacoes no Chrome com Supabase falso (criterios 1 a 5, 7, 8 e a parte de tela do 6). **Falta:** roteiro manual com duas abas no Supabase real, incluindo Realtime com RLS e o criterio 6 via console; code review cruzado; validacao do PO. Criterios seguem desmarcados ate o teste real.
+- 2026-11-06: merge na `main` (`748d968`). `supabase/testes/us010_chat_rls.sql` rodou no banco real: 26 de 26, cobrindo o criterio 6. Gates para `Review` e `Done` em `docs/tasks/testes_contratacao.md`.
+- 2026-11-06: movida para `Review` por decisao do PO, com base nos proprios testes. Os resultados de CH-01 a CH-08 nao foram registrados um a um; o Gate Done continua pendente.
 
 ---
 
