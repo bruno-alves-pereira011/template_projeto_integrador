@@ -31,7 +31,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-001 | - | Ver categorias reais na home publica | 5 | Review | Sprint 01 | - | - | - |
+| US-001 | - | Ver categorias reais na home publica | 5 | Done | Sprint 01 | - | - | - |
 
 #### [EPIC-002] Diretorio e contato (HU01–HU03)
 
@@ -45,7 +45,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
 | US-002 | - | Listar profissionais aprovados por categoria | 5 | Review | Sprint 01 | - | - | - |
-| US-003 | - | Ver perfil e contatar profissional | 5 | Review | Sprint 01 | - | - | - |
+| US-003 | - | Ver perfil e contatar profissional | 5 | Review | Done 01 | - | - | - |
 
 #### [EPIC-003] Conta e acesso
 
@@ -56,11 +56,11 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 ##### User Stories
 
-| ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
+| ID | Issue | Titulo | Story Points | Status | Done | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-004 | - | Cadastro e login com roteamento por tipo | 5 | Review | Sprint 01 | - | - | - |
-| US-005 | - | Completar e editar perfil do profissional | 5 | Review | Sprint 01 | - | - | - |
-| US-006 | - | Tela de cadastro em analise | 2 | Review | Sprint 01 | - | - | - |
+| US-004 | - | Cadastro e login com roteamento por tipo | 5 | Done | Sprint 01 | - | - | - |
+| US-005 | - | Completar e editar perfil do profissional | 5 | Done | Sprint 01 | - | - | - |
+| US-006 | - | Tela de cadastro em analise | 2 | Done | Sprint 01 | - | - | - |
 
 #### [EPIC-004] Contratacao no app
 
@@ -76,7 +76,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-007 | - | Contratar profissional pelo perfil | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
 | US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
 | US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-010 | - | Chat em tempo real na contratacao | 5 | Backlog | - | - | - | docs/bdd/contratacao.feature |
+| US-010 | - | Chat em tempo real na contratacao | 5 | In Progress | - | - | - | docs/bdd/contratacao.feature |
 
 **Notas do Fluxo 3 (2026-10-16):** antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.
 
