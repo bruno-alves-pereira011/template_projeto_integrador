@@ -2,13 +2,13 @@
 
 **Data:** 2026-11-09
 **Participantes:** Bruno Alves (PO), Lucas dos Santos Felipe, Davi Souza, Luiz Felipe Moro, Welcson, Gabriel (a confirmar)
-**Sprint Duration:** 1 semana (2026-11-10 a 2026-11-17)
-**Sprint Goal:** O administrador aprova ou recusa profissionais dentro do app, sem usar o Table Editor, e o cliente consegue recuperar a senha e manter o próprio perfil. US-007 a US-010 chegam a Done.
+**Sprint Duration:** 1 semana (2026-11-12 a 2026-11-19) — primeira sprint do Marco 3
+**Sprint Goal:** O administrador aprova ou recusa profissionais dentro do app, sem usar o Table Editor, e o cliente consegue recuperar a senha e manter o próprio perfil.
 **GitHub Project:** -
 **GitHub Sprint Iteration:** -
 **GitHub Sprint Milestone:** -
 
-**Status do planejamento:** APROVADO pelo PO em 2026-11-09 (escopo, período e responsáveis).
+**Status do planejamento:** APROVADO pelo PO em 2026-11-09 (escopo e responsáveis). Remarcada em 2026-11-09 para 12/11, depois da entrega do Marco 2 em 11/11.
 
 ---
 
@@ -17,26 +17,37 @@
 - **Velocity anterior:** Sprint 02 — 16 pts implementados, 0 em Done dentro da sprint (`docs/retrospectives/sprint_02_retro.md`). Sprint 01 — 33 implementados, 0 em Done.
 - **Capacidade estimada:** 16 pontos (mesma da Sprint 02, decisão da retrospectiva da Sprint 01)
 - **Pontos planejados:** 16 (US-014 5 + US-015 5 + US-011 3 + US-012 2 + DEBT-009 1)
-- **Dias úteis disponíveis:** 6 (10, 11, 12, 13, 16 e 17/11)
-- **Impedimentos conhecidos:** acesso ao painel/SQL Editor do Supabase concentrado em uma pessoa; Gate Done de US-007 a US-010 atrasado (precisa de quem não escreveu o código); `refactor/ui-polish` (DEBT-005) sem decisão.
+- **Dias úteis disponíveis:** 6 (12, 13, 16, 17, 18 e 19/11)
+- **Impedimentos conhecidos:** acesso ao painel/SQL Editor do Supabase concentrado em uma pessoa; `refactor/ui-polish` (DEBT-005) sem decisão.
 
 ---
 
 ## Sprint Goal
 
-> O administrador aprova ou recusa profissionais dentro do app (com histórico e sem Table Editor), e o cliente ganha "Esqueci minha senha" e "Meu perfil". Antes de qualquer story nova, US-007 a US-010 passam pelo Gate Done.
+> O administrador aprova ou recusa profissionais dentro do app (com histórico e sem Table Editor), e o cliente ganha "Esqueci minha senha" e "Meu perfil".
 
 ---
 
-## Pré-condições (não contam pontos)
+## Antes da sprint: fechamento e entrega do Marco 2 (10 e 11/11)
+
+**Decisão do PO (2026-11-09):** o Marco 2 é entregue em **11/11** com o que existe: EPIC-001 a EPIC-004 (US-001 a US-010). EPIC-006 (admin) e EPIC-007 (conta do cliente) passam para o Marco 3. Não entra código novo de story nesses dois dias.
+
+| Item | Pts | Responsável | Prazo |
+|------|-----|-------------|-------|
+| Limpar os dados de teste `[TESTE AUTO` (aparecem na lista do `prof1` durante a apresentação): `delete from public.contratacoes where descricao like '[TESTE AUTO%';` | 0 | A DEFINIR (sugestão: Bruno, que tem acesso ao Supabase) | 10/11 |
+| Gate Done de US-009 e US-010 em `docs/tasks/testes_contratacao.md`: CH-13, CH-17, leitor de tela (CH-18), CH-20, CH-21 (code review cruzado) e CH-22 (PO). Os demais itens já passaram nos testes automatizados de 2026-11-09 | 0 | Bruno Alves, Luiz Felipe Moro e Welcson | 11/11 |
+| Gate Done de US-007 e US-008 (itens CT/AC não automatizados, code review cruzado e validação do PO) | 0 | Lucas dos Santos Felipe, Davi Souza e Gabriel | 11/11 |
+| DEBT-001 — README do projeto: rastreabilidade HU × tela × tabela (seção 9), contratação e chat no minimundo/HUs, "Como rodar o projeto" (incluindo `supabase/testes/`) | 2 | A DEFINIR | 11/11 |
+| DEBT-002 — Revisão final por quem não escreveu o código: fluxos com os usuários do seed, tentativa de burlar o RLS e acessibilidade/mobile. Base pronta: `contratacao_api.mjs` (62 verificações) e `contratacao_telas.mjs` (93) rodados em 2026-11-09; falta a revisão humana e o registro | 2 | A DEFINIR (não pode ser o Bruno, autor da maior parte do código) | 11/11 |
+
+---
+
+## Pré-condições da sprint (não contam pontos)
 
 | Item | Responsável | Prazo |
 |------|-------------|-------|
-| Gate Done de US-009 e US-010 em `docs/tasks/testes_contratacao.md`: CH-13, CH-17, leitor de tela (CH-18), CH-20, CH-21 (code review cruzado) e CH-22 (PO). Os demais itens já passaram nos testes automatizados de 2026-11-09 | Bruno Alves, Luiz Felipe Moro e Welcson | 2026-11-11 |
-| Gate Done de US-007 e US-008 (itens CT/AC não automatizados, code review cruzado e validação do PO) | Lucas dos Santos Felipe, Davi Souza e Gabriel | 2026-11-11 |
-| Confirmar que há um profissional `pendente` para testar BR10 (US7-02) e a fila da US-015: o `prof3@helpme.test` está `aprovado` no banco real; voltar para `pendente` ou criar outro | A DEFINIR (quem tem acesso ao Supabase) | 2026-11-10 |
-| Limpar os dados de teste: `delete from public.contratacoes where descricao like '[TESTE AUTO%';` (necessário antes do DEBT-009) | A DEFINIR (quem tem acesso ao Supabase) | 2026-11-10 |
-| Decidir `refactor/ui-polish` (DEBT-005): mesclar ou descartar antes de criar `admin*.html` | Bruno Alves (PO) + time | 2026-11-10 |
+| Confirmar que há um profissional `pendente` para testar BR10 (US7-02) e a fila da US-015: o `prof3@helpme.test` está `aprovado` no banco real; voltar para `pendente` ou criar outro | A DEFINIR (quem tem acesso ao Supabase) | 12/11 |
+| Decidir `refactor/ui-polish` (DEBT-005): mesclar ou descartar antes de criar `admin*.html` | Bruno Alves (PO) + time | 12/11 |
 
 ---
 
@@ -161,7 +172,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 | Item | Situação | O que falta |
 |------|----------|-------------|
 | US-007, US-008, US-009 (Sprint 02) | Review; testes automatizados OK em 2026-11-09 | Itens humanos do Gate Done (pré-condição acima) |
-| US-010 (desenvolvida fora de sprint) | Review; testes automatizados OK em 2026-11-09 | Itens humanos do Gate Done; entra no histórico como Done da Sprint 03 |
+| US-010 (desenvolvida fora de sprint) | Review; testes automatizados OK em 2026-11-09 | Itens humanos do Gate Done, no fechamento do Marco 2 (10 e 11/11) |
 
 ---
 
@@ -200,7 +211,8 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 
 | Risco/Dependência | Impacto | Mitigação |
 |-------------------|---------|-----------|
-| Terceira sprint seguida sem Done (0 pts nas Sprints 01 e 02) | Alto | Gate Done de US-007 a US-010 como pré-condição; meta de 70% dos pontos em Done dentro da sprint |
+| Terceira sprint seguida sem Done (0 pts nas Sprints 01 e 02) | Alto | Gate Done de US-007 a US-010 no fechamento do Marco 2; meta de 70% dos pontos em Done dentro da sprint |
+| Gate Done, README e revisão final em só 2 dias (10 e 11/11) | Alto | Nenhuma story nova antes de 12/11; os testes automatizados já cobrem a maior parte; o que não fechar até 11/11 entra na entrega como pendência declarada |
 | US-015 depende da US-014 (cadeia de 10 pts numa semana) | Alto | US-014 começa no primeiro dia; US-011 e US-012 em paralelo, com outras pessoas |
 | Sem profissional `pendente` no banco real (prof3 está aprovado) | Médio | Pré-condição: voltar o prof3 para `pendente` ou criar outro |
 | `admin*.html` em conflito com `refactor/ui-polish` | Médio | Decidir o DEBT-005 antes de criar as telas |
@@ -222,7 +234,8 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **2026-11-09 — aprovação:** escopo aprovado pelo PO no Review & Adjust.
 - **2026-11-09 — responsáveis:** DEBT-009 Bruno; US-014 Lucas e Davi; US-015 Lucas e Luiz; US-011 Luiz e Welcson; US-012 Bruno e Gabriel. Carga dividida por dupla: Lucas ~5 pts, Luiz ~4, Davi ~2,5, Bruno ~2, Welcson ~1,5, Gabriel ~1 (ninguém passa da metade dos 16 pts).
 - **2026-11-09 — DEBT-009** criado a partir do achado US7-09 dos testes automatizados.
-- **Prévia da Sprint 04 (a planejar):** sobram US-013 (3), US-016 (5), US-021 (3), US-017 (5), US-018 (3), DEBT-001 (2) e DEBT-002 (2) = 23 pts, acima da capacidade de 16. O planejamento da Sprint 04 precisa cortar cerca de 7 pts ou prever uma Sprint 05 antes do fechamento do Marco 2. A data de entrega do Marco 2 ainda não foi informada.
+- **2026-11-09 — Marco 2 em 11/11:** PO informou a data de entrega. Decisão: fechar o Marco 2 com US-001 a US-010 + DEBT-001 + DEBT-002; a Sprint 03 passa para 12/11 a 19/11 (Marco 3), com o mesmo escopo e os mesmos responsáveis.
+- **Prévia da Sprint 04:** ver `docs/sprints/sprint_planning_04.md` (rascunho, 23/11 a 30/11).
 - **Action items da retrospectiva da Sprint 02** atendidos aqui: responsável por item (pendente da resposta do PO), Gate Done de US-007 a US-010 como pré-condição e decisão do `refactor/ui-polish`.
 
 ---

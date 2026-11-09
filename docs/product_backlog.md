@@ -96,9 +96,9 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Sprint Backlog | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Backlog | Sprint 04 (rascunho) | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-017 | - | Painel de indicadores do administrador | 5 | Backlog | - | - | - | - |
-| US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Backlog | - | - | - | - |
+| US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Backlog | Sprint 05 (sugestao) | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-017 | - | Painel de indicadores do administrador | 5 | Backlog | Sprint 04 (rascunho) | - | - | - |
+| US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Backlog | Sprint 04 (rascunho) | - | - | - |
 | US-019 | - | Suspender/reativar profissional aprovado (Could) | 3 | Ideia | - | - | - | - |
 | US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Ideia | - | - | - | - |
 
@@ -149,8 +149,8 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | DEBT-007 | Fixar versao exata da CDN `@supabase/supabase-js@2` em todos os HTML | Baixa | 1 | App pode quebrar sozinho com versao nova |
 | DEBT-008 | Banco real ja tem dados: daqui em diante so migrations incrementais (`003_*`, `004_*`); nao editar nem reaplicar o `001` (reaplicar apaga dados e desfaz o `002`). Toda tabela nova com RLS no mesmo script (o `001` da `grant ... on all tables to authenticated`) | Alta (regra de trabalho) | 0 | Perda de dados / tabela exposta |
 | DEBT-009 | **Sprint 03.** Banco aceita `descricao`/`endereco` vazios ou so com espacos em `contratacoes` (achado US7-09 dos testes de 2026-11-09). Migration incremental (proximo numero livre) com `check (char_length(trim(...)) between 1 and N)`; limpar `[TESTE AUTO` antes | Media | 1 | Chamada direta a API grava contratacao sem descricao |
-| DEBT-001 | README do projeto: rastreabilidade HU × tela × tabela (secao 9), contratacao no minimundo/HUs, secao "Como rodar o projeto" | Alta (DoD do Marco 2) | 2 | Avaliacao da disciplina cobra rastreabilidade |
-| DEBT-002 | Revisao final por agente que nao escreveu o codigo: fluxos com usuarios do seed, tentativa de burlar RLS, checklist de acessibilidade/mobile | Alta (DoD do Marco 2) | 2 | Garante seguranca e qualidade antes da entrega |
+| DEBT-001 | **Fechamento do Marco 2 (10 e 11/11).** README do projeto: rastreabilidade HU × tela × tabela (secao 9), contratacao no minimundo/HUs, secao "Como rodar o projeto" | Alta (DoD do Marco 2) | 2 | Avaliacao da disciplina cobra rastreabilidade |
+| DEBT-002 | **Fechamento do Marco 2 (10 e 11/11).** Base: `supabase/testes/contratacao_api.mjs` e `contratacao_telas.mjs` (2026-11-09). Revisao final por agente que nao escreveu o codigo: fluxos com usuarios do seed, tentativa de burlar RLS, checklist de acessibilidade/mobile | Alta (DoD do Marco 2) | 2 | Garante seguranca e qualidade antes da entrega |
 
 ---
 
@@ -164,26 +164,29 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 ## Roadmap Overview
 
-### Marco 2 (atual)
+### Marco 2 (entrega em 11/11/2026)
 
 - [x] DEBT-003 + EPIC-001 + EPIC-002 — primeiro vertical slice (visitante → categoria → perfil → WhatsApp) — concluido (US-001 a US-003 em Done; DEBT-003 aplicado)
 - [x] EPIC-003 — conta e acesso — concluido (US-004 a US-006 em Done)
 - [ ] EPIC-004 — contratacao no app + chat (Fluxo 3) — US-007 a US-010 em Review
-- [ ] EPIC-006 — administracao e aprovacao — US-014 e US-015 na Sprint 03; demais na Sprint 04 (rascunho)
-- [ ] EPIC-007 — conta do cliente — US-011 e US-012 na Sprint 03
-- [ ] DEBT-001 e DEBT-002
+- [ ] Gate Done de US-007 a US-010 (10 e 11/11)
+- [ ] DEBT-001 (README) e DEBT-002 (revisao final) (10 e 11/11)
+- Decisao do PO (2026-11-09): EPIC-006 e EPIC-007 passam para o Marco 3
 
 ### Ordem de execucao recomendada (revisao de 2026-10-16, aprovada pelo PO)
 
 1. **Fechamento da Sprint 01:** DEBT-004 → testes manuais US-001 a US-006 no Supabase real (recriar `prof1@helpme.test`) → `/sprint-retrospective` → DEBT-005.
 2. **Sprint 02 — nucleo do Fluxo 3:** DEBT-006, US-007, US-008, US-009 (~16 pts). Em paralelo, sem tocar no front: Discovery/Requirements rev. 3 do EPIC-006.
-3. **Sprint 03 (10/11 a 17/11, aprovada em 2026-11-09):** US-014, US-015, US-011, US-012, DEBT-009 (16 pts) + Gate Done de US-007 a US-010. US-013 foi para a Sprint 04.
-4. **Sprint 04 (18/11 a 24/11, rascunho):** US-013, US-016, DEBT-001, DEBT-002 (12 pts; 4 dias uteis por causa do feriado de 20/11). US-017, US-018 e US-021 (11 pts) ficam para uma Sprint 05 ou para corte, a decidir.
-   - Sprint 05 (a confirmar): US-017, US-018, US-021 — fecha o Marco 2.
-5. **Marco 3:** EPIC-005, US-019, US-020, sinais pos-aprovacao (Nivel C).
+3. **Fechamento do Marco 2 (10 e 11/11):** Gate Done de US-007 a US-010, DEBT-001, DEBT-002, limpeza dos dados `[TESTE AUTO`. Entrega em 11/11.
+4. **Sprint 03 (12/11 a 19/11, Marco 3, aprovada em 2026-11-09):** US-014, US-015, US-011, US-012, DEBT-009 (16 pts).
+5. **Sprint 04 (23/11 a 30/11, Marco 3, rascunho):** US-016, US-013, US-018, US-017 (16 pts).
+6. **Sprint 05 (sugestao):** US-021 e o que escorregar; depois EPIC-005.
+7. **Marco 3 (depois do admin):** EPIC-005, US-019, US-020, sinais pos-aprovacao (Nivel C).
 
 ### Marco 3
 
+- [ ] EPIC-006 — administracao e aprovacao (Sprints 03 a 05)
+- [ ] EPIC-007 — conta do cliente (Sprint 03)
 - [ ] EPIC-005 — orcamento, pagamento simulado, avaliacoes, favoritos, testes e deploy de teste
 
 ---
@@ -236,7 +239,7 @@ Comecar por DEBT-003 → US-001 → US-002 → US-003: entrega a jornada princip
 
 ### Riscos Identificados
 
-- Escopo do Marco 2 cresceu para 47 pontos de stories + 7 de debitos; data de entrega ainda nao informada.
+- Marco 2 entregue em 11/11/2026 com US-001 a US-010; admin e conta do cliente movidos para o Marco 3 (decisao do PO em 2026-11-09).
 - Realtime + RLS em `contratacoes` e `mensagens` precisa ser validado no ambiente real.
 
 ### Oportunidades
