@@ -34,7 +34,7 @@
 
 | Item | Pts | Responsável | Prazo |
 |------|-----|-------------|-------|
-| Limpar os dados de teste `[TESTE AUTO` (aparecem na lista do `prof1` durante a apresentação): `delete from public.contratacoes where descricao like '[TESTE AUTO%';` | 0 | Bruno Alves | 09/11 (junto com o prof3) |
+| Limpar os dados de teste `[TESTE AUTO` (aparecem na lista do `prof1` durante a apresentação): `delete from public.contratacoes where descricao like '[TESTE AUTO%';` | 0 | Bruno Alves — **feito em 09/11** (0 restantes; seed, categorias e diretório conferidos) | 09/11 |
 | Gate Done de US-009 e US-010 em `docs/tasks/testes_contratacao.md`: CH-13, CH-17, leitor de tela (CH-18), CH-20, CH-21 (code review cruzado) e CH-22 (PO). Os demais itens já passaram nos testes automatizados de 2026-11-09 | 0 | Bruno Alves, Luiz Felipe Moro e Welcson | 11/11 |
 | Gate Done de US-007 e US-008 (itens CT/AC não automatizados, code review cruzado e validação do PO) | 0 | Lucas dos Santos Felipe, Davi Souza e Gabriel | 11/11 |
 | DEBT-001 — README do projeto: rastreabilidade HU × tela × tabela (seção 9), contratação e chat no minimundo/HUs, "Como rodar o projeto" (incluindo `supabase/testes/`) | 2 | Luiz Felipe Moro | 11/11 |
