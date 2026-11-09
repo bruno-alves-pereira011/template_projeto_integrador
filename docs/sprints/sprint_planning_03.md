@@ -37,8 +37,8 @@
 | Limpar os dados de teste `[TESTE AUTO` (aparecem na lista do `prof1` durante a apresentação): `delete from public.contratacoes where descricao like '[TESTE AUTO%';` | 0 | A DEFINIR (sugestão: Bruno, que tem acesso ao Supabase) | 10/11 |
 | Gate Done de US-009 e US-010 em `docs/tasks/testes_contratacao.md`: CH-13, CH-17, leitor de tela (CH-18), CH-20, CH-21 (code review cruzado) e CH-22 (PO). Os demais itens já passaram nos testes automatizados de 2026-11-09 | 0 | Bruno Alves, Luiz Felipe Moro e Welcson | 11/11 |
 | Gate Done de US-007 e US-008 (itens CT/AC não automatizados, code review cruzado e validação do PO) | 0 | Lucas dos Santos Felipe, Davi Souza e Gabriel | 11/11 |
-| DEBT-001 — README do projeto: rastreabilidade HU × tela × tabela (seção 9), contratação e chat no minimundo/HUs, "Como rodar o projeto" (incluindo `supabase/testes/`) | 2 | A DEFINIR | 11/11 |
-| DEBT-002 — Revisão final por quem não escreveu o código: fluxos com os usuários do seed, tentativa de burlar o RLS e acessibilidade/mobile. Base pronta: `contratacao_api.mjs` (62 verificações) e `contratacao_telas.mjs` (93) rodados em 2026-11-09; falta a revisão humana e o registro | 2 | A DEFINIR (não pode ser o Bruno, autor da maior parte do código) | 11/11 |
+| DEBT-001 — README do projeto: rastreabilidade HU × tela × tabela (seção 9), contratação e chat no minimundo/HUs, "Como rodar o projeto" (incluindo `supabase/testes/`) | 2 | Luiz Felipe Moro | 11/11 |
+| DEBT-002 — Revisão final por quem não escreveu o código: fluxos com os usuários do seed, tentativa de burlar o RLS e acessibilidade/mobile. Base pronta: `contratacao_api.mjs` (62 verificações) e `contratacao_telas.mjs` (93) rodados em 2026-11-09; falta a revisão humana e o registro | 2 | Lucas dos Santos Felipe | 11/11 |
 
 ---
 
@@ -234,6 +234,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **2026-11-09 — aprovação:** escopo aprovado pelo PO no Review & Adjust.
 - **2026-11-09 — responsáveis:** DEBT-009 Bruno; US-014 Lucas e Davi; US-015 Lucas e Luiz; US-011 Luiz e Welcson; US-012 Bruno e Gabriel. Carga dividida por dupla: Lucas ~5 pts, Luiz ~4, Davi ~2,5, Bruno ~2, Welcson ~1,5, Gabriel ~1 (ninguém passa da metade dos 16 pts).
 - **2026-11-09 — DEBT-009** criado a partir do achado US7-09 dos testes automatizados.
+- **2026-11-09 — fechamento do Marco 2:** DEBT-001 com Luiz; DEBT-002 com Lucas (não é autor do código revisado).
 - **2026-11-09 — Marco 2 em 11/11:** PO informou a data de entrega. Decisão: fechar o Marco 2 com US-001 a US-010 + DEBT-001 + DEBT-002; a Sprint 03 passa para 12/11 a 19/11 (Marco 3), com o mesmo escopo e os mesmos responsáveis.
 - **Prévia da Sprint 04:** ver `docs/sprints/sprint_planning_04.md` (rascunho, 23/11 a 30/11).
 - **Action items da retrospectiva da Sprint 02** atendidos aqui: responsável por item (pendente da resposta do PO), Gate Done de US-007 a US-010 como pré-condição e decisão do `refactor/ui-polish`.
