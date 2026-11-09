@@ -8,7 +8,7 @@
 **GitHub Sprint Iteration:** -
 **GitHub Sprint Milestone:** -
 
-**Status do planejamento:** APROVADO pelo PO em 2026-11-09 (escopo e período). Responsáveis dos itens novos ainda a definir.
+**Status do planejamento:** APROVADO pelo PO em 2026-11-09 (escopo, período e responsáveis).
 
 ---
 
@@ -50,7 +50,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **GitHub Epic Issue:** -
 - **GitHub US Issue:** -
 - **Story Points:** 1
-- **Assignee:** A DEFINIR
+- **Assignee:** Bruno Alves
 - **Nivel ScrumAIDev:** 0
 - **Exige Spec governada?** Não
 - **Spec:** -
@@ -70,7 +70,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **GitHub Epic Issue:** - (EPIC-006)
 - **GitHub US Issue:** -
 - **Story Points:** 5
-- **Assignee:** A DEFINIR
+- **Assignee:** Lucas dos Santos Felipe e Davi Souza
 - **Nivel ScrumAIDev:** 1
 - **Exige Spec governada?** Não
 - **Spec:** -
@@ -92,7 +92,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **GitHub Epic Issue:** - (EPIC-006)
 - **GitHub US Issue:** -
 - **Story Points:** 5
-- **Assignee:** A DEFINIR
+- **Assignee:** Lucas dos Santos Felipe e Luiz Felipe Moro
 - **Nivel ScrumAIDev:** 1
 - **Exige Spec governada?** Não
 - **Spec:** -
@@ -118,7 +118,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **GitHub Epic Issue:** - (EPIC-007)
 - **GitHub US Issue:** -
 - **Story Points:** 3
-- **Assignee:** A DEFINIR
+- **Assignee:** Luiz Felipe Moro e Welcson
 - **Nivel ScrumAIDev:** 0
 - **Exige Spec governada?** Não
 - **Spec:** -
@@ -139,7 +139,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **GitHub Epic Issue:** - (EPIC-007)
 - **GitHub US Issue:** -
 - **Story Points:** 2
-- **Assignee:** A DEFINIR
+- **Assignee:** Bruno Alves e Gabriel
 - **Nivel ScrumAIDev:** 0
 - **Exige Spec governada?** Não
 - **Spec:** -
@@ -209,7 +209,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 | Aprovação em lote (US-015 c4) depende da triagem verde da US-016 | Baixo | Testar nesta sprint só o caminho "ignora sem triagem"; o caminho verde fica para a Sprint 04 |
 | DEBT-009 falha ao aplicar por causa de dados de teste já gravados | Baixo | Limpar `[TESTE AUTO` antes (pré-condição) ou usar `not valid` |
 | Trabalho concentrado em uma pessoa (Sprint 02: 1 autor de commits) | Alto | Responsável por item, com no máximo metade dos pontos por pessoa |
-| Responsáveis de DEBT-009, US-014, US-015, US-011 e US-012 ainda não definidos | Alto | Definir no primeiro dia da sprint (10/11) |
+| Lucas está nas duas stories da cadeia crítica (US-014 → US-015, 10 pts) | Médio | Davi conduz a US-014 com Lucas; Luiz entra na US-015 já com o contexto da US-014; se a US-014 atrasar, Lucas avisa no daily |
 | Bruno é autor dos commits de US-009 e US-010 e está no grupo que testa essas stories; o Gate Done pede testes e code review por quem não escreveu o código | Médio | Bruno fica com a validação do PO (CH-22); Luiz e Welcson executam os testes e o code review cruzado (CH-13, CH-21) |
 
 ---
@@ -220,6 +220,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **2026-11-09 — período:** 1 semana, de 10/11 a 17/11.
 - **2026-11-09 — Gate Done do carry-over:** Bruno, Luiz e Welcson ficam com US-009 e US-010; Lucas, Davi e Gabriel com US-007 e US-008 (decisão do PO).
 - **2026-11-09 — aprovação:** escopo aprovado pelo PO no Review & Adjust.
+- **2026-11-09 — responsáveis:** DEBT-009 Bruno; US-014 Lucas e Davi; US-015 Lucas e Luiz; US-011 Luiz e Welcson; US-012 Bruno e Gabriel. Carga dividida por dupla: Lucas ~5 pts, Luiz ~4, Davi ~2,5, Bruno ~2, Welcson ~1,5, Gabriel ~1 (ninguém passa da metade dos 16 pts).
 - **2026-11-09 — DEBT-009** criado a partir do achado US7-09 dos testes automatizados.
 - **Prévia da Sprint 04 (a planejar):** sobram US-013 (3), US-016 (5), US-021 (3), US-017 (5), US-018 (3), DEBT-001 (2) e DEBT-002 (2) = 23 pts, acima da capacidade de 16. O planejamento da Sprint 04 precisa cortar cerca de 7 pts ou prever uma Sprint 05 antes do fechamento do Marco 2. A data de entrega do Marco 2 ainda não foi informada.
 - **Action items da retrospectiva da Sprint 02** atendidos aqui: responsável por item (pendente da resposta do PO), Gate Done de US-007 a US-010 como pré-condição e decisão do `refactor/ui-polish`.
