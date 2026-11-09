@@ -48,7 +48,7 @@ As contratacoes criadas levam `[TESTE AUTO <data>]` na descricao. Para limpar: `
 
 **Achados:**
 - **US7-09 (melhoria, fora dos criterios):** o banco aceita `descricao` e `endereco` vazios ou so com espacos; so o formulario barra. Sugestao: `check (char_length(trim(...)) between 1 and N)` numa migration nova.
-- **US7-02 / CT-05 (bloqueado):** `prof3@helpme.test` esta `aprovado` no banco real, entao nao ha profissional pendente para provar o BR10. Rodar os blocos 2.4 de `supabase/README.md` com um profissional pendente.
+- **US7-02 / CT-05:** estava bloqueado porque o `prof3` estava `aprovado`; em 2026-11-09 o Bruno voltou o `prof3` para `pendente` e o teste passou (403 `42501`).
 
 **Continua manual:** CH-13 (por outra pessoa), CH-17 (celular real), leitor de tela no CH-18, CH-20 (BDD), CH-21 (code review por quem nao escreveu) e CH-22 (PO).
 
@@ -107,7 +107,7 @@ Essas stories ja estao em `Review`. Use contratacoes novas, com as mesmas janela
 | CT-02 | 2 | Como visitante, clicar em `Contratar` e entrar como cliente | Volta para `solicitar-pedido.html` do mesmo profissional | OK auto 09/11 (UI7-03, UI7-04) |
 | CT-03 | 3 | Enviar sem descricao, sem endereco, sem data e com data no passado | Cada caso mostra erro no campo e nada e criado | OK auto 09/11 (UI7-06 a UI7-09) |
 | CT-04 | 4 | Enviar o formulario completo | Cria a contratacao `solicitada` e abre `espera-cliente.html?id=` | OK auto 09/11 (UI7-10 a UI7-12) |
-| CT-05 | 5 | Rodar os blocos 2.4 de `supabase/README.md` | Banco recusa profissional pendente e data no passado | Parcial: data no passado OK auto 09/11 (US7-03); profissional pendente BLOQUEADO: prof3 esta aprovado no banco real |
+| CT-05 | 5 | Rodar os blocos 2.4 de `supabase/README.md` | Banco recusa profissional pendente e data no passado | OK auto 09/11: data no passado (US7-03) e profissional pendente (US7-02, rodado depois de o prof3 voltar para pendente: 403 `42501`, nada gravado) |
 | CT-06 | 5 | Logado como profissional, tentar `insert` em `contratacoes` pelo console | Erro do banco | OK auto 09/11 (US7-04) |
 
 ### US-008 — Aceitar ou recusar

@@ -46,7 +46,7 @@
 
 | Item | Responsável | Prazo |
 |------|-------------|-------|
-| Confirmar que há um profissional `pendente` para testar BR10 (US7-02) e a fila da US-015: o `prof3@helpme.test` está `aprovado` no banco real; voltar para `pendente` ou criar outro | Bruno Alves (SQL Editor, mesma execução da limpeza) | 09/11 |
+| Confirmar que há um profissional `pendente` para testar BR10 (US7-02) e a fila da US-015: o `prof3@helpme.test` está `aprovado` no banco real; voltar para `pendente` ou criar outro | Bruno Alves — **feito em 09/11** (US7-02 passou) | 09/11 |
 | Decidir `refactor/ui-polish` (DEBT-005): mesclar ou descartar antes de criar `admin*.html` | Bruno Alves (PO) + time | 12/11 |
 
 ---
