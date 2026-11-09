@@ -6,8 +6,8 @@
 **Origem do contexto:** híbrido (código existente em `helpme-app/` + insumos em `arquivos/` + usuário)
 **Confiança do contexto:** alta
 **Contexto processado:** sim
-**Estado operacional:** Sprint 02 ativa (16/10 a 23/10/2026): núcleo do Fluxo 3 (DEBT-006, US-007 a US-009); US-001 a US-006 da Sprint 01 ainda em Review
-**Última atualização:** 2026-10-16
+**Estado operacional:** Sprint 03 planejada (10/11 a 17/11/2026): US-014, US-015, US-011, US-012, DEBT-009 + Gate Done de US-007 a US-010 (em Review, testes automatizados OK em 2026-11-09). US-001 a US-006 em Done. Sprint 04 em rascunho.
+**Última atualização:** 2026-11-09 (`docs/sprints/sprint_planning_03.md`)
 
 ## GitHub Planning Defaults
 

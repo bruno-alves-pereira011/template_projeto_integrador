@@ -5,7 +5,7 @@
 **GitHub US Issue:** -
 **Prioridade:** Alta
 **Story Points:** 5
-**Sprint:** - (Sprint 03 ainda sem planejamento; ver `docs/tasks/breakdown_US-010.md`)
+**Sprint:** Sprint 03 (carry-over: so o Gate Done; ver `docs/tasks/testes_contratacao.md`)
 **Status:** Review
 **Behavior Change Esperado:** YES
 

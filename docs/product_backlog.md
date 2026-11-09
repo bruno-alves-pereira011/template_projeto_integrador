@@ -2,7 +2,7 @@
 
 **Produto:** HelpMe — Hub de Contatos de Emergencia para Servicos Residenciais
 **Product Owner:** Equipe do Projeto Integrador (IFES Campus Serra)
-**Ultima atualizacao:** 2026-11-06 (US-001 a US-006 em Done; US-007 a US-009 em Review)
+**Ultima atualizacao:** 2026-11-09 (Sprint 03 aprovada: US-014, US-015, US-011, US-012, DEBT-009; rascunho da Sprint 04)
 
 ---
 
@@ -76,7 +76,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-007 | - | Contratar profissional pelo perfil | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
 | US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
 | US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-010 | - | Chat em tempo real na contratacao | 5 | Review | - | - | - | docs/bdd/contratacao.feature |
+| US-010 | - | Chat em tempo real na contratacao | 5 | Review | Sprint 03 (carry-over) | - | - | docs/bdd/contratacao.feature |
 
 **Notas do Fluxo 3 (2026-10-16):** antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.
 
@@ -92,9 +92,9 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-014 | - | Papel de administrador e area admin | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-014 | - | Papel de administrador e area admin | 5 | Sprint Backlog | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Sprint Backlog | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Backlog | Sprint 04 (rascunho) | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-017 | - | Painel de indicadores do administrador | 5 | Backlog | - | - | - | - |
@@ -113,8 +113,8 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-011 | - | Esqueci minha senha | 3 | Backlog | - | - | - | - |
-| US-012 | - | Meu perfil do cliente (nome e telefone) | 2 | Backlog | - | - | - | - |
+| US-011 | - | Esqueci minha senha | 3 | Sprint Backlog | Sprint 03 | - | - | - |
+| US-012 | - | Meu perfil do cliente (nome e telefone) | 2 | Sprint Backlog | Sprint 03 | - | - | - |
 
 ---
 
@@ -148,6 +148,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | DEBT-006 | **Sprint 02.** Remover o legado de pedidos (D5): `feed-profissional.html`, `js/profissional.js` (le `pedidos`, que nao existe, e nao usa `exigirSessao`), `solicitar-pedido.html`, `espera-cliente.html`, `servico-andamento.html` (so comentarios) | Alta (Sprint 02) | 1 | Codigo morto quebrado e contrario a FR09 |
 | DEBT-007 | Fixar versao exata da CDN `@supabase/supabase-js@2` em todos os HTML | Baixa | 1 | App pode quebrar sozinho com versao nova |
 | DEBT-008 | Banco real ja tem dados: daqui em diante so migrations incrementais (`003_*`, `004_*`); nao editar nem reaplicar o `001` (reaplicar apaga dados e desfaz o `002`). Toda tabela nova com RLS no mesmo script (o `001` da `grant ... on all tables to authenticated`) | Alta (regra de trabalho) | 0 | Perda de dados / tabela exposta |
+| DEBT-009 | **Sprint 03.** Banco aceita `descricao`/`endereco` vazios ou so com espacos em `contratacoes` (achado US7-09 dos testes de 2026-11-09). Migration incremental (proximo numero livre) com `check (char_length(trim(...)) between 1 and N)`; limpar `[TESTE AUTO` antes | Media | 1 | Chamada direta a API grava contratacao sem descricao |
 | DEBT-001 | README do projeto: rastreabilidade HU × tela × tabela (secao 9), contratacao no minimundo/HUs, secao "Como rodar o projeto" | Alta (DoD do Marco 2) | 2 | Avaliacao da disciplina cobra rastreabilidade |
 | DEBT-002 | Revisao final por agente que nao escreveu o codigo: fluxos com usuarios do seed, tentativa de burlar RLS, checklist de acessibilidade/mobile | Alta (DoD do Marco 2) | 2 | Garante seguranca e qualidade antes da entrega |
 
@@ -168,15 +169,17 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 - [x] DEBT-003 + EPIC-001 + EPIC-002 — primeiro vertical slice (visitante → categoria → perfil → WhatsApp) — concluido (US-001 a US-003 em Done; DEBT-003 aplicado)
 - [x] EPIC-003 — conta e acesso — concluido (US-004 a US-006 em Done)
 - [ ] EPIC-004 — contratacao no app + chat (Fluxo 3) — US-007 a US-010 em Review
-- [ ] EPIC-006 — administracao e aprovacao (pendente Discovery/Requirements rev. 3)
+- [ ] EPIC-006 — administracao e aprovacao — US-014 e US-015 na Sprint 03; demais na Sprint 04 (rascunho)
+- [ ] EPIC-007 — conta do cliente — US-011 e US-012 na Sprint 03
 - [ ] DEBT-001 e DEBT-002
 
 ### Ordem de execucao recomendada (revisao de 2026-10-16, aprovada pelo PO)
 
 1. **Fechamento da Sprint 01:** DEBT-004 → testes manuais US-001 a US-006 no Supabase real (recriar `prof1@helpme.test`) → `/sprint-retrospective` → DEBT-005.
 2. **Sprint 02 — nucleo do Fluxo 3:** DEBT-006, US-007, US-008, US-009 (~16 pts). Em paralelo, sem tocar no front: Discovery/Requirements rev. 3 do EPIC-006.
-3. **Sprint 03:** US-010 (chat), US-014, US-015, US-013 — substitui o Table Editor.
-4. **Sprint 04:** US-016 + US-021 (triagem automatica), US-017, US-018, US-011, US-012, DEBT-001, DEBT-002 — fecha o Marco 2.
+3. **Sprint 03 (10/11 a 17/11, aprovada em 2026-11-09):** US-014, US-015, US-011, US-012, DEBT-009 (16 pts) + Gate Done de US-007 a US-010. US-013 foi para a Sprint 04.
+4. **Sprint 04 (18/11 a 24/11, rascunho):** US-013, US-016, DEBT-001, DEBT-002 (12 pts; 4 dias uteis por causa do feriado de 20/11). US-017, US-018 e US-021 (11 pts) ficam para uma Sprint 05 ou para corte, a decidir.
+   - Sprint 05 (a confirmar): US-017, US-018, US-021 — fecha o Marco 2.
 5. **Marco 3:** EPIC-005, US-019, US-020, sinais pos-aprovacao (Nivel C).
 
 ### Marco 3
