@@ -193,9 +193,9 @@ Ordem de execução: DEBT-006 → US-007 → US-008 → US-009.
 |------|--------|--------|
 | DEBT-004 | `fix/sprint01-fechamento` (integrado na `developer`) | PR para `main` ainda sem merge |
 | DEBT-006 | `chore/DEBT-006-remove-pedidos` | Review — remove só o feed antigo (D8) |
-| US-007 | `feat/US-007-contratar` | Review — `solicitar-pedido.html` |
-| US-008 | `feat/US-008-solicitacoes-recebidas` | Review — `contratacoes.html` (profissional) |
-| US-009 | `feat/US-009-acompanhar-contratacao` | Review — `espera-cliente.html`, `servico-andamento.html`, visão do cliente em `contratacoes.html` |
+| US-007 | `feat/US-007-contratar` | Done (2026-11-09) — `solicitar-pedido.html` |
+| US-008 | `feat/US-008-solicitacoes-recebidas` | Done (2026-11-09) — `contratacoes.html` (profissional) |
+| US-009 | `feat/US-009-acompanhar-contratacao` | Done (2026-11-09) — `espera-cliente.html`, `servico-andamento.html`, visão do cliente em `contratacoes.html` |
 
 - `developer` atualizada com `main`, o conserto (DEBT-004) e o planejamento (`docs/fluxo3-admin-planejamento`). Branches empilhadas; PRs para `developer` mesclados na ordem DEBT-006 → US-007 → US-008 → US-009.
 - Validação feita pelo agente: harness com DOM e Supabase falsos (16 + 10 + 17 casos), `node --check`, colisão de globais, links e ids. **Falta para Done:** testes manuais no Supabase real (duas abas: cliente e profissional), 360px/acessibilidade, code review cruzado e validação do PO.

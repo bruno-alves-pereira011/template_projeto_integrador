@@ -234,6 +234,7 @@ Ordem de execução: DEBT-009 → US-014 → US-015; em paralelo (sem dependênc
 - **2026-11-09 — aprovação:** escopo aprovado pelo PO no Review & Adjust.
 - **2026-11-09 — responsáveis:** DEBT-009 Bruno; US-014 Lucas e Davi; US-015 Lucas e Luiz; US-011 Luiz e Welcson; US-012 Bruno e Gabriel. Carga dividida por dupla: Lucas ~5 pts, Luiz ~4, Davi ~2,5, Bruno ~2, Welcson ~1,5, Gabriel ~1 (ninguém passa da metade dos 16 pts).
 - **2026-11-09 — DEBT-009** criado a partir do achado US7-09 dos testes automatizados.
+- **2026-11-09 — Done:** PO moveu US-007 a US-010 para `Done` com base nos testes automatizados; itens humanos do Gate Done ficaram sem execução (registrados nas stories e no roteiro).
 - **2026-11-09 — fechamento do Marco 2:** DEBT-001 com Luiz; DEBT-002 com Lucas (não é autor do código revisado).
 - **2026-11-09 — Marco 2 em 11/11:** PO informou a data de entrega. Decisão: fechar o Marco 2 com US-001 a US-010 + DEBT-001 + DEBT-002; a Sprint 03 passa para 12/11 a 19/11 (Marco 3), com o mesmo escopo e os mesmos responsáveis.
 - **Prévia da Sprint 04:** ver `docs/sprints/sprint_planning_04.md` (rascunho, 23/11 a 30/11).

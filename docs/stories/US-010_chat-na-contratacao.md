@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 03 (carry-over: so o Gate Done; ver `docs/tasks/testes_contratacao.md`)
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,15 +33,15 @@ Adiciona o chat em uma tela propria, `contratacao.html` (D9), usando a tabela `m
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** `contratacao.html` mostra o historico de mensagens em ordem cronologica, identificando quem enviou e o horario.
-- [ ] **Criterio 2:** Enviar uma mensagem faz ela aparecer para a outra parte sem recarregar (Realtime).
-- [ ] **Criterio 3:** Mensagem vazia ou com mais de 1000 caracteres nao e enviada (contador visivel).
-- [ ] **Criterio 4:** Em contratacao `recusada`, `cancelada` ou `concluida`, o campo de envio fica desabilitado e o historico permanece visivel.
-- [ ] **Criterio 5:** Conteudo e exibido com `textContent`: enviar `<b>oi</b>` mostra o texto literal.
-- [ ] **Criterio 6:** Um terceiro usuario nao consegue ler nem inserir mensagens dessa contratacao (testado via console).
-- [ ] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** `contratacao.html` mostra o historico de mensagens em ordem cronologica, identificando quem enviou e o horario.
+- [x] **Criterio 2:** Enviar uma mensagem faz ela aparecer para a outra parte sem recarregar (Realtime).
+- [x] **Criterio 3:** Mensagem vazia ou com mais de 1000 caracteres nao e enviada (contador visivel).
+- [x] **Criterio 4:** Em contratacao `recusada`, `cancelada` ou `concluida`, o campo de envio fica desabilitado e o historico permanece visivel.
+- [x] **Criterio 5:** Conteudo e exibido com `textContent`: enviar `<b>oi</b>` mostra o texto literal.
+- [x] **Criterio 6:** Um terceiro usuario nao consegue ler nem inserir mensagens dessa contratacao (testado via console).
+- [x] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -160,6 +160,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 - 2026-11-06: TASK-001 a TASK-005 implementadas na branch `feat/US-010-chat`, ainda sem commit. Validacao feita: 45 verificacoes no Chrome com Supabase falso (criterios 1 a 5, 7, 8 e a parte de tela do 6). **Falta:** roteiro manual com duas abas no Supabase real, incluindo Realtime com RLS e o criterio 6 via console; code review cruzado; validacao do PO. Criterios seguem desmarcados ate o teste real.
 - 2026-11-06: merge na `main` (`748d968`). `supabase/testes/us010_chat_rls.sql` rodou no banco real: 26 de 26, cobrindo o criterio 6. Gates para `Review` e `Done` em `docs/tasks/testes_contratacao.md`.
 - 2026-11-06: movida para `Review` por decisao do PO, com base nos proprios testes. Os resultados de CH-01 a CH-08 nao foram registrados um a um; o Gate Done continua pendente.
+- 2026-11-09: movida para `Done` por decisao do PO (Bruno Alves) para a entrega do Marco 2 em 11/11, com base nos testes automatizados no Supabase real (`supabase/testes/contratacao_api.mjs`: 62 verificacoes; `contratacao_telas.mjs`: 93) registrados em `docs/tasks/testes_contratacao.md`. **Itens do Gate Done nao executados:** CH-13 (RLS rodado por outra pessoa), CH-17 (celular real), leitor de tela (CH-18), CH-20 (revisao do BDD), CH-21 (code review por quem nao escreveu) e CH-22 (validacao formal do PO). Criterios marcados com base nesses testes.
 
 ---
 

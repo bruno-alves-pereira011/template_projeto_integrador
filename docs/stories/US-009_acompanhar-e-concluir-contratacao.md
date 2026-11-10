@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 02
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,15 +33,15 @@ Pela decisao D8, o detalhe fica em duas telas com os nomes antigos: `espera-clie
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** O cliente ve em `contratacoes.html` a lista das proprias contratacoes com status atualizado em tempo real.
-- [ ] **Criterio 2:** `espera-cliente.html` / `servico-andamento.html` (D8) mostram profissional, descricao, endereco, data desejada e status, atualizando sem recarregar quando a outra parte muda o status.
-- [ ] **Criterio 3:** Enquanto `solicitada`, o cliente pode cancelar (status `cancelada`).
-- [ ] **Criterio 4:** Quando `aceita`, cada parte ve nome, telefone e WhatsApp da outra (botoes `tel:`/`wa.me` com a normalizacao da US-003); antes do aceite, o contato do cliente nao aparece para o profissional.
-- [ ] **Criterio 5:** Quando `aceita`, qualquer das partes pode marcar como `concluida`; depois disso nao ha mais acoes.
-- [ ] **Criterio 6:** Um terceiro usuario logado que abrir `espera-cliente.html?id=` ou `servico-andamento.html?id=` de outra pessoa ve "Contratacao nao encontrada".
-- [ ] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** O cliente ve em `contratacoes.html` a lista das proprias contratacoes com status atualizado em tempo real.
+- [x] **Criterio 2:** `espera-cliente.html` / `servico-andamento.html` (D8) mostram profissional, descricao, endereco, data desejada e status, atualizando sem recarregar quando a outra parte muda o status.
+- [x] **Criterio 3:** Enquanto `solicitada`, o cliente pode cancelar (status `cancelada`).
+- [x] **Criterio 4:** Quando `aceita`, cada parte ve nome, telefone e WhatsApp da outra (botoes `tel:`/`wa.me` com a normalizacao da US-003); antes do aceite, o contato do cliente nao aparece para o profissional.
+- [x] **Criterio 5:** Quando `aceita`, qualquer das partes pode marcar como `concluida`; depois disso nao ha mais acoes.
+- [x] **Criterio 6:** Um terceiro usuario logado que abrir `espera-cliente.html?id=` ou `servico-andamento.html?id=` de outra pessoa ve "Contratacao nao encontrada".
+- [x] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -160,6 +160,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
 - 2026-10-23: implementada na branch `feat/US-009-acompanhar-contratacao` (empilhada sobre a US-008), com as telas da decisao D8. Breakdown em `docs/tasks/breakdown_US-009.md`.
+- 2026-11-09: movida para `Done` por decisao do PO (Bruno Alves) para a entrega do Marco 2 em 11/11, com base nos testes automatizados no Supabase real (`supabase/testes/contratacao_api.mjs`: 62 verificacoes; `contratacao_telas.mjs`: 93) registrados em `docs/tasks/testes_contratacao.md`. **Itens do Gate Done nao executados:** CH-13 (RLS rodado por outra pessoa), CH-17 (celular real), leitor de tela (CH-18), CH-20 (revisao do BDD), CH-21 (code review por quem nao escreveu) e CH-22 (validacao formal do PO). Criterios marcados com base nesses testes.
 
 ---
 

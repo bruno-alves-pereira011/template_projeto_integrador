@@ -6,7 +6,7 @@
 **Origem do contexto:** híbrido (código existente em `helpme-app/` + insumos em `arquivos/` + usuário)
 **Confiança do contexto:** alta
 **Contexto processado:** sim
-**Estado operacional:** Fechamento do Marco 2 (entrega em 11/11/2026): Gate Done de US-007 a US-010 (em Review; testes automatizados OK em 2026-11-09), DEBT-001 e DEBT-002. Depois, Marco 3: Sprint 03 (12/11 a 19/11, aprovada) e Sprint 04 (23/11 a 30/11, rascunho).
+**Estado operacional:** Fechamento do Marco 2 (entrega em 11/11/2026): US-001 a US-010 em Done (US-007 a US-010 por decisão do PO em 2026-11-09); faltam DEBT-001 (README, Luiz) e DEBT-002 (revisão final, Lucas). Depois, Marco 3: Sprint 03 (12/11 a 19/11, aprovada) e Sprint 04 (23/11 a 30/11, rascunho).
 **Última atualização:** 2026-11-09 (`docs/sprints/sprint_planning_03.md`)
 
 ## GitHub Planning Defaults

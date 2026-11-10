@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 02
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,14 +33,14 @@ Adiciona o botao "Contratar" em `profissional.html` e a pagina `solicitar-pedido
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** O botao "Contratar" aparece no perfil para visitantes e clientes; nao aparece para profissionais logados.
-- [ ] **Criterio 2:** Visitante sem login que clica em "Contratar" vai ao login e, apos entrar como cliente, volta para `solicitar-pedido.html` do mesmo profissional.
-- [ ] **Criterio 3:** O formulario pede descricao (obrigatoria), endereco (obrigatorio) e data/horario desejado (obrigatorio, nao pode estar no passado).
-- [ ] **Criterio 4:** Ao enviar, cria a contratacao com status `solicitada` e leva o cliente para `espera-cliente.html?id=<id>` (D8; ate a US-009, confirmacao na propria pagina).
-- [ ] **Criterio 5:** O banco rejeita contratacao feita por profissional, para profissional nao aprovado ou com data no passado (testado via console).
-- [ ] **Criterio 6:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 7:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 8:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** O botao "Contratar" aparece no perfil para visitantes e clientes; nao aparece para profissionais logados.
+- [x] **Criterio 2:** Visitante sem login que clica em "Contratar" vai ao login e, apos entrar como cliente, volta para `solicitar-pedido.html` do mesmo profissional.
+- [x] **Criterio 3:** O formulario pede descricao (obrigatoria), endereco (obrigatorio) e data/horario desejado (obrigatorio, nao pode estar no passado).
+- [x] **Criterio 4:** Ao enviar, cria a contratacao com status `solicitada` e leva o cliente para `espera-cliente.html?id=<id>` (D8; ate a US-009, confirmacao na propria pagina).
+- [x] **Criterio 5:** O banco rejeita contratacao feita por profissional, para profissional nao aprovado ou com data no passado (testado via console).
+- [x] **Criterio 6:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 7:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 8:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -156,6 +156,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
 - 2026-10-23: implementada na branch `feat/US-007-contratar` (a partir de `developer`, com o DEBT-004). Breakdown em `docs/tasks/breakdown_US-007.md`. Ate a US-009, o envio mostra a confirmacao na propria `solicitar-pedido.html` em vez de ir para `contratacao.html?id=` (criterio 4).
+- 2026-11-09: movida para `Done` por decisao do PO (Bruno Alves) para a entrega do Marco 2 em 11/11, com base nos testes automatizados no Supabase real (`supabase/testes/contratacao_api.mjs`: 62 verificacoes; `contratacao_telas.mjs`: 93) registrados em `docs/tasks/testes_contratacao.md`. **Itens do Gate Done nao executados:** CH-13 (RLS rodado por outra pessoa), CH-17 (celular real), leitor de tela (CH-18), CH-20 (revisao do BDD), CH-21 (code review por quem nao escreveu) e CH-22 (validacao formal do PO). Criterios marcados com base nesses testes.
 
 ---
 

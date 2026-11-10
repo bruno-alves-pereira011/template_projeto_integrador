@@ -144,4 +144,5 @@ Essas stories ja estao em `Review`. Use contratacoes novas, com as mesmas janela
 | 2026-11-06 | Agente (SQL no banco real, com rollback) | `us010_chat_rls.sql`: 26 de 26 | Nenhum |
 | 2026-11-06 | Bruno Alves (PO) | Testes proprios do chat; US-010 movida para `Review` por decisao do PO. CH-01 a CH-08 sem resultado individual: refazer CH-05 e CH-07 junto do Gate Done, porque nao ha rastro deles no banco | Nenhum informado |
 | 2026-11-09 | Agente (scripts automatizados no banco e no Chrome reais) | `contratacao_api.mjs` 60/62 e `contratacao_telas.mjs` 93/93; resultados na coluna de cada teste | Nenhum bug; 1 melhoria (US7-09) e 1 bloqueio de ambiente (prof3 aprovado) |
+| 2026-11-09 | Bruno Alves (PO) | US-007 a US-010 movidas para `Done` por decisao do PO para a entrega do Marco 2. Nao executados: CH-13 (RLS rodado por outra pessoa), CH-17 (celular real), leitor de tela (CH-18), CH-20 (revisao do BDD), CH-21 (code review por quem nao escreveu) e CH-22 (validacao formal do PO) | Nenhum |
 | | | | |

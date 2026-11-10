@@ -73,10 +73,10 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-007 | - | Contratar profissional pelo perfil | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-010 | - | Chat em tempo real na contratacao | 5 | Review | Sprint 03 (carry-over) | - | - | docs/bdd/contratacao.feature |
+| US-007 | - | Contratar profissional pelo perfil | 5 | Done | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Done | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Done | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-010 | - | Chat em tempo real na contratacao | 5 | Done | Sprint 03 (carry-over) | - | - | docs/bdd/contratacao.feature |
 
 **Notas do Fluxo 3 (2026-10-16):** antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.
 
@@ -168,8 +168,8 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 - [x] DEBT-003 + EPIC-001 + EPIC-002 — primeiro vertical slice (visitante → categoria → perfil → WhatsApp) — concluido (US-001 a US-003 em Done; DEBT-003 aplicado)
 - [x] EPIC-003 — conta e acesso — concluido (US-004 a US-006 em Done)
-- [ ] EPIC-004 — contratacao no app + chat (Fluxo 3) — US-007 a US-010 em Review
-- [ ] Gate Done de US-007 a US-010 (10 e 11/11)
+- [x] EPIC-004 — contratacao no app + chat (Fluxo 3) — US-007 a US-010 em Done (2026-11-09, decisao do PO; itens humanos do Gate Done nao executados, ver `docs/tasks/testes_contratacao.md`)
+- [x] Gate Done de US-007 a US-010 — Done por decisao do PO em 2026-11-09, com base nos testes automatizados
 - [ ] DEBT-001 (README) e DEBT-002 (revisao final) (10 e 11/11)
 - Decisao do PO (2026-11-09): EPIC-006 e EPIC-007 passam para o Marco 3
 

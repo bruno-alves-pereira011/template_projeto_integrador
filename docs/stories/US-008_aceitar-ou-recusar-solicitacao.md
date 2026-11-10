@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 02
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -33,15 +33,15 @@ Nova pagina `contratacoes.html`, que para o profissional lista as contratacoes r
 
 ## Criterios de Aceitacao
 
-- [ ] **Criterio 1:** `contratacoes.html` (profissional) lista as contratacoes recebidas agrupadas por status, com descricao, bairro/endereco resumido e data desejada.
-- [ ] **Criterio 2:** Em contratacao `solicitada`, os botoes "Aceitar" e "Recusar" mudam o status para `aceita` ou `recusada`.
-- [ ] **Criterio 3:** Uma nova solicitacao aparece na lista sem recarregar a pagina (Realtime).
-- [ ] **Criterio 4:** Se o cliente cancelou antes do aceite, a acao falha com aviso "Esta solicitacao foi cancelada" e a lista recarrega.
-- [ ] **Criterio 5:** O profissional nao consegue (via console) aceitar contratacao de outro profissional nem pular estados.
-- [ ] **Criterio 6:** Ha link "Editar meu perfil" (A03).
-- [ ] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
-- [ ] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
-- [ ] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
+- [x] **Criterio 1:** `contratacoes.html` (profissional) lista as contratacoes recebidas agrupadas por status, com descricao, bairro/endereco resumido e data desejada.
+- [x] **Criterio 2:** Em contratacao `solicitada`, os botoes "Aceitar" e "Recusar" mudam o status para `aceita` ou `recusada`.
+- [x] **Criterio 3:** Uma nova solicitacao aparece na lista sem recarregar a pagina (Realtime).
+- [x] **Criterio 4:** Se o cliente cancelou antes do aceite, a acao falha com aviso "Esta solicitacao foi cancelada" e a lista recarrega.
+- [x] **Criterio 5:** O profissional nao consegue (via console) aceitar contratacao de outro profissional nem pular estados.
+- [x] **Criterio 6:** Ha link "Editar meu perfil" (A03).
+- [x] **Criterio 7:** **Mobile (NFR04):** a tela funciona sem rolagem horizontal em 360px de largura e botoes tem area de toque de pelo menos 44px.
+- [x] **Criterio 8:** **Acessibilidade (NFR05):** campos tem `<label>`, foco visivel em todos os elementos interativos e texto com contraste adequado.
+- [x] **Criterio 9:** **Seguranca (NFR01):** nenhum dado fixo/demo e nenhuma `service_role` no front; toda leitura/escrita passa pelo RLS.
 
 ---
 
@@ -156,6 +156,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
 - 2026-10-23: implementada na branch `feat/US-008-solicitacoes-recebidas` (empilhada sobre a US-007). Breakdown em `docs/tasks/breakdown_US-008.md`. O card "Aceita" ganha o link para `servico-andamento.html?id=` (D8) na US-009. Profissional nao aprovado que abre a pagina e redirecionado (BR03).
+- 2026-11-09: movida para `Done` por decisao do PO (Bruno Alves) para a entrega do Marco 2 em 11/11, com base nos testes automatizados no Supabase real (`supabase/testes/contratacao_api.mjs`: 62 verificacoes; `contratacao_telas.mjs`: 93) registrados em `docs/tasks/testes_contratacao.md`. **Itens do Gate Done nao executados:** CH-13 (RLS rodado por outra pessoa), CH-17 (celular real), leitor de tela (CH-18), CH-20 (revisao do BDD), CH-21 (code review por quem nao escreveu) e CH-22 (validacao formal do PO). Criterios marcados com base nesses testes.
 
 ---
 
