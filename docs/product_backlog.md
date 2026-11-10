@@ -95,7 +95,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-014 | - | Papel de administrador e area admin | 5 | Sprint Backlog | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Sprint Backlog | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Backlog | Sprint 04 (rascunho) | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Backlog | Sprint 04 (rascunho) | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Backlog | Sprint 05 (sugestao) | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-017 | - | Painel de indicadores do administrador | 5 | Backlog | Sprint 04 (rascunho) | - | - | - |
 | US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Backlog | Sprint 04 (rascunho) | - | - | - |
