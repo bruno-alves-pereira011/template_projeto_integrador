@@ -1,0 +1,105 @@
+<!--
+  TELA: Redefinir senha (redefinir-senha.html) — US-011
+  OBJETIVO: Pedir o link de redefinição por e-mail e, ao abrir o link, criar a nova senha.
+  MODOS (decididos pelo js/redefinir-senha.js):
+  - "pedir":    aberta pelo login. Formulário de e-mail (#form-pedir-link).
+  - "nova":     aberta pelo link do e-mail (#type=recovery). Formulário #form-nova-senha.
+  - "invalido": link expirado/usado (#error_code=...). Mensagem + formulário para pedir outro.
+  ELEMENTOS:
+  - #redefinir-titulo / #redefinir-subtitulo: textos do modo. #redefinir-verificando: enquanto lê o link.
+  - #redefinir-mensagem: avisos gerais (role="alert").
+  - #form-pedir-link: #email, #erro-email, #btn-pedir-link.
+  - #form-nova-senha: #nova-senha, #confirmar-senha (botões .btn-mostrar-senha com data-alvo), #erro-nova-senha,
+    #erro-confirmar-senha, #btn-salvar-senha.
+  - Scripts: Supabase CDN -> js/supabase-config.js -> js/auth.js (utilitários) -> js/redefinir-senha.js.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Redefinir senha</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="pagina-auth">
+
+    <main class="login-container">
+        <header class="login-header">
+            <a href="home-cliente.html" class="logo" aria-label="HelpMe - ir para a página inicial">
+                <span class="logo-icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </span>
+                HelpMe
+            </a>
+            <!-- tabindex="-1": o JS move o foco para o título quando o modo muda (leitor de tela anuncia). -->
+            <h1 id="redefinir-titulo" tabindex="-1">Esqueci minha senha</h1>
+            <p id="redefinir-subtitulo">Informe o e-mail da sua conta e enviaremos um link para criar uma nova senha.</p>
+        </header>
+
+        <p id="redefinir-verificando" class="subtitulo" role="status" hidden>Verificando o link...</p>
+
+        <!-- Mensagens gerais (envio, link inválido, rede). -->
+        <p id="redefinir-mensagem" class="mensagem" role="alert" hidden></p>
+
+        <!-- Modo "pedir" e "invalido": pede o link por e-mail. -->
+        <form id="form-pedir-link" class="login-form" novalidate>
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" required autocomplete="email" inputmode="email" aria-describedby="erro-email">
+                <p id="erro-email" class="campo-erro" hidden></p>
+            </div>
+
+            <button type="submit" id="btn-pedir-link" class="btn btn-primario btn-bloco">Enviar link</button>
+        </form>
+
+        <!-- Modo "nova": aberto pelo link do e-mail. -->
+        <form id="form-nova-senha" class="login-form" novalidate hidden>
+            <div class="input-group">
+                <label for="nova-senha">Nova senha</label>
+                <div class="input-wrapper">
+                    <input type="password" id="nova-senha" name="nova-senha" placeholder="Mínimo de 6 caracteres" minlength="6" required autocomplete="new-password" aria-describedby="dica-nova-senha erro-nova-senha">
+                    <button type="button" class="btn-mostrar-senha" data-alvo="nova-senha" aria-controls="nova-senha" aria-pressed="false">Mostrar</button>
+                </div>
+                <p id="dica-nova-senha" class="dica-campo">Use pelo menos 6 caracteres.</p>
+                <p id="erro-nova-senha" class="campo-erro" hidden></p>
+            </div>
+
+            <div class="input-group">
+                <label for="confirmar-senha">Confirme a nova senha</label>
+                <div class="input-wrapper">
+                    <input type="password" id="confirmar-senha" name="confirmar-senha" placeholder="Repita a nova senha" required autocomplete="new-password" aria-describedby="erro-confirmar-senha">
+                    <button type="button" class="btn-mostrar-senha" data-alvo="confirmar-senha" aria-controls="confirmar-senha" aria-pressed="false">Mostrar</button>
+                </div>
+                <p id="erro-confirmar-senha" class="campo-erro" hidden></p>
+            </div>
+
+            <button type="submit" id="btn-salvar-senha" class="btn btn-primario btn-bloco">Salvar nova senha</button>
+        </form>
+
+        <footer class="login-footer">
+            <p>Lembrou a senha? <a href="index.html" class="btn-link">Entrar</a></p>
+        </footer>
+    </main>
+
+    <!-- 0. Guarda o endereço do link ANTES do supabase-js limpar o #hash (ele faz isso ao abrir a sessão
+            de recuperação, e o download dos próximos scripts pode demorar mais que essa limpeza). -->
+    <script>
+        window.HELPME_URL_INICIAL = { hash: window.location.hash, search: window.location.search };
+    </script>
+    <!-- 1. Biblioteca oficial do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 2. Conexão (cria a global supabaseClient) -->
+    <script src="js/supabase-config.js"></script>
+    <!-- 3. Utilitários de mensagens/erros do Auth (window.HelpMeAuth) -->
+    <script src="js/auth.js"></script>
+    <!-- 4. Lógica desta tela -->
+    <script src="js/redefinir-senha.js"></script>
+
+</body>
+</html>

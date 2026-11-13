@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Media
 **Story Points:** 3
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 03
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -152,6 +152,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 ## Notas e Comentarios
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
+- 2026-11-13: implementada em `feat/US-011-esqueci-senha` (breakdown e roteiro RS-01 a RS-11 em `docs/tasks/breakdown_US-011.md`). Testes de tela no Edge (Playwright): 32/32 verificacoes. Rede real no pedido para e-mail inexistente; link de recuperacao, 429, erro de envio, `same_password` e sessao perdida com respostas do Auth simuladas. **Pendente:** TASK-004 (URL de `redefinir-senha.html` nas Redirect URLs do Supabase) e RS-04/05/07/08 com e-mail real.
 
 ---
 

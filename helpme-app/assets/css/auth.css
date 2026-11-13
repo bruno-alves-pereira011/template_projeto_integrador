@@ -234,6 +234,12 @@ fieldset[aria-invalid="true"] {
     text-decoration: underline;
 }
 
+/* "Esqueci minha senha" (US-011): logo abaixo do campo de senha, alinhado à direita. */
+.link-esqueci-senha {
+    align-self: flex-end;
+    margin-top: -12px;
+}
+
 /* ================= MENSAGENS ================= */
 .mensagem {
     padding: 12px 14px;

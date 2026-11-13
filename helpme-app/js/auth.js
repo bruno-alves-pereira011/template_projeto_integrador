@@ -1,5 +1,6 @@
 // LOGIN E CADASTRO (auth.js) — US-004
 // Usado por index.html (login) e cadastro.html (cadastro). Cada parte só roda se o formulário existir.
+// Também é carregado por redefinir-senha.html (US-011), que usa só os utilitários de window.HelpMeAuth.
 // DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js.
 // O roteamento pós-login fica em destinoDoUsuario() (js/sessao.js), não aqui:
 // assim login, cadastro e páginas protegidas usam a mesma regra.
@@ -57,6 +58,10 @@
         }
         if (codigo === 'user_already_exists' || codigo === 'email_exists' || texto.includes('already registered')) {
             return { campo: 'email', texto: 'Este e-mail já está cadastrado. Entre com ele ou use outro e-mail.' };
+        }
+        // Redefinição de senha (US-011): a nova senha não pode repetir a atual.
+        if (codigo === 'same_password' || texto.includes('should be different from the old password')) {
+            return { campo: 'senha', texto: 'A nova senha precisa ser diferente da anterior.' };
         }
         if (codigo === 'weak_password' || texto.includes('password should be') || texto.includes('weak password')) {
             return { campo: 'senha', texto: 'Senha fraca: use pelo menos 6 caracteres.' };
@@ -122,6 +127,11 @@
         async function rotearUsuario(userId) {
             const destino = await destinoDoUsuario(userId);
             window.location.replace(destino);
+        }
+
+        // Voltou de redefinir-senha.html depois de trocar a senha (US-011).
+        if (new URLSearchParams(window.location.search).get('senha') === 'redefinida') {
+            mostrarMensagem(mensagemLogin, 'Senha alterada! Agora entre com a nova senha.', 'sucesso');
         }
 
         // Veio do link de confirmação de e-mail: o supabase-js já abriu a sessão pela URL.
@@ -301,4 +311,17 @@
             }
         });
     }
+
+    // ==========================================
+    // UTILITÁRIOS COMPARTILHADOS
+    // ==========================================
+    // redefinir-senha.js (US-011) reaproveita as mesmas mensagens e o mesmo "carregando".
+    // Um único nome global evita colisão entre scripts clássicos.
+    window.HelpMeAuth = {
+        mostrarMensagem: mostrarMensagem,
+        mostrarErroCampo: mostrarErroCampo,
+        definirCarregando: definirCarregando,
+        traduzirErroAuth: traduzirErroAuth,
+        emailValido: emailValido
+    };
 })();

@@ -5,7 +5,8 @@
   - #login-form com #email, #senha (+ #toggle-password) e #btn-login.
   - #login-mensagem: erros/avisos (role="alert").
   - #link-cadastro: recebe o ?voltar= para não perder a página de retorno.
-  - Aceita ?voltar=<pagina>.html (validado em js/sessao.js) e ?confirmado=1.
+  - #link-esqueci-senha: leva a redefinir-senha.html (US-011).
+  - Aceita ?voltar=<pagina>.html (validado em js/sessao.js), ?confirmado=1 e ?senha=redefinida (US-011).
   - Scripts no final (clássicos, sem type="module"):
     Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/auth.js.
 -->
@@ -53,6 +54,9 @@
                     <button type="button" id="toggle-password" class="btn-mostrar-senha" aria-controls="senha" aria-pressed="false">Mostrar</button>
                 </div>
             </div>
+
+            <!-- US-011: pede o link de redefinição por e-mail -->
+            <a href="redefinir-senha.html" id="link-esqueci-senha" class="btn-link link-esqueci-senha">Esqueci minha senha</a>
 
             <button type="submit" id="btn-login" class="btn btn-primario btn-bloco">Entrar</button>
         </form>
