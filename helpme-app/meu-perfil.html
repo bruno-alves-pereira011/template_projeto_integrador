@@ -1,0 +1,96 @@
+<!--
+  TELA: Meu perfil do cliente (meu-perfil.html) — US-012
+  OBJETIVO: O cliente edita nome e telefone. O telefone é o contato que o profissional recebe depois de
+  aceitar a contratação (BR07, função contato_contraparte).
+  REGRAS: só cliente logado (exigirSessao('cliente')). Grava só a própria linha de 'usuarios' (RLS);
+  tipo_usuario é protegido pelo trigger proteger_usuario.
+  ELEMENTOS (ids usados pelo js/meu-perfil.js):
+  - #perfil-carregando / #perfil-erro-carga (+ #btn-recarregar).
+  - #form-perfil: #nome, #telefone, #erro-nome, #erro-telefone, #perfil-email (só leitura), #btn-salvar.
+  - #perfil-mensagem: confirmação ou erro ao salvar. #btn-sair na barra do topo.
+  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/telefone.js -> js/meu-perfil.js.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Meu perfil</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="pagina-auth">
+
+    <main class="login-container">
+        <div class="barra-topo">
+            <a href="home-cliente.html" class="logo" aria-label="HelpMe - ir para a página inicial">
+                <span class="logo-icone" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </span>
+                HelpMe
+            </a>
+            <button type="button" id="btn-sair" class="btn btn-contorno">Sair</button>
+        </div>
+
+        <header class="login-header">
+            <h1>Meu perfil</h1>
+            <p>O profissional vê seu nome e, depois de aceitar a contratação, seu telefone.</p>
+        </header>
+
+        <p id="perfil-carregando" role="status">Carregando...</p>
+
+        <div id="perfil-erro-carga" class="mensagem mensagem-erro" role="alert" hidden>
+            <p>Não foi possível carregar seu perfil. Verifique sua conexão e tente de novo.</p>
+            <button type="button" id="btn-recarregar" class="btn btn-contorno">Tentar novamente</button>
+        </div>
+
+        <form id="form-perfil" class="login-form" novalidate hidden>
+            <!-- Confirmação ou erro ao salvar. tabindex="-1": recebe o foco para o leitor de tela anunciar. -->
+            <p id="perfil-mensagem" class="mensagem" role="alert" tabindex="-1" hidden></p>
+
+            <div class="input-group">
+                <span class="rotulo-leitura">E-mail</span>
+                <p id="perfil-email" class="valor-leitura"></p>
+                <p class="dica-campo">O e-mail é o seu login e não pode ser alterado aqui.</p>
+            </div>
+
+            <div class="input-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" required maxlength="100" autocomplete="name" aria-describedby="erro-nome">
+                <p id="erro-nome" class="campo-erro" hidden></p>
+            </div>
+
+            <div class="input-group">
+                <label for="telefone">Telefone <span class="opcional">(opcional)</span></label>
+                <input type="tel" id="telefone" name="telefone" maxlength="20" placeholder="(27) 99999-0000" autocomplete="tel" inputmode="tel" aria-describedby="dica-telefone erro-telefone">
+                <p id="dica-telefone" class="dica-campo">Com DDD. Só é mostrado ao profissional depois que ele aceitar sua contratação.</p>
+                <p id="erro-telefone" class="campo-erro" hidden></p>
+            </div>
+
+            <button type="submit" id="btn-salvar" class="btn btn-primario btn-bloco">Salvar</button>
+        </form>
+
+        <footer class="login-footer">
+            <a href="home-cliente.html" class="btn-link">Voltar para o início</a>
+            <a href="contratacoes.html" class="btn-link">Minhas contratações</a>
+        </footer>
+    </main>
+
+    <!-- 1. Biblioteca oficial do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 2. Conexão (cria a global supabaseClient) -->
+    <script src="js/supabase-config.js"></script>
+    <!-- 3. Sessão e proteção da página (exigirSessao, sair) -->
+    <script src="js/sessao.js"></script>
+    <!-- 4. Regra do telefone (telefoneValido) -->
+    <script src="js/telefone.js"></script>
+    <!-- 5. Lógica desta tela -->
+    <script src="js/meu-perfil.js"></script>
+
+</body>
+</html>

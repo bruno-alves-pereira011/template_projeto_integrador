@@ -114,6 +114,15 @@ body.pagina-auth {
     color: var(--cor-texto-suave);
 }
 
+/* Dado só de leitura num formulário (e-mail em meu-perfil.html — US-012). */
+.rotulo-leitura {
+    font-weight: 600;
+}
+
+.valor-leitura {
+    overflow-wrap: anywhere;
+}
+
 /* Campo de senha com botão "Mostrar" dentro. */
 .input-wrapper {
     position: relative;

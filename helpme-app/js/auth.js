@@ -78,11 +78,7 @@
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    // Telefone opcional: se preenchido, precisa ter de 10 a 13 dígitos (DDD + número, com ou sem 55).
-    function telefoneValido(telefone) {
-        const digitos = telefone.replace(/\D/g, '');
-        return digitos.length >= 10 && digitos.length <= 13;
-    }
+    // telefoneValido() vem de js/telefone.js (mesma regra do cadastro e do meu-perfil — US-012).
 
     // Repassa o ?voltar= (já validado) para o link entre login e cadastro, para não perder o retorno.
     function propagarVoltar(idLink) {

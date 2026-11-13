@@ -111,6 +111,7 @@
         GRUPOS.forEach((id) => { el(id).querySelector('.titulo-grupo').textContent = textos.grupos[id]; });
 
         el('menu-inicio').hidden = papel !== 'cliente';
+        el('menu-meu-perfil').hidden = papel !== 'cliente';
         el('menu-editar-perfil').hidden = papel !== 'profissional';
         el('link-perfil-publico').hidden = papel !== 'profissional';
         if (papel === 'profissional') {

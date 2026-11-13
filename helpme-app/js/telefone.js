@@ -3,7 +3,7 @@
 // POR QUÊ: o mesmo número aparece digitado de vários jeitos ("(11) 97777-0001", "+55 11 97777-0001",
 // "5511977770001"). Centralizar aqui garante o mesmo link em todas as telas (US-003 e, depois, US-009).
 // COMO USAR: script clássico (sem type="module"), carregado antes do script da página.
-// API PÚBLICA (globais): normalizarTelefone(str), linkTel(str), linkWhatsApp(str).
+// API PÚBLICA (globais): normalizarTelefone(str), telefoneValido(str), linkTel(str), linkWhatsApp(str).
 // Não depende do Supabase nem do DOM.
 
 
@@ -32,6 +32,15 @@ function normalizarTelefone(numero) {
 }
 
 
+// Regra única para formulários (cadastro e meu-perfil — US-012): o número digitado precisa ter DDD
+// e gerar os links de Ligar/WhatsApp. Campo opcional vazio é tratado por quem chama.
+//   telefoneValido('(27) 99999-0001') -> true
+//   telefoneValido('1234')            -> false
+function telefoneValido(numero) {
+    return normalizarTelefone(numero) !== null;
+}
+
+
 // Link para o botão "Ligar": 'tel:11977770001' (ou null se o número for inválido)
 function linkTel(numero) {
     const digitos = normalizarTelefone(numero);
@@ -48,5 +57,5 @@ function linkWhatsApp(numero) {
 
 // Permite testar estas funções puras no Node (no navegador `module` não existe e isto é ignorado)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normalizarTelefone, linkTel, linkWhatsApp };
+    module.exports = { normalizarTelefone, telefoneValido, linkTel, linkWhatsApp };
 }
