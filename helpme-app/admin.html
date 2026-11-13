@@ -8,7 +8,10 @@
   - #admin-saudacao: "Olá, <primeiro nome>".
   - Menu: Painel (esta página), Fila de análise (admin-analise.html, US-015), Categorias (US-018,
     "em breve" até a tela existir) e #btn-sair.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/admin.js.
+  - Indicadores (US-017): #indicadores-carregando / #indicadores-erro / #indicadores-conteudo,
+    #kpi-* (valores e notas), #tabela-contratacoes, #kpi-categorias-lista, #btn-atualizar-indicadores.
+    Falha nos indicadores não esconde o resto do painel.
+  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/admin-comum.js -> js/admin.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -91,11 +94,98 @@
                     <p>Criar, editar e desativar tipos de serviço.</p>
                     <span class="selo-em-breve">em breve</span>
                 </article>
-                <article class="card-admin">
-                    <h2>Indicadores</h2>
-                    <p>Cadastros, aprovações e contratações em números.</p>
-                    <span class="selo-em-breve">em breve</span>
-                </article>
+            </section>
+
+            <!-- Indicadores (US-017): só totais, vindos de rpc('painel_admin') (NFR09). -->
+            <section class="indicadores" aria-labelledby="titulo-indicadores">
+                <div class="indicadores-cabecalho">
+                    <div>
+                        <h2 id="titulo-indicadores">Indicadores</h2>
+                        <p id="indicadores-atualizado" class="texto-suave"></p>
+                    </div>
+                    <button type="button" id="btn-atualizar-indicadores" class="btn btn-secundario">Atualizar</button>
+                </div>
+
+                <p id="indicadores-carregando" class="texto-suave" role="status">Carregando indicadores...</p>
+
+                <div id="indicadores-erro" class="aviso-decisao aviso-erro" role="alert" hidden>
+                    <p id="indicadores-erro-texto"></p>
+                </div>
+
+                <div id="indicadores-conteudo" hidden>
+                    <h3 class="grupo-kpi-titulo">Profissionais e fila de análise</h3>
+                    <div class="grade-kpi">
+                        <a class="kpi kpi-link" href="admin-analise.html" aria-describedby="kpi-fila-nota">
+                            <span class="kpi-rotulo">Na fila de análise</span>
+                            <span class="kpi-valor" id="kpi-fila">—</span>
+                            <span class="kpi-nota" id="kpi-fila-nota"></span>
+                        </a>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Espera média na fila</span>
+                            <span class="kpi-valor" id="kpi-espera">—</span>
+                            <span class="kpi-nota">De quem está aguardando agora</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Tempo até a decisão</span>
+                            <span class="kpi-valor" id="kpi-decisao">—</span>
+                            <span class="kpi-nota" id="kpi-decisao-nota"></span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Aprovados</span>
+                            <span class="kpi-valor" id="kpi-aprovados">—</span>
+                            <span class="kpi-nota">Aparecem no diretório</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Recusados</span>
+                            <span class="kpi-valor" id="kpi-recusados">—</span>
+                        </div>
+                    </div>
+
+                    <h3 class="grupo-kpi-titulo">Usuários</h3>
+                    <div class="grade-kpi">
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Clientes</span>
+                            <span class="kpi-valor" id="kpi-clientes">—</span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Profissionais</span>
+                            <span class="kpi-valor" id="kpi-profissionais">—</span>
+                            <span class="kpi-nota" id="kpi-profissionais-nota"></span>
+                        </div>
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Administradores</span>
+                            <span class="kpi-valor" id="kpi-admins">—</span>
+                        </div>
+                    </div>
+
+                    <h3 class="grupo-kpi-titulo">Contratações</h3>
+                    <div class="grade-kpi grade-kpi-contratacoes">
+                        <div class="kpi">
+                            <span class="kpi-rotulo">Taxa de aceite (30 dias)</span>
+                            <span class="kpi-valor" id="kpi-aceite">—</span>
+                            <span class="kpi-nota" id="kpi-aceite-nota"></span>
+                        </div>
+                        <div class="tabela-kpi-caixa">
+                            <table class="tabela-kpi">
+                                <caption>Contratações criadas no período, pelo status atual</caption>
+                                <thead>
+                                    <tr><th scope="col">Status</th><th scope="col">Últimos 7 dias</th><th scope="col">Últimos 30 dias</th></tr>
+                                </thead>
+                                <tbody id="tabela-contratacoes"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h3 class="grupo-kpi-titulo">Categorias</h3>
+                    <div class="grade-kpi">
+                        <div class="kpi kpi-largo">
+                            <span class="kpi-rotulo">Categorias ativas sem profissional aprovado</span>
+                            <span class="kpi-valor" id="kpi-categorias">—</span>
+                            <span class="kpi-nota" id="kpi-categorias-nota"></span>
+                            <ul class="lista-kpi" id="kpi-categorias-lista"></ul>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
     </main>
@@ -106,7 +196,9 @@
     <script src="js/supabase-config.js"></script>
     <!-- 3. Sessão e proteção da página (exigirSessao('admin'), sair) -->
     <script src="js/sessao.js"></script>
-    <!-- 4. Lógica desta tela -->
+    <!-- 4. Utilitários da área admin (tradução de erros) -->
+    <script src="js/admin-comum.js"></script>
+    <!-- 5. Lógica desta tela -->
     <script src="js/admin.js"></script>
 
 </body>

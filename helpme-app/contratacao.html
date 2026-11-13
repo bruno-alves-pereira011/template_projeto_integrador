@@ -1,16 +1,3 @@
-<!--
-  TELA: Conversa da contratação (contratacao.html?id=<id da contratação>) — US-010 (decisão D9)
-  OBJETIVO: Cliente e profissional trocam mensagens de texto em tempo real, em qualquer status.
-  REGRAS: exige sessão. Só as partes enxergam a contratação e as mensagens (RLS). O envio só vale em
-  'solicitada' e 'aceita' (BR08); nos outros status o campo fica desabilitado e o histórico continua visível.
-  ELEMENTOS (ids usados pelo js/chat.js):
-  - #chat-carregando / #chat-erro (+ #btn-tentar-novamente) / #chat-nao-encontrada.
-  - #chat-detalhe: #detalhe-outra-parte, #detalhe-status, #chat-conexao, #chat-lista, #chat-vazio.
-  - #modelo-mensagem: <template> de cada mensagem (.chat-msg-autor, .chat-msg-texto, .chat-msg-hora).
-  - #chat-form: #chat-texto, #chat-contador, #btn-enviar. #chat-encerrado: aviso de conversa encerrada.
-  - #chat-aviso: falhas de envio. #link-voltar: tela de detalhe certa. #btn-sair na barra do topo.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/contratacao-comum.js -> js/chat.js.
--->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

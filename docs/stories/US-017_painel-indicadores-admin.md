@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Media
 **Story Points:** 5
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 04
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -147,6 +147,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 ## Notas e Comentarios
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
+- 2026-11-13: em andamento em `feat/US-017-indicadores` (a partir de `feat/US-016-triagem`; breakdown em `docs/tasks/breakdown_US-017.md`). Pedido do PO: "algo para relatorios dentro da tela de administrador". `painel_admin()` em `006_painel.sql` (003-005 ja usados, D7), so totais (NFR09). Indicadores em stat tiles + tabela de contratacoes 7d/30d no `admin.html`; o card "Indicadores em breve" saiu. Tela testada com login real de admin e RPC simulada: **21/21**. **Falta:** aplicar a `006`, rodar `supabase/testes/006_painel.sql` e o teste ponta a ponta.
 
 ---
 

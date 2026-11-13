@@ -6,6 +6,8 @@
 //   3. Ao salvar: valida no front, grava o perfil (insert na 1ª vez, update depois)
 //      e sincroniza as categorias (insere as novas antes de apagar as desmarcadas,
 //      para nunca ficar com zero categorias se a 2ª chamada falhar).
+//   4. Pede a triagem do próprio perfil: rpc('solicitar_analise') (US-016, 005_triagem.sql).
+//      Na edição, as pendências que voltarem aparecem na mensagem de sucesso.
 // SEGURANÇA: 'status_aprovacao' NUNCA é enviado. O banco força 'pendente' no insert e
 // recusa mudança de status vinda do app; a idade 18+ também é garantida por trigger.
 
@@ -326,6 +328,20 @@
         }
     }
 
+    // US-016: triagem do próprio perfil, depois de gravar perfil e categorias (a função lê as duas).
+    // Falha aqui NÃO desfaz o salvamento: o perfil já está gravado, o admin vê "Sem triagem"
+    // e o próximo salvamento tenta de novo. Devolve { resultado, pendencias } ou null.
+    async function solicitarAnalise() {
+        try {
+            const { data, error } = await supabaseClient.rpc('solicitar_analise');
+            if (error) throw error;
+            return data;
+        } catch (erro) {
+            console.warn('Triagem não executada:', erro);
+            return null;
+        }
+    }
+
     el.form.addEventListener('submit', async (evento) => {
         evento.preventDefault();
         mostrarMensagem('');
@@ -353,6 +369,7 @@
             await salvarPerfil(dados);
             etapa = 'categorias';
             await sincronizarCategorias(marcadas);
+            const triagem = await solicitarAnalise();
 
             if (primeiroCadastro) {
                 // Cadastro novo sempre nasce 'pendente': vai para a tela de análise.
@@ -360,7 +377,12 @@
                 return;
             }
 
-            mostrarMensagem('Perfil salvo com sucesso.', 'sucesso');
+            const pendencias = (triagem && Array.isArray(triagem.pendencias)) ? triagem.pendencias : [];
+            if (pendencias.length) {
+                mostrarMensagem('Perfil salvo. Ainda falta corrigir: ' + pendencias.join('; ') + '.', 'info');
+            } else {
+                mostrarMensagem('Perfil salvo com sucesso.', 'sucesso');
+            }
             el.mensagem.focus();
         } catch (erro) {
             console.error('Erro ao salvar (' + etapa + '):', erro);

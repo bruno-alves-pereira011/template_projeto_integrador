@@ -384,3 +384,198 @@ body.painel .btn-secundario {
         margin-bottom: 0.4rem;
     }
 }
+
+/* ================= INDICADORES (US-017) ================= */
+/* Stat tiles: rótulo, número grande em tinta de texto (nunca só cor) e uma nota. */
+
+.indicadores {
+    margin-top: 2rem;
+}
+
+.indicadores-cabecalho {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.indicadores-cabecalho h2 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.25rem;
+    color: var(--painel-verde-escuro);
+}
+
+.indicadores-cabecalho p {
+    margin: 0.2rem 0 0;
+}
+
+.grupo-kpi-titulo {
+    margin: 1.5rem 0 0.6rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1rem;
+    color: var(--painel-texto);
+}
+
+.grade-kpi {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 0.75rem;
+}
+
+.kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--painel-texto);
+    text-decoration: none;
+}
+
+.kpi-rotulo {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--painel-texto-suave);
+}
+
+.kpi-valor {
+    font-family: 'Manrope', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--painel-texto);
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-nota {
+    font-size: 0.85rem;
+    color: var(--painel-texto-suave);
+    overflow-wrap: anywhere;
+}
+
+.kpi-link {
+    min-height: 44px;
+    border-color: #b9d4cf;
+}
+
+.kpi-link .kpi-nota {
+    color: var(--painel-verde);
+    font-weight: 600;
+}
+
+.kpi-link:hover {
+    border-color: var(--painel-verde);
+    background: var(--painel-verde-claro);
+}
+
+.kpi-link:focus-visible,
+#btn-atualizar-indicadores:focus-visible {
+    outline: 3px solid var(--painel-verde-escuro);
+    outline-offset: 2px;
+}
+
+.kpi-largo {
+    grid-column: 1 / -1;
+}
+
+.lista-kpi {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.4rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lista-kpi li {
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: #fdf3e9;
+    color: #6b3a12;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Taxa de aceite + tabela lado a lado; a tabela ocupa o resto da linha. */
+.grade-kpi-contratacoes {
+    grid-template-columns: minmax(170px, 1fr) 3fr;
+    align-items: start;
+}
+
+.tabela-kpi-caixa {
+    min-width: 0;
+    overflow-x: auto;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: #fff;
+}
+
+.tabela-kpi {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+}
+
+.tabela-kpi caption {
+    padding: 0.75rem 1rem 0.25rem;
+    text-align: left;
+    font-size: 0.85rem;
+    color: var(--painel-texto-suave);
+}
+
+.tabela-kpi th,
+.tabela-kpi td {
+    padding: 0.45rem 1rem;
+    border-bottom: 1px solid var(--painel-borda);
+    text-align: right;
+}
+
+.tabela-kpi th:first-child {
+    text-align: left;
+    font-weight: 600;
+}
+
+.tabela-kpi thead th {
+    font-size: 0.85rem;
+    color: var(--painel-texto-suave);
+}
+
+.tabela-kpi .linha-total th,
+.tabela-kpi .linha-total td {
+    border-bottom: none;
+    font-weight: 700;
+}
+
+@media (max-width: 760px) {
+    .grade-kpi {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grade-kpi-contratacoes {
+        grid-template-columns: 1fr;
+    }
+
+    .grade-kpi-contratacoes .kpi,
+    .kpi-largo {
+        grid-column: 1 / -1;
+    }
+
+    .kpi-valor {
+        font-size: 1.6rem;
+    }
+
+    .tabela-kpi th,
+    .tabela-kpi td {
+        padding: 0.45rem 0.6rem;
+    }
+
+    #btn-atualizar-indicadores {
+        width: 100%;
+    }
+}
