@@ -5,6 +5,8 @@
 | `migrations/001_schema.sql` | Cria tabelas, triggers, view, função de contato, políticas RLS, Realtime e as 6 categorias. **Apaga e recria** as tabelas do schema `public` (inclusive a antiga `pedidos`, se existir). |
 | `migrations/002_privacidade_data_nascimento.sql` | Esconde `data_nascimento` da API (SELECT por coluna) e cria `minha_data_nascimento()`. **Só para bancos que rodaram o 001 antes dessa correção**; não apaga dados. O 001 atual já inclui isso. |
 | `migrations/003_admin.sql` | Papel de administrador (US-014): tabela `administradores` (RLS ligado, sem políticas), função `eh_admin()` e `validar_profissional` aceitando mudança de status feita por admin. Incremental (D7): **não apaga dados**. |
+| `migrations/004_fila_analise.sql` | Fila de análise (US-015): tabela `analises_profissional` (histórico; o app não lê nem escreve direto) e as funções `fila_analise()`, `detalhe_profissional_admin(id)` e `decidir_profissionais(ids, acao, motivo, exigir_verde)`. Admin não decide o próprio cadastro. Incremental: **não apaga dados**. |
+| `testes/004_fila_analise.sql` | Roteiro da US-015 (F1 a F8). Desfaz tudo ao final. Precisa do `admin@helpme.test` cadastrado. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 
@@ -44,7 +46,11 @@ on conflict (usuario_id) do nothing;
 
 Para remover: `delete from public.administradores where usuario_id = (select id from auth.users where email = '...');`
 
-## Aprovar um profissional (manual — decisão D2)
+## Aprovar um profissional
+
+**Pelo app (D6, US-015):** entre como admin → **Fila de análise** → **Ver detalhes e decidir** → Aprovar, ou Recusar com motivo. Cadastros com triagem verde podem ser aprovados em lote na própria fila. Toda decisão fica em `analises_profissional`.
+
+**Pelo painel (antigo, D2):** continua funcionando, mas **não grava histórico**. Use só em emergência.
 
 Pelo **Table Editor → `profissionais`**: altere `status_aprovacao` para `aprovado` (ou `recusado`). Ou no SQL Editor:
 

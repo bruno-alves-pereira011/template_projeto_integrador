@@ -1,0 +1,140 @@
+<!--
+  TELA: Fila de análise (admin-analise.html) — US-015
+  OBJETIVO: O administrador vê os profissionais 'pendente', filtra pela triagem e aprova em lote os verdes.
+  REGRAS: exigirSessao('admin'). Os dados vêm de rpc('fila_analise'); a decisão, de
+  rpc('decidir_profissionais') com p_exigir_verde = true (BR15: o banco confere tudo na hora).
+  ELEMENTOS (ids usados pelo js/admin-analise.js):
+  - #fila-carregando / #fila-erro (+ #btn-tentar-novamente) / #fila-conteudo / #fila-vazia.
+  - #filtro-triagem, #fila-total, #aviso-lote, #btn-aprovar-lote, #resultado-lote (role="status").
+  - #lista-fila recebe os cards de <template id="modelo-card-fila">.
+  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/admin-comum.js -> js/admin-analise.js.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Fila de análise</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="painel">
+
+    <aside class="sidebar">
+        <a href="admin.html" class="sidebar-logo">
+            <span class="logo-icone">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </span>
+            HelpMe <span class="selo-admin">Admin</span>
+        </a>
+
+        <nav class="sidebar-menu" aria-label="Área administrativa">
+            <a href="admin.html" class="menu-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                Painel
+            </a>
+            <a href="admin-analise.html" class="menu-item ativo" aria-current="page">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>
+                Fila de análise
+            </a>
+            <span class="menu-item menu-item-em-breve" aria-disabled="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Categorias
+                <span class="selo-em-breve">em breve</span>
+            </span>
+        </nav>
+
+        <button type="button" id="btn-sair" class="menu-item menu-sair">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Sair
+        </button>
+    </aside>
+
+    <main class="conteudo">
+        <header class="conteudo-cabecalho">
+            <div>
+                <h1>Fila de análise</h1>
+                <p id="fila-total" class="subtitulo">Profissionais aguardando aprovação.</p>
+            </div>
+        </header>
+
+        <p id="fila-carregando" class="subtitulo" role="status">Carregando a fila...</p>
+
+        <div id="fila-erro" class="feed-vazio" role="alert" hidden>
+            <div class="feed-vazio-icone">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+            </div>
+            <h2>Não foi possível carregar a fila</h2>
+            <p id="fila-erro-texto">Verifique sua conexão com a internet e tente novamente.</p>
+            <button type="button" id="btn-tentar-novamente" class="btn-secundario">Tentar novamente</button>
+        </div>
+
+        <!-- Resultado da última aprovação em lote (aprovados e ignorados, com o motivo). -->
+        <section id="resultado-lote" class="resultado-lote" role="status" tabindex="-1" hidden></section>
+
+        <div id="fila-conteudo" hidden>
+            <div class="barra-fila">
+                <div class="filtro-fila">
+                    <label for="filtro-triagem">Triagem</label>
+                    <select id="filtro-triagem">
+                        <option value="todos">Todos</option>
+                        <option value="verde">Verde</option>
+                        <option value="pendencia">Pendência</option>
+                        <option value="suspeito">Suspeito</option>
+                        <option value="sem">Sem triagem</option>
+                    </select>
+                </div>
+                <button type="button" id="btn-aprovar-lote" class="btn btn-primario" disabled>Aprovar selecionados (0)</button>
+            </div>
+
+            <p id="aviso-lote" class="aviso-fila" hidden>
+                Só cadastros com triagem <strong>verde</strong> podem ser aprovados em lote.
+                Os outros são aprovados ou recusados pela página de detalhes.
+            </p>
+
+            <section id="lista-fila" class="lista-fila" aria-label="Profissionais aguardando análise"></section>
+
+            <p id="fila-filtro-vazio" class="subtitulo" role="status" hidden>Nenhum cadastro com essa triagem.</p>
+        </div>
+
+        <div id="fila-vazia" class="feed-vazio" hidden>
+            <div class="feed-vazio-icone">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>
+            </div>
+            <h2>Fila vazia</h2>
+            <p>Nenhum profissional aguardando análise agora.</p>
+        </div>
+    </main>
+
+    <!-- Card de um profissional na fila (clonado pelo JS) -->
+    <template id="modelo-card-fila">
+        <article class="card-fila">
+            <div class="card-fila-topo">
+                <label class="selecao-fila">
+                    <input type="checkbox" class="selecionar">
+                    <span class="card-fila-nome"></span>
+                </label>
+                <span class="selo-triagem"></span>
+            </div>
+            <p class="card-fila-local"></p>
+            <p class="card-fila-categorias"></p>
+            <p class="card-fila-tempo"></p>
+            <ul class="card-fila-motivos"></ul>
+            <a class="btn-link-admin card-fila-detalhe">Ver detalhes e decidir</a>
+        </article>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/sessao.js"></script>
+    <script src="js/admin-comum.js"></script>
+    <script src="js/admin-analise.js"></script>
+
+</body>
+</html>

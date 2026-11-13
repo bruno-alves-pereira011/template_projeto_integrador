@@ -90,3 +90,295 @@ body.painel .btn-secundario {
         margin-left: 0.25rem;
     }
 }
+
+/* ================= FILA DE ANÁLISE E DETALHE (US-015) ================= */
+
+.btn-perigo {
+    background: var(--cor-perigo);
+    color: #fff;
+}
+
+.btn-perigo:hover {
+    background: #9e2f23;
+}
+
+.btn-link-admin {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--painel-verde);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.btn-link-admin:hover {
+    text-decoration: underline;
+}
+
+.link-voltar-fila {
+    margin-bottom: 0.5rem;
+}
+
+.texto-suave {
+    color: var(--painel-texto-suave);
+}
+
+/* Selos de triagem (BR12): texto + cor, nunca só cor. */
+.selo-triagem {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.triagem-verde     { background: #e1f3e8; color: #1f6b3d; }
+.triagem-pendencia { background: #fdf3e9; color: #6b3a12; }
+.triagem-suspeito  { background: #fdecea; color: #8e2a20; }
+.triagem-sem       { background: #eceeed; color: #3f4947; }
+
+.selo-status-admin {
+    font-weight: 700;
+}
+
+.status-admin-pendente { color: #6b3a12; }
+.status-admin-aprovado { color: #1f6b3d; }
+.status-admin-recusado { color: #8e2a20; }
+
+/* Barra com filtro + aprovação em lote */
+.barra-fila {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.filtro-fila {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-weight: 600;
+}
+
+.filtro-fila select {
+    min-height: 44px;
+    min-width: 180px;
+}
+
+.aviso-fila {
+    margin: 0 0 1rem;
+    color: var(--painel-texto-suave);
+}
+
+.lista-fila {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.card-fila {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: #fff;
+    min-width: 0;
+}
+
+.card-fila p {
+    margin: 0;
+    color: var(--painel-texto-suave);
+    overflow-wrap: anywhere;
+}
+
+.card-fila-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+/* Label inteiro clicável com 44px de altura (checkbox + nome). */
+.selecao-fila {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    min-width: 0;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: var(--painel-verde-escuro);
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+.selecao-fila input {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    accent-color: var(--painel-verde);
+}
+
+.selecao-fila input:disabled {
+    cursor: not-allowed;
+}
+
+.card-fila-motivos {
+    margin: 0.25rem 0 0;
+    padding-left: 1.1rem;
+    color: #6b3a12;
+    font-size: 0.9rem;
+}
+
+/* Resultado do lote e mensagens da decisão */
+.resultado-lote,
+.aviso-decisao {
+    margin: 0 0 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #b9d4cf;
+    background: var(--painel-verde-claro);
+    color: var(--painel-verde-escuro);
+    font-weight: 600;
+}
+
+.resultado-lote ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.1rem;
+    font-weight: 400;
+}
+
+.resultado-lote p {
+    margin: 0;
+}
+
+.resultado-parcial,
+.aviso-aviso {
+    border-color: #f2d2b4;
+    background: #fdf3e9;
+    color: #6b3a12;
+}
+
+.resultado-erro,
+.aviso-erro {
+    border-color: #f5c2bd;
+    background: #fdecea;
+    color: #8e2a20;
+}
+
+/* Detalhe */
+.grade-detalhe {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    align-items: start;
+}
+
+.card-largo {
+    grid-column: 1 / -1;
+}
+
+.card-admin h3 {
+    margin: 0.5rem 0 0;
+    font-size: 0.95rem;
+}
+
+.dados-perfil {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.35rem 0.9rem;
+    margin: 0;
+}
+
+.dados-perfil dt {
+    font-weight: 700;
+}
+
+.dados-perfil dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.texto-longo {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.lista-checagens,
+.lista-historico {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.lista-historico p {
+    margin: 0.2rem 0 0;
+    overflow-wrap: anywhere;
+}
+
+.checagem-ok     { color: #1f6b3d; }
+.checagem-falhou { color: #8e2a20; font-weight: 600; }
+
+.form-recusa {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--painel-borda);
+    font-weight: 600;
+}
+
+.form-recusa textarea {
+    min-height: 88px;
+    resize: vertical;
+    font: inherit;
+    font-weight: 400;
+}
+
+.form-recusa p {
+    margin: 0;
+    font-weight: 400;
+}
+
+.form-recusa textarea[aria-invalid="true"] {
+    border-color: var(--cor-perigo);
+}
+
+.campo-erro-admin {
+    color: var(--cor-perigo);
+    font-weight: 600;
+}
+
+.painel select:focus-visible,
+.painel textarea:focus-visible,
+.painel input:focus-visible {
+    outline: 3px solid var(--painel-verde-escuro);
+    outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+    .lista-fila,
+    .grade-detalhe {
+        grid-template-columns: 1fr;
+    }
+
+    .barra-fila .btn {
+        width: 100%;
+    }
+
+    .dados-perfil {
+        grid-template-columns: 1fr;
+    }
+
+    .dados-perfil dd {
+        margin-bottom: 0.4rem;
+    }
+}
