@@ -6,8 +6,8 @@
   ELEMENTOS (ids usados pelo js/admin.js):
   - #admin-carregando / #admin-erro (+ #btn-tentar-novamente) / #admin-conteudo.
   - #admin-saudacao: "Olá, <primeiro nome>".
-  - Menu: Painel (esta página), Fila de análise (US-015) e Categorias (US-018) — "em breve" até
-    as telas existirem —, e #btn-sair.
+  - Menu: Painel (esta página), Fila de análise (admin-analise.html, US-015), Categorias (US-018,
+    "em breve" até a tela existir) e #btn-sair.
   - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/admin.js.
 -->
 <!DOCTYPE html>
@@ -41,12 +41,11 @@
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
                 Painel
             </a>
-            <!-- Viram links quando admin-analise.html (US-015) e admin-categorias.html (US-018) existirem. -->
-            <span class="menu-item menu-item-em-breve" aria-disabled="true">
+            <a href="admin-analise.html" class="menu-item">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>
                 Fila de análise
-                <span class="selo-em-breve">em breve</span>
-            </span>
+            </a>
+            <!-- Vira link quando admin-categorias.html (US-018) existir. -->
             <span class="menu-item menu-item-em-breve" aria-disabled="true">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 Categorias
@@ -85,7 +84,7 @@
                 <article class="card-admin">
                     <h2>Fila de análise</h2>
                     <p>Aprovar ou recusar profissionais que se cadastraram.</p>
-                    <span class="selo-em-breve">em breve</span>
+                    <a href="admin-analise.html" class="btn-link-admin">Abrir a fila</a>
                 </article>
                 <article class="card-admin">
                     <h2>Categorias</h2>

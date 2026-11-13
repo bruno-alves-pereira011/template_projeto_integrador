@@ -99,19 +99,29 @@ begin
     select status_aprovacao into v_texto from public.profissionais where id = v_prof;
     r := r || case when v_texto = 'pendente' then 'C5b ok (continua pendente)' else 'C5b FALHOU (' || v_texto || ')' end || E'\n';
 
-    -- Mesmo usuário, agora administrador: o trigger aceita a mudança.
-    -- (O RLS de hoje só deixa cada um editar a própria linha; as políticas
-    -- e funções de decisão sobre outros profissionais vêm na US-015.)
+    -- Mesmo usuário, agora administrador (a regra muda com a 004, ver abaixo).
     execute 'reset role';
     insert into public.administradores (usuario_id) values (v_prof);
     execute 'set local role authenticated';
-    begin
-        update public.profissionais set status_aprovacao = 'aprovado' where id = v_prof;
-        get diagnostics v_n = row_count;
-        r := r || case when v_n = 1 then 'C5c ok (admin muda o status)' else 'C5c FALHOU (' || v_n || ' linhas)' end || E'\n';
-    exception when others then
-        r := r || 'C5c FALHOU (' || sqlerrm || ')' || E'\n';
-    end;
+    if to_regprocedure('public.decidir_profissionais(uuid[],text,text,boolean)') is null then
+        -- Só com a 003: o trigger aceita a mudança feita por admin.
+        begin
+            update public.profissionais set status_aprovacao = 'aprovado' where id = v_prof;
+            get diagnostics v_n = row_count;
+            r := r || case when v_n = 1 then 'C5c ok (admin muda o status)' else 'C5c FALHOU (' || v_n || ' linhas)' end || E'\n';
+        exception when others then
+            r := r || 'C5c FALHOU (' || sqlerrm || ')' || E'\n';
+        end;
+    else
+        -- Com a 004: admin decide pela função (com histórico) e nunca o próprio status direto.
+        -- A aprovação de outro profissional por admin é testada em testes/004_fila_analise.sql (F3c).
+        begin
+            update public.profissionais set status_aprovacao = 'aprovado' where id = v_prof;
+            r := r || 'C5c FALHOU (admin mudou o próprio status direto)' || E'\n';
+        exception when others then
+            r := r || 'C5c ok (com a 004, nem admin muda o próprio status direto: ' || sqlerrm || ')' || E'\n';
+        end;
+    end if;
     execute 'reset role';
 
     raise exception E'RELATORIO:\n%', r;

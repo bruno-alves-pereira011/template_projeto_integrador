@@ -1,0 +1,151 @@
+<!--
+  TELA: Detalhe do profissional para o admin (admin-profissional.html?id=<uuid>) — US-015
+  OBJETIVO: Ver perfil, triagem e histórico (FR18) e aprovar ou recusar com motivo (BR16).
+  REGRAS: exigirSessao('admin'). Dados de rpc('detalhe_profissional_admin'); decisão de
+  rpc('decidir_profissionais'). Se outro admin decidiu antes, o banco devolve 'ignorado':
+  a tela avisa e recarrega (critério 5).
+  ELEMENTOS (ids usados pelo js/admin-profissional.js):
+  - #detalhe-carregando / #detalhe-erro (+ #btn-tentar-novamente) / #detalhe-nao-encontrado / #detalhe-conteudo.
+  - Perfil: #perfil-nome, #perfil-status, #perfil-local, #perfil-idade, #perfil-contato, #perfil-cadastro,
+    #perfil-categorias, #perfil-descricao.
+  - Triagem: #triagem-selo, #triagem-quando, #triagem-checagens, #triagem-vazia.
+  - Histórico: #historico-lista, #historico-vazio.
+  - Decisão (só 'pendente'): #painel-decisao, #btn-aprovar, #form-recusa (#motivo, #motivo-contador,
+    #erro-motivo, #btn-recusar), #decisao-mensagem; #decisao-encerrada quando não está pendente.
+  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/telefone.js -> js/admin-comum.js -> js/admin-profissional.js.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpMe - Análise do profissional</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="painel">
+
+    <aside class="sidebar">
+        <a href="admin.html" class="sidebar-logo">
+            <span class="logo-icone">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </span>
+            HelpMe <span class="selo-admin">Admin</span>
+        </a>
+
+        <nav class="sidebar-menu" aria-label="Área administrativa">
+            <a href="admin.html" class="menu-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                Painel
+            </a>
+            <a href="admin-analise.html" class="menu-item ativo">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>
+                Fila de análise
+            </a>
+            <span class="menu-item menu-item-em-breve" aria-disabled="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Categorias
+                <span class="selo-em-breve">em breve</span>
+            </span>
+        </nav>
+
+        <button type="button" id="btn-sair" class="menu-item menu-sair">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Sair
+        </button>
+    </aside>
+
+    <main class="conteudo">
+        <a href="admin-analise.html" class="btn-link-admin link-voltar-fila">← Voltar para a fila</a>
+
+        <p id="detalhe-carregando" class="subtitulo" role="status">Carregando...</p>
+
+        <div id="detalhe-erro" class="feed-vazio" role="alert" hidden>
+            <div class="feed-vazio-icone">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+            </div>
+            <h2>Não foi possível carregar o cadastro</h2>
+            <p id="detalhe-erro-texto">Verifique sua conexão com a internet e tente novamente.</p>
+            <button type="button" id="btn-tentar-novamente" class="btn-secundario">Tentar novamente</button>
+        </div>
+
+        <div id="detalhe-nao-encontrado" class="feed-vazio" hidden>
+            <h2>Cadastro não encontrado</h2>
+            <p>O link pode estar errado ou o profissional foi removido.</p>
+        </div>
+
+        <div id="detalhe-conteudo" hidden>
+            <header class="conteudo-cabecalho">
+                <div>
+                    <h1 id="perfil-nome" tabindex="-1"></h1>
+                    <p class="subtitulo">Status: <span id="perfil-status" class="selo-status-admin"></span></p>
+                </div>
+            </header>
+
+            <!-- Resultado da decisão (sucesso, aviso de concorrência ou erro). -->
+            <p id="decisao-mensagem" class="aviso-decisao" role="alert" tabindex="-1" hidden></p>
+
+            <div class="grade-detalhe">
+                <section class="card-admin" aria-labelledby="titulo-perfil">
+                    <h2 id="titulo-perfil">Perfil</h2>
+                    <dl class="dados-perfil">
+                        <dt>Local</dt><dd id="perfil-local"></dd>
+                        <dt>Idade</dt><dd id="perfil-idade"></dd>
+                        <dt>Contato</dt><dd id="perfil-contato"></dd>
+                        <dt>Cadastrado em</dt><dd id="perfil-cadastro"></dd>
+                        <dt>Categorias</dt><dd id="perfil-categorias"></dd>
+                    </dl>
+                    <h3>Descrição</h3>
+                    <p id="perfil-descricao" class="texto-longo"></p>
+                </section>
+
+                <section class="card-admin" aria-labelledby="titulo-triagem">
+                    <h2 id="titulo-triagem">Triagem automática</h2>
+                    <p><span id="triagem-selo" class="selo-triagem"></span> <span id="triagem-quando" class="texto-suave"></span></p>
+                    <ul id="triagem-checagens" class="lista-checagens"></ul>
+                    <p id="triagem-vazia" class="texto-suave" hidden>Este cadastro ainda não passou pela triagem automática. Confira os dados do perfil antes de decidir.</p>
+                </section>
+
+                <section id="painel-decisao" class="card-admin" aria-labelledby="titulo-decisao" hidden>
+                    <h2 id="titulo-decisao">Decisão</h2>
+                    <button type="button" id="btn-aprovar" class="btn btn-primario btn-bloco">Aprovar e publicar no diretório</button>
+
+                    <form id="form-recusa" class="form-recusa" novalidate>
+                        <label for="motivo">Motivo da recusa</label>
+                        <textarea id="motivo" name="motivo" rows="3" maxlength="500" placeholder="Ex.: WhatsApp já usado por outro cadastro." aria-describedby="dica-motivo motivo-contador erro-motivo"></textarea>
+                        <p id="dica-motivo" class="texto-suave">De 10 a 500 caracteres. O profissional vai ver este motivo.</p>
+                        <p id="motivo-contador" class="texto-suave" aria-live="polite">0/500</p>
+                        <p id="erro-motivo" class="campo-erro-admin" hidden></p>
+                        <button type="submit" id="btn-recusar" class="btn btn-perigo btn-bloco">Recusar</button>
+                    </form>
+                </section>
+
+                <section id="decisao-encerrada" class="card-admin" hidden>
+                    <h2>Decisão</h2>
+                    <p class="texto-suave">Este cadastro não está pendente, então não há decisão a tomar agora.</p>
+                </section>
+
+                <section class="card-admin card-largo" aria-labelledby="titulo-historico">
+                    <h2 id="titulo-historico">Histórico</h2>
+                    <ol id="historico-lista" class="lista-historico"></ol>
+                    <p id="historico-vazio" class="texto-suave" hidden>Sem decisões registradas.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/sessao.js"></script>
+    <script src="js/telefone.js"></script>
+    <script src="js/admin-comum.js"></script>
+    <script src="js/admin-profissional.js"></script>
+
+</body>
+</html>
