@@ -5,9 +5,9 @@
 // ORDEM DOS SCRIPTS: CDN supabase-js -> js/supabase-config.js -> (js/categorias.js) -> js/sessao.js -> script da página.
 // Globais criadas aqui (NÃO redeclarar em outro script):
 //   funções: exigirSessao, destinoDoUsuario, sair, voltarSeguro, lerVoltarDaUrl,
-//            calcularDestino, buscarUsuario, buscarSituacaoProfissional;
+//            calcularDestino, buscarUsuario, buscarSituacaoProfissional, buscarEhAdmin, ehPaginaAdmin;
 //   constantes: PAGINA_INICIAL_CLIENTE, PAGINA_LOGIN, PAGINA_COMPLETAR_PERFIL,
-//               PAGINA_BLOQUEIO, DESTINO_PROFISSIONAL_APROVADO.
+//               PAGINA_BLOQUEIO, PAGINA_ADMIN, DESTINO_PROFISSIONAL_APROVADO.
 
 
 // Página inicial do cliente (e home pública do app).
@@ -15,6 +15,10 @@ const PAGINA_INICIAL_CLIENTE = 'home-cliente.html';
 const PAGINA_LOGIN = 'index.html';
 const PAGINA_COMPLETAR_PERFIL = 'completar-perfil.html';
 const PAGINA_BLOQUEIO = 'bloqueio.html';
+
+// Área administrativa (US-014). Admin é quem tem linha em 'administradores' (BR11),
+// não um tipo_usuario: por isso a checagem é separada (função eh_admin() no banco).
+const PAGINA_ADMIN = 'admin.html';
 
 // Profissional aprovado cai na lista de contratações recebidas (US-008).
 // (O antigo feed-profissional.html, que lia a tabela 'pedidos', foi removido no DEBT-006.)
@@ -55,11 +59,24 @@ function lerVoltarDaUrl() {
 }
 
 
+// Páginas da área admin: admin.html, admin-analise.html, admin-categorias.html...
+// Recebe só o nome do arquivo (com ou sem ?query).
+function ehPaginaAdmin(pagina) {
+    return typeof pagina === 'string' && /^admin[A-Za-z0-9_-]*\.html$/.test(pagina.split('?')[0]);
+}
+
+
 // Regra pura de roteamento (sem banco), separada para ficar fácil de testar.
-// situacao = { tipo: 'cliente'|'profissional', status: null|'pendente'|'aprovado'|'recusado', totalCategorias: number }
+// situacao = { ehAdmin: boolean, tipo: 'cliente'|'profissional', status: null|'pendente'|'aprovado'|'recusado', totalCategorias: number }
 // status null = profissional ainda sem linha em 'profissionais'.
 function calcularDestino(situacao, voltar) {
     const voltarOk = voltarSeguro(voltar);
+
+    // Admin vem antes da regra de cliente/profissional (US-014, critério 2).
+    // Só aceita voltar para outra página admin; qualquer outro destino cai no painel.
+    if (situacao && situacao.ehAdmin) {
+        return voltarOk && ehPaginaAdmin(voltarOk) ? voltarOk : PAGINA_ADMIN;
+    }
 
     if (!situacao || situacao.tipo !== 'profissional') {
         return voltarOk || PAGINA_INICIAL_CLIENTE;
@@ -115,6 +132,23 @@ async function buscarSituacaoProfissional(userId) {
 }
 
 
+// Quem está logado é administrador? Pergunta ao banco (eh_admin() só responde sobre quem chama).
+// Se a migration 003 ainda não foi aplicada, a função não existe (PGRST202): ninguém é admin,
+// e o login dos outros usuários continua funcionando. Outros erros sobem para quem chama.
+async function buscarEhAdmin() {
+    const { data, error } = await supabaseClient.rpc('eh_admin');
+
+    if (error) {
+        if (error.code === 'PGRST202') {
+            console.warn('Função eh_admin() não encontrada: aplique supabase/migrations/003_admin.sql.');
+            return false;
+        }
+        throw error;
+    }
+    return data === true;
+}
+
+
 // Para onde o login leva este usuário.
 // `voltar` é opcional: se omitido, usa o ?voltar= da URL atual.
 // Lança erro se não conseguir ler o banco (quem chama mostra a mensagem).
@@ -122,6 +156,11 @@ async function destinoDoUsuario(userId, voltar) {
     if (!supabaseClient) throw new Error('Cliente do Supabase indisponível.');
 
     const voltarUsado = voltar === undefined ? lerVoltarDaUrl() : voltar;
+
+    if (await buscarEhAdmin()) {
+        return calcularDestino({ ehAdmin: true }, voltarUsado);
+    }
+
     const usuario = await buscarUsuario(userId);
 
     if (!usuario) {
@@ -142,7 +181,8 @@ async function destinoDoUsuario(userId, voltar) {
 //   if (!sessao) return; // já redirecionou
 // - sem sessão: vai ao login com ?voltar=<esta página>;
 // - tipo errado: vai para a página inicial do próprio tipo;
-// - ok: devolve { user, usuario } (usuario = linha de 'usuarios').
+// - 'admin': exige linha em 'administradores' (eh_admin()); quem não é vai para a própria página inicial;
+// - ok: devolve { user, usuario } (usuario = linha de 'usuarios'; com 'admin', também ehAdmin: true).
 // Lança erro se o Supabase estiver indisponível ou a leitura falhar.
 async function exigirSessao(tipoEsperado) {
     if (!supabaseClient) throw new Error('Cliente do Supabase indisponível.');
@@ -164,6 +204,16 @@ async function exigirSessao(tipoEsperado) {
 
     if (!usuario) {
         throw new Error('Perfil de usuário não encontrado.');
+    }
+
+    // Páginas admin*.html: o papel vem de 'administradores', não de tipo_usuario (US-014, critério 3).
+    if (tipoEsperado === 'admin') {
+        if (await buscarEhAdmin()) {
+            return { user: sessao.user, usuario: usuario, ehAdmin: true };
+        }
+        // Não é admin: vai para a página inicial do próprio tipo (o voltar é ignorado).
+        window.location.replace(await destinoDoUsuario(sessao.user.id, null));
+        return null;
     }
 
     if (tipoEsperado && usuario.tipo_usuario !== tipoEsperado) {

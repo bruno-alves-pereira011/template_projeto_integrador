@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Alta
 **Story Points:** 5
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 03
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -158,6 +158,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 ## Notas e Comentarios
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
+- 2026-11-13: em andamento em `feat/US-014-admin` (breakdown em `docs/tasks/breakdown_US-014.md`). Front pronto e testado: 20/20 no Edge, com login real e `eh_admin` simulado no caminho do admin. `003_admin.sql` e `supabase/testes/003_admin.sql` escritos; **ainda nao aplicados nem executados no banco real** (aguardando o OK do PO). DEBT-005: `refactor/ui-polish` descartado por agora (PO).
 
 ---
 
