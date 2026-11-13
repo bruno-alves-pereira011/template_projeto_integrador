@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Media
 **Story Points:** 5
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 04
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -154,6 +154,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 ## Notas e Comentarios
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
+- 2026-11-13: em andamento em `feat/US-016-triagem` (a partir de `feat/US-015-fila-analise`; breakdown em `docs/tasks/breakdown_US-016.md`). Banco em `005_triagem.sql` (o 004 ficou com a fila da US-015, D7); `categorias.ativa` entra aqui com default true porque a BR13 conta so categoria ativa (tela de gestao continua na US-018). Triagem nunca muda o status; so pendencias obrigatorias voltam ao profissional. Tela do `completar-perfil` testada com login real e gravacoes interceptadas: **9/9**. **Falta:** aplicar a `005`, rodar `supabase/testes/005_triagem.sql` e o teste ponta a ponta.
 
 ---
 

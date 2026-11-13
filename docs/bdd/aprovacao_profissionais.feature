@@ -2,7 +2,7 @@
 # Spec: N/A — regras em docs/requirements/helpme-mvp-marco2.md (rev. 3)
 # Fonte: FR15, FR17–FR21, BR11–BR19 (rev. 3); decisões D6 e D7 em docs/DECISOES.md
 # Stories: US-014, US-015, US-013, US-016, US-021
-# Banco: supabase/migrations/003_admin.sql e 004_triagem.sql (a criar)
+# Banco: supabase/migrations/003_admin.sql, 004_fila_analise.sql e 005_triagem.sql
 # Execução: revisão manual (sem runner documentado em docs/context.md).
 #           Os passos podem ser conferidos pelo app ou pelos roteiros de
 #           supabase/testes/ (NFR11).

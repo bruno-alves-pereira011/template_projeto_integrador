@@ -7,6 +7,8 @@
 | `migrations/003_admin.sql` | Papel de administrador (US-014): tabela `administradores` (RLS ligado, sem políticas), função `eh_admin()` e `validar_profissional` aceitando mudança de status feita por admin. Incremental (D7): **não apaga dados**. |
 | `migrations/004_fila_analise.sql` | Fila de análise (US-015): tabela `analises_profissional` (histórico; o app não lê nem escreve direto) e as funções `fila_analise()`, `detalhe_profissional_admin(id)` e `decidir_profissionais(ids, acao, motivo, exigir_verde)`. Admin não decide o próprio cadastro. Incremental: **não apaga dados**. |
 | `testes/004_fila_analise.sql` | Roteiro da US-015 (F1 a F8). Desfaz tudo ao final. Precisa do `admin@helpme.test` cadastrado. |
+| `migrations/005_triagem.sql` | Triagem automática (US-016): coluna `categorias.ativa`, `telefone_br(texto)`, `triar_profissional(id)` (interna) e `solicitar_analise()`, chamada pelo `completar-perfil.js` ao salvar. Grava `verde`/`pendencia` com as checagens da BR13 e faz a triagem inicial dos pendentes. Nunca muda o status. Incremental: **não apaga dados**. |
+| `testes/005_triagem.sql` | Roteiro da US-016 (T1 a T9). Desfaz tudo ao final. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 
