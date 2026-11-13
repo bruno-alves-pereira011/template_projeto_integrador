@@ -4,6 +4,8 @@
 |---|---|
 | `migrations/001_schema.sql` | Cria tabelas, triggers, view, função de contato, políticas RLS, Realtime e as 6 categorias. **Apaga e recria** as tabelas do schema `public` (inclusive a antiga `pedidos`, se existir). |
 | `migrations/002_privacidade_data_nascimento.sql` | Esconde `data_nascimento` da API (SELECT por coluna) e cria `minha_data_nascimento()`. **Só para bancos que rodaram o 001 antes dessa correção**; não apaga dados. O 001 atual já inclui isso. |
+| `migrations/003_admin.sql` | Papel de administrador (US-014): tabela `administradores` (RLS ligado, sem políticas), função `eh_admin()` e `validar_profissional` aceitando mudança de status feita por admin. Incremental (D7): **não apaga dados**. |
+| `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 
 ## Como aplicar (ordem)
@@ -21,6 +23,27 @@ ordem recomendada continua sendo **schema → criar usuários → seed**.
 Os dois scripts podem ser rodados de novo sem duplicar dados. Rodar o schema de novo apaga tudo do `public`
 (inclusive contratações, mensagens e avaliações reais) — depois rode o seed outra vez.
 
+## Cadastrar um administrador (US-014 — A09)
+
+Admin **não** é um `tipo_usuario`: é quem tem linha em `administradores` (BR11). O app não cria, lê nem remove admins; só o SQL Editor.
+
+1. Aplique `migrations/003_admin.sql` (uma vez) e rode `testes/003_admin.sql`: todas as linhas do relatório devem dizer `ok`.
+2. **Authentication → Users → Add user → Create new user**, com **Auto Confirm User**: `admin@helpme.test` (senha sugerida: `Helpme@123`). O trigger cria a linha em `usuarios` como cliente.
+3. No SQL Editor:
+
+```sql
+update public.usuarios set nome = 'Equipe HelpMe'
+where id = (select id from auth.users where email = 'admin@helpme.test');
+
+insert into public.administradores (usuario_id)
+select id from auth.users where email = 'admin@helpme.test'
+on conflict (usuario_id) do nothing;
+```
+
+4. Entre no app com essa conta: o login leva para `admin.html`.
+
+Para remover: `delete from public.administradores where usuario_id = (select id from auth.users where email = '...');`
+
 ## Aprovar um profissional (manual — decisão D2)
 
 Pelo **Table Editor → `profissionais`**: altere `status_aprovacao` para `aprovado` (ou `recusado`). Ou no SQL Editor:
@@ -33,7 +56,8 @@ where id = (select id from auth.users where email = 'prof3@helpme.test');
 
 O próprio profissional **não** consegue fazer isso pelo app: o trigger `validar_profissional` força `'pendente'` no
 cadastro e recusa qualquer mudança de status vinda dos papéis `anon`/`authenticated`. O painel roda como `postgres`,
-que é liberado.
+que é liberado. Depois do `003`, o trigger também aceita a mudança quando `eh_admin()` é verdadeiro (a tela de
+aprovação do admin chega na US-015).
 
 ## O que o front precisa saber
 

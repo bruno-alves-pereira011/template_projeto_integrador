@@ -1,0 +1,92 @@
+/*
+  ESTILO DA ÁREA ADMINISTRATIVA (admin.css) — EPIC-006
+  Usado pelas páginas admin*.html junto com global.css e dashboard.css.
+  Arquivo próprio para não mexer no dashboard.css das outras telas (o refactor/ui-polish,
+  DEBT-005, foi descartado por enquanto pelo PO em 2026-11-13).
+*/
+
+/* Selo "Admin" ao lado do logo */
+.selo-admin {
+    margin-left: 0.4rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--painel-verde);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* Itens do menu que ainda não têm tela: visíveis, mas sem ação */
+.menu-item-em-breve {
+    cursor: default;
+    min-height: 44px;
+}
+
+.menu-item-em-breve:hover {
+    background: none;
+    color: var(--painel-texto-suave);
+}
+
+.selo-em-breve {
+    display: inline-block;
+    margin-left: auto;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: #fdf3e9;
+    color: #6b3a12;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Cards do painel */
+.grade-admin {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.card-admin {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: #fff;
+}
+
+.card-admin h2 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.05rem;
+    color: var(--painel-verde-escuro);
+}
+
+.card-admin p {
+    margin: 0;
+    color: var(--painel-texto-suave);
+}
+
+.card-admin .selo-em-breve {
+    margin-left: 0;
+}
+
+/* Botões e links com área de toque de 44px (NFR04) */
+body.painel .menu-item,
+body.painel .btn-secundario {
+    min-height: 44px;
+}
+
+@media (max-width: 760px) {
+    .grade-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-item-em-breve .selo-em-breve {
+        margin-left: 0.25rem;
+    }
+}
