@@ -352,6 +352,8 @@ body.painel .btn-secundario {
     border-color: var(--cor-perigo);
 }
 
+/* .form-recusa na frente para vencer .card-admin p (que deixava o erro cinza). */
+.form-recusa .campo-erro-admin,
 .campo-erro-admin {
     color: var(--cor-perigo);
     font-weight: 600;

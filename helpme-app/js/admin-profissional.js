@@ -92,8 +92,10 @@
         texto('perfil-local', [d.bairro, d.cidade].filter(Boolean).join(', '));
         texto('perfil-idade', Number.isInteger(d.idade) ? `${d.idade} anos` : '');
         const contatos = [];
-        if (d.whatsapp) contatos.push(`WhatsApp ${d.whatsapp}`);
-        if (d.telefone && d.telefone !== d.whatsapp) contatos.push(`Telefone ${d.telefone}`);
+        const whatsapp = adm.formatarTelefone(d.whatsapp);
+        const telefone = adm.formatarTelefone(d.telefone);
+        if (whatsapp) contatos.push(`WhatsApp ${whatsapp}`);
+        if (telefone && telefone !== whatsapp) contatos.push(`Telefone ${telefone}`);
         texto('perfil-contato', contatos.join(' · '));
         texto('perfil-cadastro', adm.formatarData(d.cadastrado_em));
         texto('perfil-categorias', (d.categorias || []).join(', '), 'Sem categoria');

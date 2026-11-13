@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 03
-**Status:** In Progress
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -160,6 +160,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
 - 2026-11-13: em andamento em `feat/US-015-fila-analise` (a partir de `feat/US-014-admin`; breakdown em `docs/tasks/breakdown_US-015.md`). Banco em `004_fila_analise.sql` (a `003` ja estava aplicada, D7) com funcoes `security definer` no lugar de politicas amplas. Admin nao decide o proprio cadastro (padrao seguro, reversivel). Telas testadas com login real de admin e RPCs simuladas: **35/35**. **Falta:** aplicar a `004`, rodar `supabase/testes/004_fila_analise.sql` e o teste ponta a ponta.
+- 2026-11-13: `004_fila_analise.sql` aplicada no Supabase real pelo PO. Conferencia por leitura: tabela e 3 funcoes criadas, RLS ligado e 0 politicas, visitante sem execute, `exigir_admin` fora do alcance de `authenticated`, historico vazio depois do teste (rollback ok). `supabase/testes/004_fila_analise.sql` rodado pelo PO: **21/21 ok** (F1-F8). Teste de tela ponta a ponta com `admin@helpme.test` no banco real, so leitura (decisoes bloqueadas no teste para nao mudar o prof3): **18/18**. Ajustes vindos do teste real: erro do motivo da recusa na cor de perigo e WhatsApp/telefone formatados no detalhe. Status: Review (falta code review por quem nao escreveu, validacao do PO e um teste de aprovar/recusar de verdade, que muda dados reais).
 
 ---
 

@@ -102,6 +102,9 @@ Aplicável (Nível 1 e `Behavior change` = YES).
 | F8a–F8b | Admin que também é profissional | Não decide o próprio cadastro, nem pela função nem direto | Done |
 | Q1–Q9 | Tela da fila (RPC simulada) | Lista, selos, motivos, filtro, lote só verde, resultado, vazio, erro 42501, 360px, 44px, foco, XSS como texto | Review |
 | D1–D9 | Tela do detalhe (RPC simulada) | Perfil, triagem, histórico, recusa com motivo, aviso de concorrência, id inválido, 360px, 44px, foco | Review |
+| R1–R17 | Ponta a ponta no banco real com `admin@helpme.test`, só leitura (`decidir_profissionais` bloqueada no teste) | Fila só com o prof3 "Sem triagem" e caixa desabilitada; detalhe sem `data_nascimento`, histórico vazio, motivo curto barrado em vermelho, contato formatado; aprovado sem painel de decisão; id inexistente; cliente/prof1 tirados da fila; visitante vai ao login com `voltar` | Review |
+
+**Resultados (2026-11-13):** `004` aplicada pelo PO; roteiro SQL **21/21 ok**; telas com RPC simulada **35/35**; ponta a ponta real **18/18**. Ainda não foi feita uma aprovação/recusa de verdade pela tela, porque muda o prof3 (único pendente). O caminho de decisão está coberto pelo F3/F4/F5 no SQL e pelo Q/D com RPC simulada.
 
 ---
 

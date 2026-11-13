@@ -71,12 +71,22 @@
         return 'Não foi possível concluir agora. Tente novamente em instantes.';
     }
 
+    // "(11) 97777-0003" a partir de qualquer grafia (usa normalizarTelefone do telefone.js).
+    // Número fora do padrão volta como veio, para o admin ver o que foi digitado.
+    function formatarTelefone(numero) {
+        const d = typeof normalizarTelefone === 'function' ? normalizarTelefone(numero) : null;
+        if (!d) return numero ? String(numero) : '';
+        const meio = d.length === 11 ? 7 : 6;
+        return `(${d.slice(0, 2)}) ${d.slice(2, meio)}-${d.slice(meio)}`;
+    }
+
     window.HelpMeAdmin = {
         triagem: triagem,
         rotuloAcao: (acao) => ACOES[acao] || acao,
         rotuloStatus: (status) => STATUS[status] || status,
         tempoDesde: tempoDesde,
         formatarData: formatarData,
+        formatarTelefone: formatarTelefone,
         traduzirErro: traduzirErro
     };
 })();
