@@ -59,10 +59,32 @@ async function atualizarCabecalhoSessao() {
     document.getElementById('btn-sair').hidden = false;
     document.getElementById('link-minhas-contratacoes').hidden = false;
 
+    // "Meu perfil" é a tela do cliente (US-012); o profissional edita o perfil em completar-perfil.html.
+    // O tipo vem de 'usuarios' (o user_metadata nem sempre tem tipo_usuario, ex.: contas do seed).
+    // Aqui é só exibição: meu-perfil.html confere o tipo de verdade com exigirSessao('cliente').
+    mostrarLinkMeuPerfil(sessao.user.id);
+
     // O nome vem do próprio login (enviado no cadastro), sem precisar consultar outra tabela
     const nome = sessao.user.user_metadata && sessao.user.user_metadata.nome;
     if (nome) {
         document.getElementById('saudacao').textContent = `Olá, ${primeiroNome(nome)}!`;
+    }
+}
+
+
+// Mostra "Meu perfil" só para cliente. Se a leitura falhar, o link continua escondido
+// (a home segue funcionando; o cliente ainda chega à tela pelo menu de contratacoes.html).
+async function mostrarLinkMeuPerfil(userId) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('usuarios')
+            .select('tipo_usuario')
+            .eq('id', userId)
+            .maybeSingle();
+        if (error) throw error;
+        document.getElementById('link-meu-perfil').hidden = !data || data.tipo_usuario !== 'cliente';
+    } catch (falha) {
+        console.error('Erro ao ler o tipo do usuário para o menu:', falha);
     }
 }
 
