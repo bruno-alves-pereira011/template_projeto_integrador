@@ -73,6 +73,7 @@ Aplicável (Nível 1 e `Behavior change` = YES).
 #### [TASK-002] Roteiro de testes `supabase/testes/003_admin.sql`
 - **Estimativa:** 1,5 h
 - **Critério de conclusão:** C1a–C1f, C4a–C4b, C5a–C5c com "ok" no banco real; README explica o primeiro admin (critério 6).
+- **Resultado (2026-11-13):** 11/11 ok no Supabase real, executado pelo PO no SQL Editor depois de aplicar a `003`.
 
 ### Frontend Tasks
 
