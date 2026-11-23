@@ -99,8 +99,8 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-017 | - | Painel de indicadores do administrador | 5 | Backlog | - | - | - | - |
 | US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Backlog | - | - | - | - |
-| US-019 | - | Suspender/reativar profissional aprovado (Could) | 3 | Ideia | - | - | - | - |
-| US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Ideia | - | - | - | - |
+| US-019 | - | Suspender/reativar profissional aprovado (Could) | 5 | In Progress | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Backlog | Sprint 04 | - | - | - |
 
 #### [EPIC-007] Conta do cliente
 
