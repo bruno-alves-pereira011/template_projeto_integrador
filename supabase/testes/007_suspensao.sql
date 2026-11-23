@@ -164,6 +164,8 @@ begin
                    then 'S8c ok (cada um só lê a própria decisão)' else 'S8c FALHOU' end || E'\n';
 
     -- ============ Critério 4/7: detalhe e painel ============
+    -- Contagem de referência como postgres: no papel authenticated o RLS esconde os suspensos.
+    select count(*) into v_m from public.profissionais where status_aprovacao = 'suspenso';
     perform set_config('request.jwt.claims', json_build_object('sub', v_admin, 'role', 'authenticated')::text, true);
     execute 'set local role authenticated';
     v_json := public.detalhe_profissional_admin(v_p1);
@@ -173,9 +175,8 @@ begin
                    then 'S9a ok (detalhe: suspenso com a suspensão no histórico)' else 'S9a FALHOU' end || E'\n';
 
     v_json := public.painel_admin();
-    r := r || case when (v_json -> 'profissionais' ->> 'suspenso')::int
-                        = (select count(*) from public.profissionais where status_aprovacao = 'suspenso')
-                    and (v_json -> 'profissionais' ->> 'suspenso')::int >= 1
+    r := r || case when (v_json -> 'profissionais' ->> 'suspenso')::int = v_m
+                    and v_m >= 1
                    then 'S9b ok (painel conta ' || (v_json -> 'profissionais' ->> 'suspenso') || ' suspenso(s))' else 'S9b FALHOU (' || (v_json -> 'profissionais')::text || ')' end || E'\n';
 
     select count(*) into v_n from public.fila_analise() f where f.id = v_p1;
