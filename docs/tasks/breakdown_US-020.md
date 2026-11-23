@@ -64,4 +64,4 @@
 | C13 | BR21 | Admin continua sem ler `mensagens` e `contratacoes` direto | Done |
 | T1–T25, Z | Tela (login real de admin, RPC simulada) | Padrão 30 dias; linhas; link ao detalhe; sem chat nem escrita; paginação; filtros; XSS; vazio e limpar; filtro por profissional; 360px em cards; 44px; avisos sem a 008 e 42501; links do detalhe e do painel; nada gravado | Review |
 
-**Resultados (2026-11-23):** tela **26/26**; regressão da US-019 **33/33**. Roteiro SQL e ponta a ponta aguardando a `008` ser aplicada pelo PO.
+**Resultados (2026-11-23):** tela **26/26**; regressão da US-019 **33/33**; `008` aplicada pelo PO; roteiro SQL **15/15**; ponta a ponta real, só leitura, **19/19** (com a US-019).

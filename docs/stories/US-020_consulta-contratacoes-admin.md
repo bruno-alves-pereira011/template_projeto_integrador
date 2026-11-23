@@ -6,7 +6,7 @@
 **Prioridade:** Baixa (Could)
 **Story Points:** 3
 **Sprint:** Sprint 04
-**Status:** In Progress
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -147,6 +147,7 @@ Nomes de clientes passam a ser visiveis ao admin; e o minimo para atender reclam
 - 2026-11-23: rascunho gerado a partir de FR26 (Could) para Review & Adjust do PO.
 - 2026-11-23: aprovada pelo PO no Review & Adjust, com as decisoes propostas (recomendadas) sem ajuste.
 - 2026-11-23: implementada em `feat/US-020-contratacoes-admin` (a partir de `feat/US-019-suspensao`; breakdown em `docs/tasks/breakdown_US-020.md`). `contratacoes_admin()` em `008_contratacoes_admin.sql`, so nomes, status e datas. Tela testada com login real e RPC simulada: **26/26**. **Falta:** aplicar a `008`, rodar `supabase/testes/008_contratacoes_admin.sql` e o teste ponta a ponta.
+- 2026-11-23: `008_contratacoes_admin.sql` aplicada pelo PO; `supabase/testes/008_contratacoes_admin.sql`: **15/15 ok** (C1-C13). Ponta a ponta no banco real, so leitura: **19/19** junto com a US-019 (7 contratacoes nos ultimos 30 dias e no total, iguais ao banco; filtro por profissional; sem endereco, descricao ou chat; cliente e profissional barrados). Status: Review (falta code review e validacao do PO).
 
 ---
 
