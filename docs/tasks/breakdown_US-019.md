@@ -22,7 +22,7 @@
 - **Justificativa do Nivel ScrumAIDev:** muda a máquina de status do profissional e o controle de acesso; histórico auditável (BR19, NFR10), coberto por `supabase/testes/007_suspensao.sql`.
 - **Touch List aplicável:** `supabase/migrations/007_suspensao.sql` (novo), `supabase/testes/007_suspensao.sql` (novo), `supabase/testes/006_painel.sql` (P5 com `@>`), `helpme-app/admin-profissionais.html` + `js/admin-profissionais.js` (novos), `admin-profissional.html`, `js/admin-profissional.js`, `js/admin-comum.js`, `admin.html`, `js/admin.js`, `admin-analise.html` (menu), `bloqueio.html`, `js/bloqueio.js`, `js/sessao.js` (comentários), `assets/css/admin.css`, `assets/css/auth.css`, `supabase/README.md`, BDD.
 - **Base da branch:** `docs/US-019-020-stories` (stories aprovadas), a partir da `main` com US-014 a US-017.
-- **Banco:** não foi possível conferir o banco real nesta sessão (o MCP do Supabase recusou a senha do `postgres`). A `007` confere sozinha se a 005 e a 006 existem e procura os `check` pelo texto da regra, sem depender dos nomes.
+- **Banco:** durante a implementação o MCP do Supabase recusou a senha do `postgres` (depois voltou e a conferência por leitura foi feita). A `007` confere sozinha se a 005 e a 006 existem e procura os `check` pelo texto da regra, sem depender dos nomes.
 
 ### Decisões de implementação
 
@@ -81,4 +81,4 @@
 | S11a–S11c, S12 | Reativar | Volta ao diretório; histórico sem motivo; reativar aprovado ignorado; `check` do motivo | Done |
 | L1–L13, D1–D11, P1–P2, B1–B6, Z | Telas (login real; RPCs da 007 e status simulados) | Lista, paginação, busca, XSS, vazio, 360px, 44px, aviso sem a 007; suspender/reativar/ignorado; tile e card no painel; bloqueio do suspenso com motivo; nada gravado | Review |
 
-**Resultados (2026-11-23):** telas **33/33**. Roteiro SQL e ponta a ponta aguardando a `007` ser aplicada pelo PO.
+**Resultados (2026-11-23):** telas **33/33**; `007` aplicada pelo PO; roteiro SQL **25/26** na primeira rodada (S9b era erro do teste: contagem de referência sob RLS; corrigido no commit `5bcafb5`); ponta a ponta real, só leitura, **19/19** (com a US-020).
