@@ -623,3 +623,110 @@ body.painel .btn-secundario {
         width: 100%;
     }
 }
+
+/* ================= CONTRATAÇÕES (US-020) ================= */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.filtro-profissional {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+}
+
+.tabela-contratacoes th,
+.tabela-contratacoes td {
+    text-align: left;
+    vertical-align: middle;
+}
+
+.tabela-contratacoes tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-contratacoes .btn-link-admin {
+    min-height: 44px;
+    overflow-wrap: anywhere;
+}
+
+/* Status da contratação: texto + cor (nunca só cor). */
+.selo-contratacao {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+    background: #eceeed;
+    color: #3f4947;
+}
+
+.selo-contratacao-solicitada { background: #fdf3e9; color: #6b3a12; }
+.selo-contratacao-aceita     { background: #e3eeec; color: #0e3c37; }
+.selo-contratacao-concluida  { background: #e1f3e8; color: #1f6b3d; }
+.selo-contratacao-recusada,
+.selo-contratacao-cancelada  { background: #fdecea; color: #8e2a20; }
+
+/* No celular cada linha vira um card com rótulos (data-rotulo). */
+@media (max-width: 760px) {
+    .tabela-contratacoes-caixa {
+        border: none;
+        background: none;
+    }
+
+    .tabela-contratacoes thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    .tabela-contratacoes,
+    .tabela-contratacoes tbody,
+    .tabela-contratacoes tr,
+    .tabela-contratacoes td {
+        display: block;
+        width: 100%;
+    }
+
+    .tabela-contratacoes tr {
+        margin-bottom: 0.75rem;
+        padding: 0.5rem 0.25rem;
+        border: 1px solid var(--painel-borda);
+        border-radius: 12px;
+        background: #fff;
+    }
+
+    .tabela-contratacoes td {
+        display: grid;
+        grid-template-columns: 7.5rem 1fr;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.3rem 0.75rem;
+        border-bottom: none;
+        text-align: left;
+    }
+
+    .tabela-contratacoes td::before {
+        content: attr(data-rotulo);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--painel-texto-suave);
+    }
+}
+
+.link-tabela-kpi {
+    margin: 0.25rem 1rem 0.5rem;
+}

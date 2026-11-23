@@ -101,6 +101,7 @@
     function desenhar(d) {
         document.title = `HelpMe - Análise de ${d.nome || 'profissional'}`;
         texto('perfil-nome', d.nome, 'Sem nome');
+        el('link-contratacoes').href = `admin-contratacoes.html?profissional=${encodeURIComponent(id)}`; // US-020
 
         const status = el('perfil-status');
         status.textContent = adm.rotuloStatus(d.status);
