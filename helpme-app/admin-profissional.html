@@ -11,7 +11,10 @@
   - Triagem: #triagem-selo, #triagem-quando, #triagem-checagens, #triagem-vazia.
   - Histórico: #historico-lista, #historico-vazio.
   - Decisão (só 'pendente'): #painel-decisao, #btn-aprovar, #form-recusa (#motivo, #motivo-contador,
-    #erro-motivo, #btn-recusar), #decisao-mensagem; #decisao-encerrada quando não está pendente.
+    #erro-motivo, #btn-recusar), #decisao-mensagem; #decisao-encerrada quando recusado.
+  - Suspensão (US-019): #painel-suspensao (aprovado: #form-suspensao, #motivo-suspensao, #contador-suspensao,
+    #erro-suspensao, #btn-suspender) e #painel-reativacao (suspenso: #form-reativacao, #motivo-reativacao,
+    #btn-reativar), via rpc('alterar_suspensao'). ?de=profissionais faz #link-voltar ir para a lista.
   - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/telefone.js -> js/admin-comum.js -> js/admin-profissional.js.
 -->
 <!DOCTYPE html>
@@ -48,6 +51,10 @@
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>
                 Fila de análise
             </a>
+            <a href="admin-profissionais.html" class="menu-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Profissionais
+            </a>
             <span class="menu-item menu-item-em-breve" aria-disabled="true">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 Categorias
@@ -62,7 +69,7 @@
     </aside>
 
     <main class="conteudo">
-        <a href="admin-analise.html" class="btn-link-admin link-voltar-fila">← Voltar para a fila</a>
+        <a href="admin-analise.html" id="link-voltar" class="btn-link-admin link-voltar-fila">← Voltar para a fila</a>
 
         <p id="detalhe-carregando" class="subtitulo" role="status">Carregando...</p>
 
@@ -126,9 +133,35 @@
                     </form>
                 </section>
 
+                <!-- US-019: aprovado pode ser suspenso (motivo 10–500). -->
+                <section id="painel-suspensao" class="card-admin" aria-labelledby="titulo-suspensao" hidden>
+                    <h2 id="titulo-suspensao">Suspender</h2>
+                    <p class="texto-suave">O profissional sai do diretório e não recebe contratações novas. As já aceitas continuam e o cliente pode concluir.</p>
+                    <form id="form-suspensao" class="form-recusa" novalidate>
+                        <label for="motivo-suspensao">Motivo da suspensão</label>
+                        <textarea id="motivo-suspensao" name="motivo-suspensao" rows="3" maxlength="500" placeholder="Ex.: reclamações repetidas de clientes sobre atrasos." aria-describedby="dica-suspensao contador-suspensao erro-suspensao"></textarea>
+                        <p id="dica-suspensao" class="texto-suave">De 10 a 500 caracteres. O profissional vai ver este motivo.</p>
+                        <p id="contador-suspensao" class="texto-suave" aria-live="polite">0/500</p>
+                        <p id="erro-suspensao" class="campo-erro-admin" hidden></p>
+                        <button type="submit" id="btn-suspender" class="btn btn-perigo btn-bloco">Suspender</button>
+                    </form>
+                </section>
+
+                <!-- US-019: suspenso pode ser reativado (motivo opcional, até 500). -->
+                <section id="painel-reativacao" class="card-admin" aria-labelledby="titulo-reativacao" hidden>
+                    <h2 id="titulo-reativacao">Reativar</h2>
+                    <p class="texto-suave">O profissional volta a aparecer no diretório e a receber contratações.</p>
+                    <form id="form-reativacao" class="form-recusa" novalidate>
+                        <label for="motivo-reativacao">Observação (opcional)</label>
+                        <textarea id="motivo-reativacao" name="motivo-reativacao" rows="3" maxlength="500" aria-describedby="dica-reativacao"></textarea>
+                        <p id="dica-reativacao" class="texto-suave">Até 500 caracteres. Fica no histórico.</p>
+                        <button type="submit" id="btn-reativar" class="btn btn-primario btn-bloco">Reativar</button>
+                    </form>
+                </section>
+
                 <section id="decisao-encerrada" class="card-admin" hidden>
                     <h2>Decisão</h2>
-                    <p class="texto-suave">Este cadastro não está pendente, então não há decisão a tomar agora.</p>
+                    <p class="texto-suave">Este cadastro foi recusado. Não há decisão a tomar agora.</p>
                 </section>
 
                 <section class="card-admin card-largo" aria-labelledby="titulo-historico">

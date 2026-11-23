@@ -5,6 +5,9 @@
 //   2. rpc('detalhe_profissional_admin'): perfil, última triagem e histórico (FR18).
 //   3. Aprovar / Recusar (motivo 10–500, BR16) via rpc('decidir_profissionais').
 //      'ignorado' = outro admin decidiu antes (critério 5): avisa e recarrega.
+//   4. US-019: aprovado -> Suspender (motivo 10–500); suspenso -> Reativar (motivo opcional),
+//      via rpc('alterar_suspensao'). Mesmo padrão: 'ignorado' avisa e recarrega.
+//   ?de=profissionais: veio da lista (admin-profissionais.html) — o "Voltar" e o menu apontam para ela.
 
 (function () {
     'use strict';
@@ -16,6 +19,7 @@
 
     const id = new URLSearchParams(window.location.search).get('id');
     const idValido = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || '');
+    const veioDaLista = new URLSearchParams(window.location.search).get('de') === 'profissionais';
     let decidindo = false;
 
 
@@ -39,8 +43,21 @@
 
     function definirDecidindo(ativo) {
         decidindo = ativo;
-        el('btn-aprovar').disabled = ativo;
-        el('btn-recusar').disabled = ativo;
+        ['btn-aprovar', 'btn-recusar', 'btn-suspender', 'btn-reativar'].forEach((b) => { el(b).disabled = ativo; });
+    }
+
+    // Veio da lista de profissionais: "Voltar" e o item ativo do menu apontam para ela.
+    function ajustarOrigem() {
+        if (!veioDaLista) return;
+        const voltar = el('link-voltar');
+        voltar.href = 'admin-profissionais.html';
+        voltar.textContent = '← Voltar para a lista';
+        document.querySelectorAll('.sidebar-menu .menu-item').forEach((item) => {
+            const daLista = item.getAttribute('href') === 'admin-profissionais.html';
+            const daFila = item.getAttribute('href') === 'admin-analise.html';
+            if (daLista) item.classList.add('ativo');
+            if (daFila) item.classList.remove('ativo');
+        });
     }
 
 
@@ -104,9 +121,10 @@
         desenharTriagem(d.triagem);
         desenharHistorico(d.historico || []);
 
-        const pendente = d.status === 'pendente';
-        el('painel-decisao').hidden = !pendente;
-        el('decisao-encerrada').hidden = pendente;
+        el('painel-decisao').hidden = d.status !== 'pendente';
+        el('painel-suspensao').hidden = d.status !== 'aprovado';
+        el('painel-reativacao').hidden = d.status !== 'suspenso';
+        el('decisao-encerrada').hidden = d.status !== 'recusado';
     }
 
     function desenharTriagem(t) {
@@ -189,6 +207,72 @@
         }
     }
 
+    // ==========================================
+    // SUSPENDER / REATIVAR (US-019)
+    // ==========================================
+    async function alterarSuspensao(acao, motivo) {
+        if (decidindo) return;
+        definirDecidindo(true);
+
+        try {
+            const { data, error } = await supabaseClient.rpc('alterar_suspensao', {
+                p_id: id,
+                p_acao: acao,
+                p_motivo: motivo || null
+            });
+            if (error) throw error;
+
+            const linha = (data || [])[0];
+            if (linha && linha.situacao === 'suspenso') {
+                mostrarMensagem('Profissional suspenso. Ele saiu do diretório e o motivo ficou no histórico.', 'sucesso');
+            } else if (linha && linha.situacao === 'aprovado') {
+                mostrarMensagem('Profissional reativado. Ele voltou ao diretório.', 'sucesso');
+            } else {
+                mostrarMensagem(`Nada foi alterado: ${(linha && linha.detalhe) || 'o cadastro mudou'}. A tela foi atualizada.`, 'aviso');
+            }
+            el('motivo-suspensao').value = '';
+            el('motivo-reativacao').value = '';
+            atualizarContadorSuspensao();
+            await carregar(true);
+        } catch (falha) {
+            console.error('Erro ao alterar a suspensão:', falha);
+            mostrarMensagem(adm.traduzirErro(falha), 'erro');
+        } finally {
+            definirDecidindo(false);
+        }
+    }
+
+    function atualizarContadorSuspensao() {
+        el('contador-suspensao').textContent = `${el('motivo-suspensao').value.trim().length}/${MOTIVO_MAX}`;
+    }
+
+    function erroSuspensao(textoErro) {
+        const erro = el('erro-suspensao');
+        erro.textContent = textoErro || '';
+        erro.hidden = !textoErro;
+        if (textoErro) el('motivo-suspensao').setAttribute('aria-invalid', 'true');
+        else el('motivo-suspensao').removeAttribute('aria-invalid');
+    }
+
+    el('form-suspensao').addEventListener('submit', (evento) => {
+        evento.preventDefault();
+        const motivo = el('motivo-suspensao').value.trim();
+        if (motivo.length < MOTIVO_MIN || motivo.length > MOTIVO_MAX) {
+            erroSuspensao(`Explique o motivo da suspensão com ${MOTIVO_MIN} a ${MOTIVO_MAX} caracteres.`);
+            el('motivo-suspensao').focus();
+            return;
+        }
+        erroSuspensao('');
+        alterarSuspensao('suspender', motivo);
+    });
+
+    el('form-reativacao').addEventListener('submit', (evento) => {
+        evento.preventDefault();
+        alterarSuspensao('reativar', el('motivo-reativacao').value.trim());
+    });
+
+    el('motivo-suspensao').addEventListener('input', atualizarContadorSuspensao);
+
     function atualizarContador() {
         el('motivo-contador').textContent = `${el('motivo').value.trim().length}/${MOTIVO_MAX}`;
     }
@@ -219,5 +303,6 @@
     el('btn-tentar-novamente').addEventListener('click', () => carregar());
     el('btn-sair').addEventListener('click', sair);
 
+    ajustarOrigem();
     carregar();
 })();

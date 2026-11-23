@@ -91,6 +91,7 @@
             : 'Nenhuma decisão nos últimos 30 dias');
         texto('kpi-aprovados', qtd(prof.aprovado));
         texto('kpi-recusados', qtd(prof.recusado));
+        texto('kpi-suspensos', qtd(prof.suspenso)); // US-019 (007); antes da 007 vem undefined -> 0
 
         // Usuários
         texto('kpi-clientes', qtd(usu.clientes));

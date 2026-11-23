@@ -11,6 +11,8 @@
 | `testes/005_triagem.sql` | Roteiro da US-016 (T1 a T9). Desfaz tudo ao final. |
 | `migrations/006_painel.sql` | Indicadores do admin (US-017): `painel_admin()`, que devolve só totais (NFR09) — usuários por tipo, profissionais por status, fila e tempos, contratações 7/30 dias, taxa de aceite e categorias ativas sem aprovado. Depende da 005. Não altera dados. |
 | `testes/006_painel.sql` | Roteiro da US-017 (P1 a P12). Desfaz tudo ao final. |
+| `migrations/007_suspensao.sql` | Suspensão (US-019): status `suspenso`, ações `suspensao`/`reativacao` no histórico, `profissionais_admin(status, busca, limite, deslocamento)`, `alterar_suspensao(id, acao, motivo)`, `minha_ultima_decisao()` e `painel_admin()` contando suspensos. Depende da 006. Não apaga dados. |
+| `testes/007_suspensao.sql` | Roteiro da US-019 (S1 a S12). Desfaz tudo ao final. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 

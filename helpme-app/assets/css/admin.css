@@ -145,6 +145,7 @@ body.painel .btn-secundario {
 .status-admin-pendente { color: #6b3a12; }
 .status-admin-aprovado { color: #1f6b3d; }
 .status-admin-recusado { color: #8e2a20; }
+.status-admin-suspenso { color: #6b3a12; }
 
 /* Barra com filtro + aprovação em lote */
 .barra-fila {
@@ -576,6 +577,49 @@ body.painel .btn-secundario {
     }
 
     #btn-atualizar-indicadores {
+        width: 100%;
+    }
+}
+
+/* ================= LISTA DE PROFISSIONAIS (US-019) ================= */
+
+#form-filtros {
+    justify-content: flex-start;
+}
+
+.filtro-busca {
+    flex: 1 1 220px;
+}
+
+.filtro-busca input {
+    min-height: 44px;
+    width: 100%;
+    font: inherit;
+    font-weight: 400;
+}
+
+.card-prof-nome {
+    margin: 0;
+    min-width: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.05rem;
+    color: var(--painel-verde-escuro);
+    overflow-wrap: anywhere;
+}
+
+.card-prof-status {
+    white-space: nowrap;
+}
+
+.btn-carregar-mais {
+    display: block;
+    margin: 1.25rem auto 0;
+}
+
+@media (max-width: 760px) {
+    #form-filtros .filtro-fila,
+    #form-filtros .filtro-fila select,
+    .btn-carregar-mais {
         width: 100%;
     }
 }

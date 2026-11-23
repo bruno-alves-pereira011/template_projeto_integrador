@@ -154,6 +154,7 @@ Profissional suspenso com contratacao aceita perde o acesso ao chat; o cliente c
 
 - 2026-11-23: rascunho gerado a partir de FR25 (Could) para Review & Adjust do PO.
 - 2026-11-23: aprovada pelo PO no Review & Adjust, com as decisoes propostas (recomendadas) sem ajuste.
+- 2026-11-23: implementada em `feat/US-019-suspensao` (breakdown em `docs/tasks/breakdown_US-019.md`). Banco em `007_suspensao.sql` (status `suspenso`, historico, `profissionais_admin`, `alterar_suspensao`, `minha_ultima_decisao`, painel com suspensos). Telas testadas com login real e RPCs simuladas: **33/33**. **Falta:** aplicar a `007`, rodar `supabase/testes/007_suspensao.sql` e o teste ponta a ponta.
 
 ---
 
