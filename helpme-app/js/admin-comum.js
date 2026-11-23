@@ -17,13 +17,16 @@
         triagem: 'Triagem automática',
         aprovacao: 'Aprovado',
         recusa: 'Recusado',
-        reenvio: 'Reenviado para análise'
+        reenvio: 'Reenviado para análise',
+        suspensao: 'Suspenso',
+        reativacao: 'Reativado'
     };
 
     const STATUS = {
         pendente: 'Pendente',
         aprovado: 'Aprovado',
-        recusado: 'Recusado'
+        recusado: 'Recusado',
+        suspenso: 'Suspenso'
     };
 
     function triagem(resultado) {

@@ -1,8 +1,8 @@
 # language: pt
 # Spec: N/A — regras em docs/requirements/helpme-mvp-marco2.md (rev. 3)
-# Fonte: FR15, FR17–FR21, BR11–BR19 (rev. 3); decisões D6 e D7 em docs/DECISOES.md
-# Stories: US-014, US-015, US-013, US-016, US-021
-# Banco: supabase/migrations/003_admin.sql, 004_fila_analise.sql e 005_triagem.sql
+# Fonte: FR15, FR17–FR21, FR25, BR11–BR19 (rev. 3); decisões D6 e D7 em docs/DECISOES.md
+# Stories: US-014, US-015, US-013, US-016, US-021, US-019
+# Banco: supabase/migrations/003_admin.sql, 004_fila_analise.sql, 005_triagem.sql e 007_suspensao.sql
 # Execução: revisão manual (sem runner documentado em docs/context.md).
 #           Os passos podem ser conferidos pelo app ou pelos roteiros de
 #           supabase/testes/ (NFR11).
@@ -113,3 +113,36 @@ Funcionalidade: Aprovação de profissionais pela área administrativa
     Então o status dele volta para "pendente"
     E ele não aparece mais no diretório
     Mas a contratação "aceita" ainda pode ser concluída
+
+  # ---------------------------------------------------------------
+  # FR25 — suspender e reativar profissional aprovado (US-019)
+  # ---------------------------------------------------------------
+
+  Cenário: Suspensão exige motivo
+    Dado que "Carlos Chaveiro" está "aprovado"
+    E que estou logado como "Equipe HelpMe"
+    Quando eu tento suspender "Carlos Chaveiro" com o motivo "Atraso"
+    Então a suspensão é recusada por motivo curto
+    E "Carlos Chaveiro" continua "aprovado"
+
+  Cenário: Suspenso sai do diretório e vê o motivo
+    Dado que "Carlos Chaveiro" está "aprovado" e tem uma contratação "aceita" com "Ana Paula Rocha"
+    Quando eu suspendo "Carlos Chaveiro" com o motivo "Reclamações repetidas de atraso"
+    Então o status dele é "suspenso"
+    E ele não aparece no diretório nem pode ser contratado
+    E o histórico registra "Equipe HelpMe", a suspensão e o motivo
+    E ao entrar ele vê "Seu cadastro está suspenso" com o motivo
+    Mas "Ana Paula Rocha" ainda pode concluir a contratação "aceita"
+
+  Cenário: Reativação devolve ao diretório
+    Dado que "Carlos Chaveiro" está "suspenso"
+    Quando eu reativo "Carlos Chaveiro"
+    Então o status dele volta para "aprovado"
+    E ele aparece de novo no diretório
+    E o histórico registra a reativação
+
+  Cenário: Só o primeiro admin suspende
+    Dado que "Carlos Chaveiro" está "aprovado"
+    E que outro administrador já suspendeu "Carlos Chaveiro"
+    Quando eu tento suspendê-lo
+    Então nada é alterado e eu vejo o aviso "Só profissional aprovado pode ser suspenso"

@@ -67,7 +67,8 @@ begin
         'pendente', (select count(*) from public.profissionais where status_aprovacao = 'pendente'),
         'aprovado', (select count(*) from public.profissionais where status_aprovacao = 'aprovado'),
         'recusado', (select count(*) from public.profissionais where status_aprovacao = 'recusado'));
-    r := r || case when v -> 'profissionais' = v_esp then 'P5 ok (profissionais por status: ' || v_esp::text || ')'
+    -- @> e não =: a 007 (US-019) acrescenta 'suspenso'.
+    r := r || case when (v -> 'profissionais') @> v_esp then 'P5 ok (profissionais por status: ' || v_esp::text || ')'
                    else 'P5 FALHOU (' || (v -> 'profissionais')::text || ' esperado ' || v_esp::text || ')' end || E'\n';
 
     r := r || case when (v -> 'fila' ->> 'tamanho')::int = (v_esp ->> 'pendente')::int

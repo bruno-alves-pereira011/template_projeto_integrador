@@ -308,6 +308,31 @@ fieldset[aria-invalid="true"] {
     color: #8e2a20;
 }
 
+.selo-status.suspenso {
+    background: #fdecea;
+    color: #8e2a20;
+}
+
+/* Motivo da decisão do admin (US-019) */
+.motivo-decisao {
+    margin: 12px 0;
+    padding: 12px 14px;
+    border-left: 4px solid #8e2a20;
+    border-radius: 8px;
+    background: #fdf6f5;
+    text-align: left;
+}
+
+.status-painel .motivo-decisao p {
+    color: var(--cor-texto);
+    overflow-wrap: anywhere;
+}
+
+.status-painel .motivo-decisao .motivo-decisao-titulo {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
 .selo-status.aprovado {
     background: var(--cor-primaria-clara);
     color: var(--cor-primaria-escura);

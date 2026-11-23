@@ -92,15 +92,15 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-014 | - | Papel de administrador e area admin | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-014 | - | Papel de administrador e area admin | 5 | Review | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Review | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Backlog | - | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-017 | - | Painel de indicadores do administrador | 5 | Backlog | - | - | - | - |
+| US-017 | - | Painel de indicadores do administrador | 5 | Review | Sprint 04 | - | - | - |
 | US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Backlog | - | - | - | - |
-| US-019 | - | Suspender/reativar profissional aprovado (Could) | 3 | Ideia | - | - | - | - |
-| US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Ideia | - | - | - | - |
+| US-019 | - | Suspender/reativar profissional aprovado (Could) | 5 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Review | Sprint 04 | - | - | - |
 
 #### [EPIC-007] Conta do cliente
 
@@ -113,8 +113,8 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-011 | - | Esqueci minha senha | 3 | Backlog | - | - | - | - |
-| US-012 | - | Meu perfil do cliente (nome e telefone) | 2 | Backlog | - | - | - | - |
+| US-011 | - | Esqueci minha senha | 3 | Review | Sprint 03 | - | - | - |
+| US-012 | - | Meu perfil do cliente (nome e telefone) | 2 | Review | Sprint 03 | - | - | - |
 
 ---
 

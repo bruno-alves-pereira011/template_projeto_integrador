@@ -5,7 +5,8 @@
   REGRAS (js/bloqueio.js): exige sessão de profissional; cliente vai para a home;
   profissional aprovado ou com perfil incompleto é redirecionado (destinoDoUsuario em js/sessao.js).
   ELEMENTOS: #bloqueio-carregando, #bloqueio-erro (+ #btn-recarregar), #painel-pendente,
-  #painel-recusado e #btn-sair.
+  #painel-recusado, #painel-suspenso (US-019: #suspenso-motivo-caixa, #suspenso-motivo, #suspenso-data)
+  e #btn-sair.
   Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/bloqueio.js.
 -->
 <!DOCTYPE html>
@@ -58,6 +59,18 @@
             <h1 id="titulo-recusado">Seu cadastro foi recusado</h1>
             <p>No momento seu perfil não pode ser publicado no diretório do HelpMe.</p>
             <p>Entre em contato com a equipe do HelpMe para saber o motivo e como regularizar seu cadastro.</p>
+        </section>
+
+        <!-- US-019: suspenso pelo administrador. Motivo e data de rpc('minha_ultima_decisao'). -->
+        <section id="painel-suspenso" class="status-painel" aria-labelledby="titulo-suspenso" hidden>
+            <span class="selo-status suspenso">Suspenso</span>
+            <h1 id="titulo-suspenso">Seu cadastro está suspenso</h1>
+            <p>Seu perfil saiu do diretório do HelpMe e não recebe contratações novas. As contratações já aceitas continuam e o cliente pode concluí-las.</p>
+            <div id="suspenso-motivo-caixa" class="motivo-decisao" hidden>
+                <p class="motivo-decisao-titulo">Motivo informado pela equipe<span id="suspenso-data"></span></p>
+                <p id="suspenso-motivo"></p>
+            </div>
+            <p>Para voltar ao diretório, fale com a equipe do HelpMe.</p>
         </section>
 
         <div class="acoes">

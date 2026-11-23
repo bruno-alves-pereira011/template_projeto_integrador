@@ -67,7 +67,7 @@ function ehPaginaAdmin(pagina) {
 
 
 // Regra pura de roteamento (sem banco), separada para ficar fácil de testar.
-// situacao = { ehAdmin: boolean, tipo: 'cliente'|'profissional', status: null|'pendente'|'aprovado'|'recusado', totalCategorias: number }
+// situacao = { ehAdmin: boolean, tipo: 'cliente'|'profissional', status: null|'pendente'|'aprovado'|'recusado'|'suspenso', totalCategorias: number }
 // status null = profissional ainda sem linha em 'profissionais'.
 function calcularDestino(situacao, voltar) {
     const voltarOk = voltarSeguro(voltar);
@@ -91,7 +91,7 @@ function calcularDestino(situacao, voltar) {
         return voltarOk || DESTINO_PROFISSIONAL_APROVADO;
     }
 
-    // 'pendente', 'recusado' ou qualquer valor inesperado: não libera o app.
+    // 'pendente', 'recusado', 'suspenso' (US-019) ou qualquer valor inesperado: não libera o app.
     return PAGINA_BLOQUEIO;
 }
 

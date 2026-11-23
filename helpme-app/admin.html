@@ -48,6 +48,14 @@
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>
                 Fila de análise
             </a>
+            <a href="admin-profissionais.html" class="menu-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Profissionais
+            </a>
+            <a href="admin-contratacoes.html" class="menu-item">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
+                Contratações
+            </a>
             <!-- Vira link quando admin-categorias.html (US-018) existir. -->
             <span class="menu-item menu-item-em-breve" aria-disabled="true">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -90,6 +98,11 @@
                     <a href="admin-analise.html" class="btn-link-admin">Abrir a fila</a>
                 </article>
                 <article class="card-admin">
+                    <h2>Profissionais</h2>
+                    <p>Encontrar qualquer profissional, suspender ou reativar.</p>
+                    <a href="admin-profissionais.html" class="btn-link-admin">Ver profissionais</a>
+                </article>
+                <article class="card-admin">
                     <h2>Categorias</h2>
                     <p>Criar, editar e desativar tipos de serviço.</p>
                     <span class="selo-em-breve">em breve</span>
@@ -130,11 +143,16 @@
                             <span class="kpi-valor" id="kpi-decisao">—</span>
                             <span class="kpi-nota" id="kpi-decisao-nota"></span>
                         </div>
-                        <div class="kpi">
+                        <a class="kpi kpi-link" href="admin-profissionais.html?status=aprovado" aria-describedby="kpi-aprovados-nota">
                             <span class="kpi-rotulo">Aprovados</span>
                             <span class="kpi-valor" id="kpi-aprovados">—</span>
-                            <span class="kpi-nota">Aparecem no diretório</span>
-                        </div>
+                            <span class="kpi-nota" id="kpi-aprovados-nota">Aparecem no diretório — ver lista</span>
+                        </a>
+                        <a class="kpi kpi-link" href="admin-profissionais.html?status=suspenso" aria-describedby="kpi-suspensos-nota">
+                            <span class="kpi-rotulo">Suspensos</span>
+                            <span class="kpi-valor" id="kpi-suspensos">—</span>
+                            <span class="kpi-nota" id="kpi-suspensos-nota">Fora do diretório — ver lista</span>
+                        </a>
                         <div class="kpi">
                             <span class="kpi-rotulo">Recusados</span>
                             <span class="kpi-valor" id="kpi-recusados">—</span>
@@ -173,6 +191,7 @@
                                 </thead>
                                 <tbody id="tabela-contratacoes"></tbody>
                             </table>
+                            <a href="admin-contratacoes.html" class="btn-link-admin link-tabela-kpi">Ver as contratações uma a uma</a>
                         </div>
                     </div>
 
