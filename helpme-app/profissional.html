@@ -1,18 +1,23 @@
 <!--
   TELA: Perfil do profissional (profissional.html?id=<uuid>&categoria=<slug>) — PÚBLICA, não exige login.
   OBJETIVO: Mostrar o perfil completo de um profissional APROVADO e os botões "Ligar" e "WhatsApp" (US-003 / HU02-HU03).
-  ELEMENTOS (ids usados pelo js/perfil-profissional.js):
-  - #link-entrar (visitante) / #btn-sair (logado) no cabeçalho, como na home.
-  - #link-voltar volta para a lista da categoria de origem (?categoria=) ou para a home.
+  ELEMENTOS (ids usados pelo js/telas/perfil-profissional.js):
+  - Menu lateral montado por js/telas/navegacao.js (DEBT-009) a partir de uma lista única: visitante vê
+    "Entrar"; cliente vê "Minhas contratações" e "Meu perfil"; profissional vê "Meu painel", "Editar meu perfil"
+    e o perfil público; admin vê "Meu painel". [data-menu-conta] vira "Entrar" ou #btn-sair.
+  - #link-voltar volta para a lista da categoria de origem (?categoria=) ou para a home; no próprio perfil do
+    profissional logado, volta para o painel dele. data-voltar-historico: se a entrada anterior da aba é o
+    destino, usa o histórico (js/telas/navegacao.js).
+  - #aviso-perfil-proprio: aparece quando o profissional logado abre o próprio perfil (é assim que o cliente o vê).
   - #perfil-profissional: #perfil-nome, #perfil-iniciais, #perfil-local, #perfil-nota, #perfil-categorias
     (chips do <template id="modelo-chip-categoria">), #perfil-descricao.
   - #btn-ligar (tel:) e #btn-whatsapp (wa.me, nova aba). Cada botão some se o número for inválido;
     #contato-indisponivel aparece se os dois sumirem.
-  - #acoes-contratacao: recebe o link "Contratar" (US-007), criado pelo JS para visitante e cliente
-    (profissional logado não vê). Leva a solicitar-pedido.html?profissional=<id>.
+  - #acoes-contratacao: recebe o link "Contratar" (US-007), criado pelo JS para visitante e cliente.
+    Profissional e admin não veem (BR10), e ninguém o vê no próprio perfil. Leva a solicitar-pedido.html?profissional=<id>.
   - Estados: #perfil-carregando, #perfil-erro (+ #btn-tentar-novamente) e #perfil-nao-encontrado.
   - Dados lidos SÓ da view 'profissionais_publicos' (nunca da tabela 'profissionais').
-  - Scripts no final: Supabase CDN -> js/supabase-config.js -> js/categorias.js -> js/telefone.js -> js/sessao.js -> js/perfil-profissional.js.
+  - Scripts no final: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/categorias.js -> js/servicos/telefone.js -> js/servicos/sessao.js -> js/telas/navegacao.js -> js/telas/perfil-profissional.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -40,29 +45,26 @@
             HelpMe
         </a>
 
-        <nav class="sidebar-menu">
+        <!-- Menu por papel (DEBT-009): montado por js/telas/navegacao.js a partir de uma lista única
+             (ITENS_MENU). O que está aqui é o menu de visitante, que fica se o JS não rodar. -->
+        <nav class="sidebar-menu" data-menu-papel>
             <a href="home-cliente.html" class="menu-item">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
                 Início
             </a>
         </nav>
 
-        <!-- Visitante vê "Entrar"; quem tem sessão vê "Sair" (o JS troca). -->
-        <a href="index.html" id="link-entrar" class="menu-item menu-sair">
+        <!-- Vira "Entrar" ou o botão "Sair" (#btn-sair) conforme a sessão -->
+        <a href="index.html" class="menu-item menu-sair" data-menu-conta>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
             Entrar
         </a>
-
-        <button type="button" id="btn-sair" class="menu-item menu-sair" hidden>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-            Sair
-        </button>
     </aside>
 
     <!-- Conteúdo principal -->
     <main class="conteudo">
-        <!-- O JS troca o href/texto para a lista da categoria de origem; sem categoria, fica a home -->
-        <a href="home-cliente.html" id="link-voltar" class="link-voltar">
+        <!-- O JS troca o href/texto: lista da categoria de origem, painel (no próprio perfil) ou home -->
+        <a href="home-cliente.html" id="link-voltar" class="link-voltar" data-voltar-historico>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
             <span id="texto-voltar">Voltar para as categorias</span>
         </a>
@@ -70,8 +72,14 @@
         <!-- Enquanto a consulta ao banco não termina -->
         <p id="perfil-carregando" class="subtitulo" role="status">Carregando perfil...</p>
 
-        <!-- Perfil (preenchido pelo js/perfil-profissional.js só com textContent) -->
+        <!-- Perfil (preenchido pelo js/telas/perfil-profissional.js só com textContent) -->
         <article id="perfil-profissional" class="perfil-profissional" aria-labelledby="perfil-nome" hidden>
+            <!-- Só no próprio perfil do profissional logado (o JS mostra) — DEBT-009 -->
+            <p id="aviso-perfil-proprio" class="aviso-perfil-proprio" hidden>
+                Este é o seu perfil público: é assim que os clientes veem você.
+                <a href="completar-perfil.html">Editar meu perfil</a>
+            </p>
+
             <header class="perfil-cabecalho">
                 <span id="perfil-iniciais" class="avatar-categoria perfil-avatar" aria-hidden="true"></span>
                 <div class="perfil-identificacao">
@@ -131,7 +139,7 @@
             </div>
             <h1 class="titulo-estado">Profissional não encontrado</h1>
             <p>Este perfil não existe ou não está disponível no momento.</p>
-            <a href="home-cliente.html" id="link-voltar-nao-encontrado" class="btn-secundario">Voltar para as categorias</a>
+            <a href="home-cliente.html" id="link-voltar-nao-encontrado" class="btn-secundario" data-voltar-historico>Voltar para as categorias</a>
         </div>
     </main>
 
@@ -147,19 +155,22 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- 2. Chaves públicas e cliente (supabaseClient) -->
-    <script src="js/supabase-config.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
 
     <!-- 3. Categorias (cor/sigla/nome dos chips) -->
-    <script src="js/categorias.js"></script>
+    <script src="js/servicos/categorias.js"></script>
 
     <!-- 4. Normalização de telefone e links tel:/wa.me -->
-    <script src="js/telefone.js"></script>
+    <script src="js/servicos/telefone.js"></script>
 
-    <!-- 5. Sessão (buscarUsuario: decide se o botão "Contratar" aparece) -->
-    <script src="js/sessao.js"></script>
+    <!-- 5. Sessão e papel de quem está vendo (lerPapel) -->
+    <script src="js/servicos/sessao.js"></script>
+
+    <!-- 5b. Menu por papel e "Voltar" pelo histórico (DEBT-009) -->
+    <script src="js/telas/navegacao.js"></script>
 
     <!-- 6. Lógica desta página -->
-    <script src="js/perfil-profissional.js"></script>
+    <script src="js/telas/perfil-profissional.js"></script>
 
 </body>
 </html>

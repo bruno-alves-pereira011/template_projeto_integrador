@@ -5,11 +5,17 @@
 // - Lê o profissional na view 'profissionais_publicos' (só aprovados, sem data de nascimento).
 //   NUNCA lê a tabela 'profissionais' direto.
 // - Monta os chips de categoria com cor/sigla da tabela 'categorias' (via carregarCategorias()).
-// - Esconde cada botão de contato quando o número é inválido (regras em js/telefone.js).
+// - Esconde cada botão de contato quando o número é inválido (regras em js/servicos/telefone.js).
 // - Estados: carregando, erro (com "Tentar novamente") e "Profissional não encontrado".
-// - O "Voltar" leva para a lista da categoria de origem (?categoria=) ou para a home.
-// - Botão "Contratar" (US-007) para visitante e cliente; profissional logado não vê (BR10).
-// DEPENDE DE: supabase-config.js, categorias.js, telefone.js e sessao.js carregados antes deste arquivo.
+// - O "Voltar" leva para a lista da categoria de origem (?categoria=), para o painel (no próprio perfil)
+//   ou para a home. A regra fica só em aplicarVoltar().
+// - Botão "Contratar" (US-007) para visitante e cliente. Profissional e admin não veem (BR10; o banco
+//   também barra), e ninguém vê no PRÓPRIO perfil.
+// - DEBT-009: menu por papel e "Voltar" pelo histórico vêm de js/telas/navegacao.js. No PRÓPRIO perfil, o
+//   profissional logado vê um aviso com "Editar meu perfil" e o "Voltar" leva ao painel dele (antes todas
+//   as saídas desta tela iam para a home do cliente e ele ficava indo e voltando entre as duas).
+//   "Próprio perfil" é decidido pelo id da sessão, que existe mesmo se a leitura do papel falhar.
+// DEPENDE DE: supabase-config.js, categorias.js, telefone.js, sessao.js e navegacao.js carregados antes deste arquivo.
 // Tudo fica dentro de uma IIFE para não criar variáveis globais (evita colidir com outros scripts).
 
 (function () {
@@ -28,36 +34,44 @@
     // Evita que uma resposta antiga sobrescreva a mais nova (clique duplo em "Tentar novamente")
     let consultaAtual = 0;
 
-    // Tipo de quem está vendo: null (visitante), 'cliente', 'profissional' ou 'desconhecido' (erro ao ler).
-    // Lido uma vez só, junto com o perfil, para decidir se o botão "Contratar" aparece.
-    let tipoUsuarioPromessa = Promise.resolve(null);
+    // Quem está vendo a página (montarNavegacao, js/telas/navegacao.js): { papel, uid, paginaInicial, ... }.
+    // Lido uma vez só, junto com o perfil, para decidir o "Contratar", o aviso e o "Voltar".
+    let quemVePromessa = Promise.resolve(null);
 
     const el = (id) => document.getElementById(id);
 
     document.addEventListener('DOMContentLoaded', () => {
-        configurarCabecalhoSessao();
-        configurarLinksVoltar();
+        aplicarVoltar(null, false);
 
         el('btn-tentar-novamente').addEventListener('click', carregarPerfil);
 
-        tipoUsuarioPromessa = lerTipoUsuario().catch((falha) => {
-            console.error('Erro ao ler o tipo do usuário (o botão Contratar aparece; solicitar-pedido.html confere de novo):', falha);
-            return 'desconhecido';
-        });
+        // Nunca rejeita: papel ilegível vira 'desconhecido' (com o uid, se houver sessão).
+        quemVePromessa = montarNavegacao();
 
         carregarPerfil();
     });
 
 
-    // "Voltar" para profissionais.html?categoria=<slug> quando a origem é conhecida; senão, home
-    function configurarLinksVoltar() {
-        if (!FORMATO_SLUG.test(slugOrigem)) return;
+    // Destino do "Voltar": a ÚNICA regra desta tela.
+    // 1. veio de uma lista de categoria (?categoria= válido): volta para a lista;
+    // 2. o profissional está no PRÓPRIO perfil: volta para a página inicial dele (o painel);
+    // 3. senão: home. Chamada na carga (quemVe ainda null) e de novo quando o papel chega.
+    function aplicarVoltar(quemVe, perfilProprio) {
+        let destino = PAGINA_INICIAL_CLIENTE;
+        let texto = 'Voltar para as categorias';
 
-        const destino = `profissionais.html?categoria=${encodeURIComponent(slugOrigem)}`;
+        if (FORMATO_SLUG.test(slugOrigem)) {
+            destino = `profissionais.html?categoria=${encodeURIComponent(slugOrigem)}`;
+            texto = 'Voltar para a lista';
+        } else if (perfilProprio && quemVe && quemVe.paginaInicial) {
+            destino = quemVe.paginaInicial;
+            texto = 'Voltar para o meu painel';
+        }
+
         el('link-voltar').href = destino;
-        el('texto-voltar').textContent = 'Voltar para a lista';
+        el('texto-voltar').textContent = texto;
         el('link-voltar-nao-encontrado').href = destino;
-        el('link-voltar-nao-encontrado').textContent = 'Voltar para a lista';
+        el('link-voltar-nao-encontrado').textContent = texto;
     }
 
 
@@ -93,7 +107,7 @@
 
             preencherPerfil(profissional, mapaCategoriasPorSlug(categorias));
             mostrarEstado('perfil');
-            await prepararContratar(profissional, minhaConsulta);
+            await prepararAcoesDoPerfil(profissional, minhaConsulta);
         } catch (falha) {
             if (minhaConsulta !== consultaAtual) return;
 
@@ -122,28 +136,24 @@
     }
 
 
-    // null = visitante; senão o tipo_usuario da linha em 'usuarios' (buscarUsuario está em sessao.js).
-    async function lerTipoUsuario() {
-        if (!supabaseClient) return null;
-
-        const { data, error } = await supabaseClient.auth.getSession();
-        if (error) throw error;
-        if (!data.session) return null;
-
-        const usuario = await buscarUsuario(data.session.user.id);
-        return usuario ? usuario.tipo_usuario : 'desconhecido';
-    }
-
-
-    // Link "Contratar" (US-007). Visitante vê e, ao clicar, solicitar-pedido.html manda ao login e volta.
-    // Profissional logado não vê: só cliente contrata (BR10; o banco também barra).
-    async function prepararContratar(prof, minhaConsulta) {
+    // Depois do perfil carregado: aviso de perfil próprio, "Voltar" e "Contratar" (US-007, DEBT-009).
+    // Visitante vê o "Contratar" e, ao clicar, solicitar-pedido.html manda ao login e volta.
+    // Papel 'desconhecido' (leitura falhou) também vê: solicitar-pedido.html confere de novo e o banco barra.
+    async function prepararAcoesDoPerfil(prof, minhaConsulta) {
         const container = el('acoes-contratacao');
         container.replaceChildren();
+        el('aviso-perfil-proprio').hidden = true;
 
-        const tipo = await tipoUsuarioPromessa;
+        const quemVe = await quemVePromessa;
         if (minhaConsulta !== consultaAtual) return; // chegou um "Tentar novamente" no meio
-        if (tipo === 'profissional') return;
+
+        const perfilProprio = Boolean(quemVe && quemVe.uid && quemVe.uid === prof.id);
+        el('aviso-perfil-proprio').hidden = !perfilProprio;
+        aplicarVoltar(quemVe, perfilProprio);
+
+        // Só cliente contrata (BR10): profissional e admin não veem, nem ninguém no próprio perfil.
+        const naoContrata = quemVe && (quemVe.papel === 'profissional' || quemVe.papel === 'admin');
+        if (perfilProprio || naoContrata) return;
 
         const nome = (prof.nome || '').trim() || 'Profissional';
         const link = document.createElement('a');
@@ -271,37 +281,5 @@
         if (!partes.length) return '?';
         const ultima = partes.length > 1 ? partes[partes.length - 1][0] : '';
         return (partes[0][0] + ultima).toUpperCase();
-    }
-
-
-    // ==========================================
-    // CABEÇALHO: "Entrar" (visitante) ou "Sair" (logado)
-    // ==========================================
-    async function configurarCabecalhoSessao() {
-        const btnSair = el('btn-sair');
-
-        btnSair.addEventListener('click', async () => {
-            try {
-                if (supabaseClient) await supabaseClient.auth.signOut();
-            } catch (falha) {
-                console.error('Erro ao sair:', falha);
-            }
-            // Continua neste perfil, agora como visitante
-            window.location.reload();
-        });
-
-        if (!supabaseClient) return;
-
-        try {
-            const { data, error } = await supabaseClient.auth.getSession();
-            if (error) throw error;
-            if (!data.session) return;
-
-            el('link-entrar').hidden = true;
-            btnSair.hidden = false;
-        } catch (falha) {
-            // Sem sessão legível, a página continua como visitante ("Entrar" visível)
-            console.error('Erro ao ler a sessão:', falha);
-        }
     }
 })();

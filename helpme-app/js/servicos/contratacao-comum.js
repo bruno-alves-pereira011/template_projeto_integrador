@@ -1,7 +1,7 @@
 // CONTRATAÇÃO — FUNÇÕES COMUNS (contratacao-comum.js) — US-008 / US-009
 // OBJETIVO: o que contratacoes.html, espera-cliente.html e servico-andamento.html fazem igual:
 // ler uma contratação, ler o contato da outra parte, mudar o status, ouvir o Realtime, rótulos e datas.
-// COMO USAR: script clássico, depois de js/supabase-config.js e antes do script da página.
+// COMO USAR: script clássico, depois de js/servicos/supabase-config.js e antes do script da página.
 // API PÚBLICA (globais): lerIdContratacaoDaUrl, buscarContratacao, buscarContatoContraparte,
 //   mudarStatusContratacao, assinarContratacao, rotuloStatusContratacao, textoDataContratacao,
 //   PAGINA_ESPERA_CLIENTE, PAGINA_SERVICO_ANDAMENTO, PAGINA_CONTRATACOES, PAGINA_CHAT,

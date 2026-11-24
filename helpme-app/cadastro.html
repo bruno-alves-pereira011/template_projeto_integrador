@@ -4,10 +4,10 @@
   COMO FUNCIONA: o signUp manda { nome, tipo_usuario, telefone } em options.data e o
   trigger do banco cria a linha em 'usuarios'. O front NÃO grava em nenhuma outra tabela aqui:
   o perfil profissional é criado depois, em completar-perfil.html.
-  ELEMENTOS (ids usados pelo js/auth.js):
+  ELEMENTOS (ids usados pelo js/telas/auth.js):
   - #form-cadastro com #nome, #email, #senha (+ #toggle-password), #telefone e radios name="tipo_usuario".
   - Erros por campo: #erro-nome, #erro-email, #erro-senha, #erro-tipo. Mensagem geral: #cadastro-mensagem.
-  - Scripts no final: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/telefone.js -> js/auth.js.
+  - Scripts no final: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js -> js/telas/auth.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -99,10 +99,10 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/telefone.js"></script>
-    <script src="js/auth.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/servicos/telefone.js"></script>
+    <script src="js/telas/auth.js"></script>
 
 </body>
 </html>

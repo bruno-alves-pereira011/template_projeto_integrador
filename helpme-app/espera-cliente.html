@@ -6,12 +6,12 @@
   (O nome antigo foi mantido; agora lê a tabela 'contratacoes', não a antiga 'pedidos'.)
   REGRAS: exige sessão. Só as partes enxergam a contratação (RLS); outro usuário vê "não encontrada".
   O profissional não usa esta tela: é mandado para contratacoes.html (ou servico-andamento.html).
-  ELEMENTOS (ids usados pelo js/espera-cliente.js):
+  ELEMENTOS (ids usados pelo js/telas/espera-cliente.js):
   - #espera-carregando / #espera-erro (+ #btn-tentar-novamente) / #espera-nao-encontrada.
   - #espera-detalhe: #detalhe-profissional, #detalhe-status, #detalhe-data, #detalhe-descricao, #detalhe-endereco,
     #espera-situacao (texto do momento) e #btn-cancelar.
   - #espera-aviso: avisos de ação. #btn-sair na barra do topo.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/contratacao-comum.js -> js/espera-cliente.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/contratacao-comum.js -> js/telas/espera-cliente.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -82,10 +82,10 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/contratacao-comum.js"></script>
-    <script src="js/espera-cliente.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/servicos/contratacao-comum.js"></script>
+    <script src="js/telas/espera-cliente.js"></script>
 
 </body>
 </html>

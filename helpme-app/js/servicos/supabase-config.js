@@ -2,8 +2,8 @@
 // OBJETIVO: ÚNICA fonte de configuração do app (URL, chave pública e modo demonstração).
 // COMO USAR: em TODAS as páginas, carregar como script clássico (sem type="module"), nesta ordem:
 //   1. CDN @supabase/supabase-js@2
-//   2. js/supabase-config.js   (este arquivo)
-//   3. js/categorias.js        (só nas páginas que mostram categorias)
+//   2. js/servicos/supabase-config.js   (este arquivo)
+//   3. js/servicos/categorias.js        (só nas páginas que mostram categorias)
 //   4. script da página        (auth.js, cliente.js, profissional.js...)
 // Os outros scripts usam a variável global `supabaseClient` criada aqui.
 // Por isso NINGUÉM mais pode declarar SUPABASE_URL, supabaseClient ou `supabase`:

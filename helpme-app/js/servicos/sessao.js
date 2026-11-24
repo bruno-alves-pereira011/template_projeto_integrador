@@ -2,10 +2,11 @@
 // OBJETIVO: ÚNICO lugar que decide "quem pode ver esta página" e "para onde o login leva".
 // POR QUÊ: antes cada script checava a sessão do seu jeito (e o login mandava todo
 // profissional para o feed, aprovado ou não). Centralizar evita regras divergentes.
-// ORDEM DOS SCRIPTS: CDN supabase-js -> js/supabase-config.js -> (js/categorias.js) -> js/sessao.js -> script da página.
+// ORDEM DOS SCRIPTS: CDN supabase-js -> js/servicos/supabase-config.js -> (js/servicos/categorias.js) -> js/servicos/sessao.js -> script da página.
 // Globais criadas aqui (NÃO redeclarar em outro script):
-//   funções: exigirSessao, destinoDoUsuario, sair, voltarSeguro, lerVoltarDaUrl,
-//            calcularDestino, buscarUsuario, buscarSituacaoProfissional, buscarEhAdmin, ehPaginaAdmin;
+//   funções: exigirSessao, destinoDoUsuario, sair, encerrarSessao, voltarSeguro, lerVoltarDaUrl,
+//            calcularDestino, profissionalLiberado, lerPapel, destinoDoPapel, buscarUsuario,
+//            buscarSituacaoProfissional, buscarEhAdmin, ehPaginaAdmin, chaveDaSessaoSalva, uidDaSessaoSalva;
 //   constantes: PAGINA_INICIAL_CLIENTE, PAGINA_LOGIN, PAGINA_COMPLETAR_PERFIL,
 //               PAGINA_BLOQUEIO, PAGINA_ADMIN, DESTINO_PROFISSIONAL_APROVADO.
 
@@ -66,6 +67,13 @@ function ehPaginaAdmin(pagina) {
 }
 
 
+/// Profissional liberado para usar o app: aprovado e com pelo menos uma categoria (BR03).
+// situacao = { status, totalCategorias } (buscarSituacaoProfissional).
+function profissionalLiberado(situacao) {
+    return Boolean(situacao) && situacao.status === 'aprovado' && situacao.totalCategorias > 0;
+}
+
+
 // Regra pura de roteamento (sem banco), separada para ficar fácil de testar.
 // situacao = { ehAdmin: boolean, tipo: 'cliente'|'profissional', status: null|'pendente'|'aprovado'|'recusado'|'suspenso', totalCategorias: number }
 // status null = profissional ainda sem linha em 'profissionais'.
@@ -87,7 +95,7 @@ function calcularDestino(situacao, voltar) {
         return PAGINA_COMPLETAR_PERFIL;
     }
 
-    if (situacao.status === 'aprovado') {
+    if (profissionalLiberado(situacao)) {
         return voltarOk || DESTINO_PROFISSIONAL_APROVADO;
     }
 
@@ -97,10 +105,13 @@ function calcularDestino(situacao, voltar) {
 
 
 // Busca a linha do usuário em 'usuarios' (criada pelo trigger do cadastro).
-async function buscarUsuario(userId) {
+// comContato = true inclui o telefone: só as telas de perfil precisam dele, e o menu das
+// páginas públicas não deve trafegar dado de contato à toa.
+async function buscarUsuario(userId, comContato) {
+    const colunas = comContato ? 'id, nome, tipo_usuario, telefone' : 'id, nome, tipo_usuario';
     const { data, error } = await supabaseClient
         .from('usuarios')
-        .select('id, nome, tipo_usuario, telefone')
+        .select(colunas)
         .eq('id', userId)
         .maybeSingle();
 
@@ -149,6 +160,38 @@ async function buscarEhAdmin() {
 }
 
 
+// PAPEL de quem está logado: a ÚNICA regra de "quem é quem" do app (DEBT-009).
+// Usada pelo login (destinoDoUsuario), pela proteção das páginas (exigirSessao) e pelo menu (js/telas/navegacao.js).
+// Devolve { papel, usuario, situacao }:
+//   'admin'        tem linha em 'administradores' (BR11). Vem antes do tipo: a conta admin é do tipo
+//                  'cliente' no banco, mas NÃO é cliente: não contrata nem usa as telas de cliente (BR10).
+//   'profissional' tipo_usuario 'profissional'; situacao = { status, totalCategorias }.
+//   'cliente'      qualquer outro tipo.
+// usuario = linha de 'usuarios' (só o admin pode não ter). Lança erro se alguma leitura falhar.
+async function lerPapel(userId, comContato) {
+    const [usuario, ehAdmin] = await Promise.all([buscarUsuario(userId, comContato), buscarEhAdmin()]);
+
+    if (ehAdmin) return { papel: 'admin', usuario: usuario, situacao: null };
+
+    if (!usuario) throw new Error('Perfil de usuário não encontrado.');
+
+    if (usuario.tipo_usuario !== 'profissional') return { papel: 'cliente', usuario: usuario, situacao: null };
+
+    const situacao = await buscarSituacaoProfissional(userId);
+    return { papel: 'profissional', usuario: usuario, situacao: situacao };
+}
+
+
+// Página inicial de um papel já lido por lerPapel (a mesma para onde o login leva).
+function destinoDoPapel(papelLido, voltar) {
+    return calcularDestino({
+        ehAdmin: papelLido.papel === 'admin',
+        tipo: papelLido.papel === 'profissional' ? 'profissional' : 'cliente',
+        ...(papelLido.situacao || {})
+    }, voltar);
+}
+
+
 // Para onde o login leva este usuário.
 // `voltar` é opcional: se omitido, usa o ?voltar= da URL atual.
 // Lança erro se não conseguir ler o banco (quem chama mostra a mensagem).
@@ -156,33 +199,18 @@ async function destinoDoUsuario(userId, voltar) {
     if (!supabaseClient) throw new Error('Cliente do Supabase indisponível.');
 
     const voltarUsado = voltar === undefined ? lerVoltarDaUrl() : voltar;
-
-    if (await buscarEhAdmin()) {
-        return calcularDestino({ ehAdmin: true }, voltarUsado);
-    }
-
-    const usuario = await buscarUsuario(userId);
-
-    if (!usuario) {
-        throw new Error('Perfil de usuário não encontrado.');
-    }
-
-    if (usuario.tipo_usuario !== 'profissional') {
-        return calcularDestino({ tipo: usuario.tipo_usuario }, voltarUsado);
-    }
-
-    const situacao = await buscarSituacaoProfissional(userId);
-    return calcularDestino({ tipo: 'profissional', status: situacao.status, totalCategorias: situacao.totalCategorias }, voltarUsado);
+    return destinoDoPapel(await lerPapel(userId), voltarUsado);
 }
 
 
 // Protege uma página. Uso no início do script da página:
 //   const sessao = await exigirSessao('profissional');
 //   if (!sessao) return; // já redirecionou
+// tipoEsperado: 'cliente' | 'profissional' | 'admin', ou omitido (qualquer papel logado).
 // - sem sessão: vai ao login com ?voltar=<esta página>;
-// - tipo errado: vai para a página inicial do próprio tipo;
-// - 'admin': exige linha em 'administradores' (eh_admin()); quem não é vai para a própria página inicial;
-// - ok: devolve { user, usuario } (usuario = linha de 'usuarios'; com 'admin', também ehAdmin: true).
+// - papel diferente do esperado: vai para a página inicial do próprio papel (o voltar é ignorado,
+//   a página atual já é do papel errado). O admin NÃO passa em 'cliente' (BR10/BR11);
+// - ok: devolve { user, usuario, papel, situacao, ehAdmin } (usuario com telefone).
 // Lança erro se o Supabase estiver indisponível ou a leitura falhar.
 async function exigirSessao(tipoEsperado) {
     if (!supabaseClient) throw new Error('Cliente do Supabase indisponível.');
@@ -200,43 +228,79 @@ async function exigirSessao(tipoEsperado) {
         return null;
     }
 
-    const usuario = await buscarUsuario(sessao.user.id);
+    const papelLido = await lerPapel(sessao.user.id, true);
 
-    if (!usuario) {
+    if (!papelLido.usuario) {
         throw new Error('Perfil de usuário não encontrado.');
     }
 
-    // Páginas admin*.html: o papel vem de 'administradores', não de tipo_usuario (US-014, critério 3).
-    if (tipoEsperado === 'admin') {
-        if (await buscarEhAdmin()) {
-            return { user: sessao.user, usuario: usuario, ehAdmin: true };
+    if (tipoEsperado && papelLido.papel !== tipoEsperado) {
+        window.location.replace(destinoDoPapel(papelLido, null));
+        return null;
+    }
+
+    return {
+        user: sessao.user,
+        usuario: papelLido.usuario,
+        papel: papelLido.papel,
+        situacao: papelLido.situacao,
+        ehAdmin: papelLido.papel === 'admin'
+    };
+}
+
+
+// Chave do localStorage onde o supabase-js guarda a sessão ('sb-<projeto>-auth-token').
+function chaveDaSessaoSalva() {
+    const daBiblioteca = supabaseClient && supabaseClient.auth && supabaseClient.auth.storageKey;
+    return daBiblioteca || `sb-${new URL(SUPABASE_URL).hostname.split('.')[0]}-auth-token`;
+}
+
+
+// id do usuário da sessão salva neste navegador, lido na hora (sem rede), ou null.
+// Serve só para decisões VISUAIS imediatas: esconder "Entrar" enquanto o papel carrega e notar
+// um login ou logout feito em outra aba. Quem decide acesso é exigirSessao e o RLS do banco.
+function uidDaSessaoSalva() {
+    try {
+        const bruto = window.localStorage.getItem(chaveDaSessaoSalva());
+        const salvo = bruto ? JSON.parse(bruto) : null;
+        const usuario = salvo && (salvo.user || (salvo.currentSession && salvo.currentSession.user));
+        return usuario && typeof usuario.id === 'string' ? usuario.id : null;
+    } catch (erro) {
+        return null;
+    }
+}
+
+
+// Encerra a sessão NESTE navegador (scope 'local': o usuário continua logado nos outros aparelhos).
+// Sem rede, o supabase-js devolve { error } e NÃO apaga a sessão salva: aí ela é apagada aqui,
+// para o "Sair" nunca deixar o usuário logado. Nunca lança.
+async function encerrarSessao() {
+    if (!supabaseClient) return;
+
+    let falhou = false;
+    try {
+        const { error } = await supabaseClient.auth.signOut({ scope: 'local' });
+        if (error) {
+            falhou = true;
+            console.error('Erro ao sair (a sessão deste navegador é apagada mesmo assim):', error);
         }
-        // Não é admin: vai para a página inicial do próprio tipo (o voltar é ignorado).
-        window.location.replace(await destinoDoUsuario(sessao.user.id, null));
-        return null;
+    } catch (erro) {
+        falhou = true;
+        console.error('Erro ao sair (a sessão deste navegador é apagada mesmo assim):', erro);
     }
 
-    if (tipoEsperado && usuario.tipo_usuario !== tipoEsperado) {
-        // O voltar é ignorado aqui: a página atual já é do tipo errado.
-        const destino = usuario.tipo_usuario === 'profissional'
-            ? await destinoDoUsuario(sessao.user.id, null)
-            : PAGINA_INICIAL_CLIENTE;
-        window.location.replace(destino);
-        return null;
+    if (falhou) {
+        try {
+            window.localStorage.removeItem(chaveDaSessaoSalva());
+        } catch (erro) {
+            console.error('Não foi possível apagar a sessão salva:', erro);
+        }
     }
-
-    return { user: sessao.user, usuario: usuario };
 }
 
 
 // Encerra a sessão e volta para a home pública.
-// Mesmo se o signOut falhar (ex.: sem rede) a sessão local é descartada pelo supabase-js,
-// então o redirecionamento acontece de qualquer jeito.
 async function sair() {
-    try {
-        if (supabaseClient) await supabaseClient.auth.signOut();
-    } catch (erro) {
-        console.error('Erro ao sair:', erro);
-    }
+    await encerrarSessao();
     window.location.replace(PAGINA_INICIAL_CLIENTE);
 }

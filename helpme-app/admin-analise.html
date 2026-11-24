@@ -3,11 +3,11 @@
   OBJETIVO: O administrador vê os profissionais 'pendente', filtra pela triagem e aprova em lote os verdes.
   REGRAS: exigirSessao('admin'). Os dados vêm de rpc('fila_analise'); a decisão, de
   rpc('decidir_profissionais') com p_exigir_verde = true (BR15: o banco confere tudo na hora).
-  ELEMENTOS (ids usados pelo js/admin-analise.js):
+  ELEMENTOS (ids usados pelo js/telas/admin-analise.js):
   - #fila-carregando / #fila-erro (+ #btn-tentar-novamente) / #fila-conteudo / #fila-vazia.
   - #filtro-triagem, #fila-total, #aviso-lote, #btn-aprovar-lote, #resultado-lote (role="status").
   - #lista-fila recebe os cards de <template id="modelo-card-fila">.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/admin-comum.js -> js/admin-analise.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/admin-comum.js -> js/telas/admin-analise.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -139,10 +139,10 @@
     </template>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/admin-comum.js"></script>
-    <script src="js/admin-analise.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/servicos/admin-comum.js"></script>
+    <script src="js/telas/admin-analise.js"></script>
 
 </body>
 </html>

@@ -1,6 +1,6 @@
 // SERVIÇO EM ANDAMENTO (servico-andamento.js) — US-009 / FR13 (decisão D8)
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js -> js/telefone.js
-//                           -> js/contratacao-comum.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js
+//                           -> js/servicos/contratacao-comum.js.
 // Fluxo:
 //   1. exigirSessao() + ?id=. Não é parte (ou não existe): "não encontrada".
 //   2. Só 'aceita' e 'concluida' ficam aqui; os outros status vão para a tela certa.

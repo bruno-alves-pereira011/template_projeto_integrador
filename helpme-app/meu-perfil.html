@@ -4,11 +4,11 @@
   aceitar a contratação (BR07, função contato_contraparte).
   REGRAS: só cliente logado (exigirSessao('cliente')). Grava só a própria linha de 'usuarios' (RLS);
   tipo_usuario é protegido pelo trigger proteger_usuario.
-  ELEMENTOS (ids usados pelo js/meu-perfil.js):
+  ELEMENTOS (ids usados pelo js/telas/meu-perfil.js):
   - #perfil-carregando / #perfil-erro-carga (+ #btn-recarregar).
   - #form-perfil: #nome, #telefone, #erro-nome, #erro-telefone, #perfil-email (só leitura), #btn-salvar.
   - #perfil-mensagem: confirmação ou erro ao salvar. #btn-sair na barra do topo.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/telefone.js -> js/meu-perfil.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js -> js/telas/meu-perfil.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -84,13 +84,13 @@
     <!-- 1. Biblioteca oficial do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- 2. Conexão (cria a global supabaseClient) -->
-    <script src="js/supabase-config.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
     <!-- 3. Sessão e proteção da página (exigirSessao, sair) -->
-    <script src="js/sessao.js"></script>
+    <script src="js/servicos/sessao.js"></script>
     <!-- 4. Regra do telefone (telefoneValido) -->
-    <script src="js/telefone.js"></script>
+    <script src="js/servicos/telefone.js"></script>
     <!-- 5. Lógica desta tela -->
-    <script src="js/meu-perfil.js"></script>
+    <script src="js/telas/meu-perfil.js"></script>
 
 </body>
 </html>

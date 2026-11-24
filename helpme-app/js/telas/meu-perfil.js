@@ -1,6 +1,6 @@
 // MEU PERFIL DO CLIENTE (meu-perfil.js) — US-012
 // OBJETIVO: o cliente vê e edita nome e telefone da própria linha em 'usuarios'.
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js -> js/telefone.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js.
 // Fluxo:
 //   1. exigirSessao('cliente'): visitante vai ao login com ?voltar=meu-perfil.html; profissional vai para a tela dele.
 //   2. Preenche o formulário com a linha de 'usuarios' que o exigirSessao já leu.

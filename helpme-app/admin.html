@@ -3,7 +3,7 @@
   OBJETIVO: Ponto de entrada do administrador (quem tem linha em 'administradores', BR11).
   REGRAS: exigirSessao('admin'). Visitante vai ao login com ?voltar=admin.html; cliente/profissional
   vai para a página inicial do próprio tipo (FR15). Nenhum dado aparece antes da checagem.
-  ELEMENTOS (ids usados pelo js/admin.js):
+  ELEMENTOS (ids usados pelo js/telas/admin.js):
   - #admin-carregando / #admin-erro (+ #btn-tentar-novamente) / #admin-conteudo.
   - #admin-saudacao: "Olá, <primeiro nome>".
   - Menu: Painel (esta página), Fila de análise (admin-analise.html, US-015), Categorias (US-018,
@@ -11,7 +11,7 @@
   - Indicadores (US-017): #indicadores-carregando / #indicadores-erro / #indicadores-conteudo,
     #kpi-* (valores e notas), #tabela-contratacoes, #kpi-categorias-lista, #btn-atualizar-indicadores.
     Falha nos indicadores não esconde o resto do painel.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/admin-comum.js -> js/admin.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/admin-comum.js -> js/telas/admin.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -212,13 +212,13 @@
     <!-- 1. Biblioteca oficial do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- 2. Conexão (cria a global supabaseClient) -->
-    <script src="js/supabase-config.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
     <!-- 3. Sessão e proteção da página (exigirSessao('admin'), sair) -->
-    <script src="js/sessao.js"></script>
+    <script src="js/servicos/sessao.js"></script>
     <!-- 4. Utilitários da área admin (tradução de erros) -->
-    <script src="js/admin-comum.js"></script>
+    <script src="js/servicos/admin-comum.js"></script>
     <!-- 5. Lógica desta tela -->
-    <script src="js/admin.js"></script>
+    <script src="js/telas/admin.js"></script>
 
 </body>
 </html>

@@ -1,5 +1,5 @@
 // SITUAÇÃO DO CADASTRO (bloqueio.js) — US-006
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js.
 // - Visitante: exigirSessao manda para o login (com ?voltar=bloqueio.html).
 // - Cliente: exigirSessao manda para a home.
 // - Profissional: a mesma regra do login (calcularDestino) decide. Se o destino não for

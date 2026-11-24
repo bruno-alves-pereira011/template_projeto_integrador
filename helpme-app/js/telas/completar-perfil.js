@@ -1,5 +1,5 @@
 // COMPLETAR / EDITAR PERFIL DO PROFISSIONAL (completar-perfil.js) — US-005
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js.
 // Fluxo:
 //   1. exigirSessao('profissional') — cliente ou visitante não fica aqui.
 //   2. Carrega categorias, o perfil (se já existir) e as categorias marcadas.

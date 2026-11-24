@@ -1,5 +1,5 @@
 // CHAT DA CONTRATAÇÃO (chat.js) — US-010 / FR14, BR08, NFR07 (decisão D9)
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js -> js/contratacao-comum.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/contratacao-comum.js.
 // Fluxo:
 //   1. exigirSessao() + ?id=. Não é parte (ou não existe): "não encontrada".
 //   2. Assina o Realtime de mensagens ANTES de ler o histórico: ao conectar, relê o histórico, e o que

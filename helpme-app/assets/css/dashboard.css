@@ -375,7 +375,9 @@ body.painel *::after {
         order: 3;
         flex-direction: row;
         width: 100%;
-        overflow-x: auto;
+        /* Os itens quebram linha em vez de rolar para o lado: antes o menu do profissional
+           ficava cortado ("Editar meu p…") sem sinal de que havia mais itens (DEBT-009). */
+        flex-wrap: wrap;
     }
 
     .menu-item {
@@ -1269,4 +1271,21 @@ body.painel button:focus-visible {
     .card-profissional:hover {
         transform: none;
     }
+}
+
+/* Aviso no próprio perfil público do profissional logado (DEBT-009) */
+.aviso-perfil-proprio {
+    margin: 0 0 1rem;
+    padding: 12px 14px;
+    border-radius: var(--raio);
+    border: 1px solid #b9d4cf;
+    background: var(--cor-primaria-clara);
+    color: var(--cor-primaria-escura);
+    font-weight: 600;
+}
+
+.aviso-perfil-proprio a {
+    color: inherit;
+    text-decoration: underline;
+    margin-left: 0.25rem;
 }
