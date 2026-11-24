@@ -4,7 +4,7 @@
   REGRAS: exigirSessao('admin'). Dados de rpc('detalhe_profissional_admin'); decisão de
   rpc('decidir_profissionais'). Se outro admin decidiu antes, o banco devolve 'ignorado':
   a tela avisa e recarrega (critério 5).
-  ELEMENTOS (ids usados pelo js/admin-profissional.js):
+  ELEMENTOS (ids usados pelo js/telas/admin-profissional.js):
   - #detalhe-carregando / #detalhe-erro (+ #btn-tentar-novamente) / #detalhe-nao-encontrado / #detalhe-conteudo.
   - Perfil: #perfil-nome, #perfil-status, #perfil-local, #perfil-idade, #perfil-contato, #perfil-cadastro,
     #perfil-categorias, #perfil-descricao.
@@ -16,7 +16,7 @@
     #erro-suspensao, #btn-suspender) e #painel-reativacao (suspenso: #form-reativacao, #motivo-reativacao,
     #btn-reativar), via rpc('alterar_suspensao'). ?de=profissionais faz #link-voltar ir para a lista.
   - #link-contratacoes (US-020): abre admin-contratacoes.html?profissional=<id> (somente leitura).
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/telefone.js -> js/admin-comum.js -> js/admin-profissional.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js -> js/servicos/admin-comum.js -> js/telas/admin-profissional.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -180,11 +180,11 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/telefone.js"></script>
-    <script src="js/admin-comum.js"></script>
-    <script src="js/admin-profissional.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/servicos/telefone.js"></script>
+    <script src="js/servicos/admin-comum.js"></script>
+    <script src="js/telas/admin-profissional.js"></script>
 
 </body>
 </html>

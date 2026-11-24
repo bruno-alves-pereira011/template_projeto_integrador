@@ -2,12 +2,12 @@
   TELA: Situação do cadastro (bloqueio.html) — US-006
   OBJETIVO: Mostrar ao profissional pendente/recusado por que ele ainda não aparece no diretório.
   A aprovação é manual, feita pela equipe no Table Editor do Supabase (decisão D2).
-  REGRAS (js/bloqueio.js): exige sessão de profissional; cliente vai para a home;
-  profissional aprovado ou com perfil incompleto é redirecionado (destinoDoUsuario em js/sessao.js).
+  REGRAS (js/telas/bloqueio.js): exige sessão de profissional; cliente vai para a home;
+  profissional aprovado ou com perfil incompleto é redirecionado (destinoDoUsuario em js/servicos/sessao.js).
   ELEMENTOS: #bloqueio-carregando, #bloqueio-erro (+ #btn-recarregar), #painel-pendente,
   #painel-recusado, #painel-suspenso (US-019: #suspenso-motivo-caixa, #suspenso-motivo, #suspenso-data)
   e #btn-sair.
-  Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/bloqueio.js.
+  Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/telas/bloqueio.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -79,9 +79,9 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/bloqueio.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/telas/bloqueio.js"></script>
 
 </body>
 </html>

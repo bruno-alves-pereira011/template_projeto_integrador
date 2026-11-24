@@ -4,11 +4,11 @@
   onde aprova/recusa (US-015) ou suspende/reativa (US-019).
   REGRAS: exigirSessao('admin'). Dados de rpc('profissionais_admin', {p_status, p_busca, p_limite, p_deslocamento}),
   de 50 em 50. ?status= abre a lista já filtrada (links do painel).
-  ELEMENTOS (ids usados pelo js/admin-profissionais.js):
+  ELEMENTOS (ids usados pelo js/telas/admin-profissionais.js):
   - #form-filtros: #filtro-status, #filtro-busca, #btn-buscar. #lista-total.
   - #lista-carregando / #lista-erro (+ #lista-erro-texto, #btn-tentar-novamente) / #lista-vazia (+ #btn-limpar).
   - #lista-profissionais recebe os cards de <template id="modelo-card-profissional">. #btn-carregar-mais.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/admin-comum.js -> js/admin-profissionais.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/admin-comum.js -> js/telas/admin-profissionais.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -125,10 +125,10 @@
     </template>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/admin-comum.js"></script>
-    <script src="js/admin-profissionais.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/servicos/admin-comum.js"></script>
+    <script src="js/telas/admin-profissionais.js"></script>
 
 </body>
 </html>

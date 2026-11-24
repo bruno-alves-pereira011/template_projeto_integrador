@@ -1,6 +1,6 @@
 // ÁREA ADMINISTRATIVA — PAINEL (admin.js) — US-014 + US-017
 // OBJETIVO: proteger admin.html, mostrar a casca da área admin e os indicadores.
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js -> js/admin-comum.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/admin-comum.js.
 // SEGURANÇA: esconder a tela é só conveniência. O que protege os dados é o banco:
 // painel_admin() confere eh_admin() e devolve só totais (NFR09, 006_painel.sql).
 

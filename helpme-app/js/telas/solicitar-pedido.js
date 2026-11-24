@@ -1,6 +1,6 @@
 // SOLICITAR PEDIDO = CONTRATAR PROFISSIONAL (solicitar-pedido.js) — US-007 / FR10
 // (O nome antigo do arquivo foi mantido pela decisão D8; o pedido agora é uma linha em 'contratacoes'.)
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js.
 // Fluxo:
 //   1. exigirSessao('cliente'): visitante vai ao login com ?voltar=solicitar-pedido.html?profissional=<id>
 //      e volta para cá depois de entrar; profissional é mandado para a página dele.

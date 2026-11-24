@@ -3,14 +3,14 @@
   OBJETIVO: Criar (1ª vez) ou editar a linha em 'profissionais' + as categorias em 'profissional_categoria'.
   REGRAS: exige sessão de profissional; pelo menos 1 categoria; 18 anos ou mais (o banco também valida);
   o status de aprovação NUNCA é enviado pelo front (o banco força 'pendente' na criação).
-  ELEMENTOS (ids usados pelo js/completar-perfil.js):
+  ELEMENTOS (ids usados pelo js/telas/completar-perfil.js):
   - #perfil-carregando / #perfil-erro-carga (+ #btn-recarregar): estados de carga.
   - #perfil-status: aviso conforme o status (aprovado mostra #link-perfil-publico).
   - #form-perfil com #whatsapp, #telefone, #cidade, #bairro, #descricao, #data_nascimento e
     #lista-categorias (checkboxes criados a partir do <template id="modelo-categoria">).
   - Erros por campo: #erro-<campo> e #erro-categorias. Mensagem geral: #perfil-mensagem.
   - #btn-sair encerra a sessão.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/completar-perfil.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/telas/completar-perfil.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -124,9 +124,9 @@
     </template>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/completar-perfil.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/telas/completar-perfil.js"></script>
 
 </body>
 </html>

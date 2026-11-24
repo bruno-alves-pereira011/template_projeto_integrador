@@ -1,7 +1,8 @@
 // CONTRATAÇÕES (contratacoes.js) — US-008 / FR12 (profissional) e US-009 / FR11 (cliente)
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js -> js/contratacao-comum.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/contratacao-comum.js -> js/telas/navegacao.js.
 // Fluxo:
-//   1. exigirSessao(). Profissional precisa estar aprovado e com perfil completo (BR03).
+//   1. exigirSessao(). Profissional precisa estar aprovado e com perfil completo (BR03); admin vai para o
+//      painel dele (não contrata, BR10/BR11). O menu lateral vem de js/telas/navegacao.js.
 //   2. Lê as contratações de que a pessoa é parte (o RLS já filtra; o .eq deixa a intenção clara)
 //      e agrupa: aguardando resposta (solicitada), aceitas e encerradas (recusada/cancelada/concluida).
 //   3. Profissional: "Aceitar"/"Recusar" com update condicionado a status = 'solicitada'. Se nenhuma linha
@@ -101,7 +102,7 @@
         aviso.hidden = !texto;
     }
 
-    // Textos e menu conforme o papel
+    // Textos conforme o papel (o menu é de js/telas/navegacao.js)
     function configurarPapel() {
         const textos = TEXTOS[papel];
         document.title = `HelpMe - ${textos.titulo}`;
@@ -109,14 +110,6 @@
         el('subtitulo-pagina').textContent = textos.subtitulo;
         el('texto-vazio').textContent = textos.vazio;
         GRUPOS.forEach((id) => { el(id).querySelector('.titulo-grupo').textContent = textos.grupos[id]; });
-
-        el('menu-inicio').hidden = papel !== 'cliente';
-        el('menu-meu-perfil').hidden = papel !== 'cliente';
-        el('menu-editar-perfil').hidden = papel !== 'profissional';
-        el('link-perfil-publico').hidden = papel !== 'profissional';
-        if (papel === 'profissional') {
-            el('link-perfil-publico').href = `profissional.html?id=${encodeURIComponent(uid)}`;
-        }
     }
 
     function criarBotao(classe, texto, rotulo, aoClicar) {
@@ -299,20 +292,18 @@
             const sessao = await exigirSessao();
             if (!sessao) return; // já redirecionou para o login
 
-            if (sessao.usuario.tipo_usuario === 'profissional') {
-                // Só profissional aprovado e com perfil completo usa esta tela (BR03); os outros vão
-                // para onde o login os levaria (completar perfil ou bloqueio.html).
-                const situacao = await buscarSituacaoProfissional(sessao.user.id);
-                if (situacao.status !== 'aprovado' || !situacao.totalCategorias) {
-                    window.location.replace(calcularDestino({ tipo: 'profissional', ...situacao }, null));
-                    return;
-                }
-                papel = 'profissional';
-            } else {
-                papel = 'cliente';
+            // Admin não contrata nem recebe contratações (BR10/BR11), e profissional só usa esta tela
+            // aprovado e com perfil completo (BR03): os dois vão para onde o login os levaria.
+            const usaEstaTela = sessao.papel === 'cliente'
+                || (sessao.papel === 'profissional' && profissionalLiberado(sessao.situacao));
+            if (!usaEstaTela) {
+                window.location.replace(destinoDoPapel(sessao, null));
+                return;
             }
 
+            papel = sessao.papel;
             uid = sessao.user.id;
+            montarNavegacao(sessao); // menu por papel e "Sair" (js/telas/navegacao.js), sem reler o banco
         } catch (falha) {
             console.error('Erro ao verificar a sessão:', falha);
             mostrarEstado('erro');
@@ -329,7 +320,6 @@
         mostrarEstado('carregando');
         carregar();
     });
-    el('btn-sair').addEventListener('click', sair);
 
     iniciar();
 })();

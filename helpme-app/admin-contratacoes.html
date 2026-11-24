@@ -4,12 +4,12 @@
   REGRAS: exigirSessao('admin'). Dados de rpc('contratacoes_admin', {p_status, p_dias, p_busca, p_profissional_id,
   p_limite, p_deslocamento}), de 50 em 50. Só nomes, status e datas (sem endereço, telefone, descrição ou mensagens).
   ?profissional=<uuid> filtra por um profissional (link do detalhe); ?status= e ?dias= pré-selecionam os filtros.
-  ELEMENTOS (ids usados pelo js/admin-contratacoes.js):
+  ELEMENTOS (ids usados pelo js/telas/admin-contratacoes.js):
   - #form-filtros: #filtro-status, #filtro-periodo, #filtro-busca, #btn-buscar. #lista-total.
   - #filtro-profissional (+ #filtro-profissional-nome, #btn-remover-profissional).
   - #lista-carregando / #lista-erro (+ #lista-erro-texto, #btn-tentar-novamente) / #lista-vazia (+ #btn-limpar).
   - #tabela-caixa > table > #corpo-contratacoes. #btn-carregar-mais.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/admin-comum.js -> js/admin-contratacoes.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/admin-comum.js -> js/telas/admin-contratacoes.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -141,10 +141,10 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/admin-comum.js"></script>
-    <script src="js/admin-contratacoes.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/servicos/admin-comum.js"></script>
+    <script src="js/telas/admin-contratacoes.js"></script>
 
 </body>
 </html>

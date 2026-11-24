@@ -5,13 +5,13 @@
   REGRAS: exige sessão de CLIENTE (visitante vai ao login e volta para cá; profissional é redirecionado).
   O banco também barra: só cliente contrata, só profissional aprovado é contratado (BR10) e a data
   não pode estar no passado (BR09). A contratação nasce 'solicitada'.
-  ELEMENTOS (ids usados pelo js/solicitar-pedido.js):
+  ELEMENTOS (ids usados pelo js/telas/solicitar-pedido.js):
   - #contratar-carregando / #contratar-erro-carga (+ #btn-recarregar) / #contratar-nao-encontrado.
   - #resumo-profissional com #resumo-nome e #resumo-local.
   - #form-contratar com #descricao, #endereco, #data_desejada. Erros: #erro-<campo>. Mensagem geral: #contratar-mensagem.
   - Depois do envio, o JS vai para espera-cliente.html?id=<id> (acompanhamento, US-009).
   - #link-voltar-perfil e #btn-sair na barra do topo.
-  - Scripts: Supabase CDN -> js/supabase-config.js -> js/sessao.js -> js/solicitar-pedido.js.
+  - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/telas/solicitar-pedido.js.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -98,9 +98,9 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/sessao.js"></script>
-    <script src="js/solicitar-pedido.js"></script>
+    <script src="js/servicos/supabase-config.js"></script>
+    <script src="js/servicos/sessao.js"></script>
+    <script src="js/telas/solicitar-pedido.js"></script>
 
 </body>
 </html>

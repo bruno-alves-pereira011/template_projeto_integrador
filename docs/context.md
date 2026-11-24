@@ -69,7 +69,10 @@ O projeto derivado deve registrar o nivel atual e as capacidades no `docs/projec
 
 O HelpMe nasceu antes do ScrumAIDev e nao usa `frontend/`, `backend/` e `database/`. Os caminhos reais sao:
 
-- `helpme-app/` → frontend (HTML, CSS e JS puro, sem build, sem `package.json`). Scripts clássicos carregados por `<script>`; a ordem de carga está documentada no topo de `helpme-app/js/supabase-config.js` e `helpme-app/js/sessao.js`.
+- `helpme-app/` → frontend (HTML, CSS e JS puro, sem build, sem `package.json`). Scripts clássicos carregados por `<script>`; a ordem de carga está documentada no topo de `helpme-app/js/servicos/supabase-config.js` e `helpme-app/js/servicos/sessao.js`.
+  - `helpme-app/js/servicos/` → camada de dados e regras, **sem DOM**: cliente do Supabase, sessão e papel (`sessao.js`, a única regra de "quem é quem"), categorias, contratações, telefone e rótulos do admin.
+  - `helpme-app/js/telas/` → um script por tela, mais as peças de tela compartilhadas (`navegacao.js`: menu por papel e "Voltar"). Critério: se mexe no DOM, fica em `telas/`.
+  - Ordem de carga: CDN supabase-js → `servicos/` → `telas/navegacao.js` (se a página tem o menu) → script da tela.
 - `supabase/` → banco (Supabase/Postgres): `migrations/` (aplicadas manualmente no SQL Editor, em ordem numérica), `seed.sql` e o roteiro de verificação em `supabase/README.md`.
 - Sem backend próprio: autorização e regras de negócio ficam no banco (RLS, triggers e funções).
 - `arquivos/` → insumos da disciplina (personas, requisitos, Balsamiq), apenas consulta.

@@ -1,11 +1,11 @@
 // LÓGICA DA HOME PÚBLICA (cliente.js)
 // OBJETIVO: Mostrar o diretório de categorias em home-cliente.html, com ou sem login.
 // O QUE FAZ AQUI:
-// - Busca as categorias reais no Supabase (via js/categorias.js) e desenha um card por categoria.
+// - Busca as categorias reais no Supabase (via js/servicos/categorias.js) e desenha um card por categoria.
 // - Cada card leva para 'profissionais.html?categoria=<slug>'.
-// - Mostra "Entrar" para visitante e "Sair" para quem tem sessão.
+// - Saudação com o nome de quem está logado (o menu por papel vem de js/telas/navegacao.js — DEBT-009).
 // - Se a consulta falhar, mostra uma mensagem de erro (e não uma lista vazia).
-// DEPENDE DE: supabase-config.js e categorias.js carregados antes deste arquivo.
+// DEPENDE DE: supabase-config.js, categorias.js, sessao.js e navegacao.js carregados antes deste arquivo.
 
 
 // Lista vinda do banco; guardada aqui para a busca filtrar sem consultar o Supabase de novo
@@ -13,8 +13,9 @@ let categoriasCarregadas = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // A home é PÚBLICA: não redirecionamos para o login. A sessão só muda o cabeçalho.
-    await atualizarCabecalhoSessao();
+    // A home é PÚBLICA: não redirecionamos para o login. A sessão só muda o menu e a saudação.
+    // O menu por papel (Entrar/Sair, itens de cliente e de profissional) vem de js/telas/navegacao.js.
+    montarNavegacao().then(mostrarSaudacao);
 
     if (document.getElementById('lista-categorias')) {
         document.getElementById('busca-categoria').addEventListener('input', (e) => {
@@ -25,66 +26,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         await buscarEMostrarCategorias();
     }
-
-    // ==========================================
-    // BOTÃO SAIR (só aparece quando há sessão)
-    // ==========================================
-    const btnSair = document.getElementById('btn-sair');
-
-    if (btnSair) {
-        btnSair.addEventListener('click', async () => {
-            if (supabaseClient) await supabaseClient.auth.signOut();
-            // Continua na home, agora como visitante
-            window.location.href = 'home-cliente.html';
-        });
-    }
 });
 
 
-// Mostra "Entrar" (visitante) ou "Sair" + saudação (logado).
-// O HTML já começa com "Entrar" visível: se o Supabase falhar, o visitante ainda consegue ir ao login.
-async function atualizarCabecalhoSessao() {
-    if (!supabaseClient) return;
-
-    const { data, error } = await supabaseClient.auth.getSession();
-    if (error) {
-        console.error('Erro ao ler a sessão:', error);
-        return;
-    }
-
-    const sessao = data.session;
-    if (!sessao) return;
-
-    document.getElementById('link-entrar').hidden = true;
-    document.getElementById('btn-sair').hidden = false;
-    document.getElementById('link-minhas-contratacoes').hidden = false;
-
-    // "Meu perfil" é a tela do cliente (US-012); o profissional edita o perfil em completar-perfil.html.
-    // O tipo vem de 'usuarios' (o user_metadata nem sempre tem tipo_usuario, ex.: contas do seed).
-    // Aqui é só exibição: meu-perfil.html confere o tipo de verdade com exigirSessao('cliente').
-    mostrarLinkMeuPerfil(sessao.user.id);
-
-    // O nome vem do próprio login (enviado no cadastro), sem precisar consultar outra tabela
-    const nome = sessao.user.user_metadata && sessao.user.user_metadata.nome;
-    if (nome) {
+// "Olá, Ana!" para quem está logado. O nome vem de 'usuarios' (as contas do seed não têm
+// nome no user_metadata); sem nome legível, fica o título padrão.
+function mostrarSaudacao(info) {
+    const nome = info && info.usuario && info.usuario.nome;
+    if (nome && primeiroNome(nome)) {
         document.getElementById('saudacao').textContent = `Olá, ${primeiroNome(nome)}!`;
-    }
-}
-
-
-// Mostra "Meu perfil" só para cliente. Se a leitura falhar, o link continua escondido
-// (a home segue funcionando; o cliente ainda chega à tela pelo menu de contratacoes.html).
-async function mostrarLinkMeuPerfil(userId) {
-    try {
-        const { data, error } = await supabaseClient
-            .from('usuarios')
-            .select('tipo_usuario')
-            .eq('id', userId)
-            .maybeSingle();
-        if (error) throw error;
-        document.getElementById('link-meu-perfil').hidden = !data || data.tipo_usuario !== 'cliente';
-    } catch (falha) {
-        console.error('Erro ao ler o tipo do usuário para o menu:', falha);
     }
 }
 

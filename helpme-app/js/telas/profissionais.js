@@ -6,7 +6,7 @@
 //   (a view só tem aprovados e não expõe data de nascimento). NUNCA lê a tabela 'profissionais' direto.
 // - Desenha um card por profissional, que leva para 'profissional.html?id=<id>&categoria=<slug>'.
 // - Estados: carregando, erro (com "Tentar novamente"), vazio, sem resultado no filtro e categoria não encontrada.
-// DEPENDE DE: supabase-config.js e categorias.js carregados antes deste arquivo.
+// DEPENDE DE: supabase-config.js, categorias.js, sessao.js e navegacao.js carregados antes deste arquivo.
 // Tudo fica dentro de uma IIFE para não criar variáveis globais (evita colidir com outros scripts).
 
 (function () {
@@ -25,7 +25,8 @@
     const el = (id) => document.getElementById(id);
 
     document.addEventListener('DOMContentLoaded', () => {
-        configurarCabecalhoSessao();
+        // Menu por papel, Entrar/Sair e "Voltar" pelo histórico (js/telas/navegacao.js — DEBT-009)
+        montarNavegacao();
 
         el('filtro-cidade').addEventListener('input', renderizarProfissionais);
         el('filtro-bairro').addEventListener('input', renderizarProfissionais);
@@ -227,37 +228,5 @@
     // Minúsculo e sem acento: "são paulo" encontra "São Paulo"
     function normalizarTexto(texto) {
         return (texto || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-    }
-
-
-    // ==========================================
-    // CABEÇALHO: "Entrar" (visitante) ou "Sair" (logado)
-    // ==========================================
-    async function configurarCabecalhoSessao() {
-        const btnSair = el('btn-sair');
-
-        btnSair.addEventListener('click', async () => {
-            try {
-                if (supabaseClient) await supabaseClient.auth.signOut();
-            } catch (falha) {
-                console.error('Erro ao sair:', falha);
-            }
-            // Continua nesta lista, agora como visitante
-            window.location.reload();
-        });
-
-        if (!supabaseClient) return;
-
-        try {
-            const { data, error } = await supabaseClient.auth.getSession();
-            if (error) throw error;
-            if (!data.session) return;
-
-            el('link-entrar').hidden = true;
-            btnSair.hidden = false;
-        } catch (falha) {
-            // Sem sessão legível, a página continua como visitante ("Entrar" visível)
-            console.error('Erro ao ler a sessão:', falha);
-        }
     }
 })();

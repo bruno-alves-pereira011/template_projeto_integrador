@@ -1,5 +1,5 @@
 // ESPERA DO CLIENTE (espera-cliente.js) — US-009 / FR11 (decisão D8)
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js -> js/contratacao-comum.js.
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/contratacao-comum.js.
 // Fluxo:
 //   1. exigirSessao() + ?id= da contratação. Não é parte dela (ou não existe): "não encontrada".
 //   2. Profissional não fica aqui (vai para a lista ou para o serviço em andamento).

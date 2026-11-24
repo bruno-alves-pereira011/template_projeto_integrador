@@ -2,7 +2,7 @@
 // OBJETIVO: Buscar as categorias na tabela 'categorias' do Supabase.
 // POR QUÊ: antes cada script tinha a sua lista fixa (e elas divergiam). Agora o banco é a
 // única fonte: renomear uma categoria no Table Editor muda o app inteiro após recarregar.
-// DEPENDE DE: js/supabase-config.js carregado antes (usa a global `supabaseClient`).
+// DEPENDE DE: js/servicos/supabase-config.js carregado antes (usa a global `supabaseClient`).
 
 
 // Busca todas as categorias ordenadas por nome.

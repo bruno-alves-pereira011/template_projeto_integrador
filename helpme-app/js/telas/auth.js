@@ -1,7 +1,7 @@
 // LOGIN E CADASTRO (auth.js) — US-004
 // Usado por index.html (login) e cadastro.html (cadastro). Cada parte só roda se o formulário existir.
-// DEPENDE DE (nesta ordem): CDN supabase-js -> js/supabase-config.js -> js/sessao.js.
-// O roteamento pós-login fica em destinoDoUsuario() (js/sessao.js), não aqui:
+// DEPENDE DE (nesta ordem): CDN supabase-js -> js/servicos/supabase-config.js -> js/servicos/sessao.js.
+// O roteamento pós-login fica em destinoDoUsuario() (js/servicos/sessao.js), não aqui:
 // assim login, cadastro e páginas protegidas usam a mesma regra.
 // IMPORTANTE: o cadastro NÃO grava em nenhuma tabela. O trigger do banco cria 'usuarios'
 // a partir de options.data, e o perfil profissional é criado em completar-perfil.html.
@@ -78,7 +78,7 @@
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    // telefoneValido() vem de js/telefone.js (mesma regra do cadastro e do meu-perfil — US-012).
+    // telefoneValido() vem de js/servicos/telefone.js (mesma regra do cadastro e do meu-perfil — US-012).
 
     // Repassa o ?voltar= (já validado) para o link entre login e cadastro, para não perder o retorno.
     function propagarVoltar(idLink) {
