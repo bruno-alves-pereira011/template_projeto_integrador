@@ -23,6 +23,8 @@
 | `testes/011_leitura_analises.sql` | Roteiro da política (L1 a L13). Desfaz tudo ao final. |
 | `migrations/012_suspeita.sql` | Sinais de suspeita e reanálise (US-021, BR14/BR18): `termos_bloqueados()` (lista A07, editável com `create or replace`), `sinais_descricao(texto)`, `checagens_suspeita(id)` (telefone repetido só no cadastro mais novo, link, e-mail, 8+ dígitos, termo, recusa não resolvida), `triar_profissional` com os sinais, `reavaliar_profissional(id)` (aprovado com problema novo volta a `pendente`, com `reenvio` do sistema no histórico), `solicitar_analise()` devolvendo `status` e trigger `profissionais_reavaliar_aprovado` (vale mesmo editando pela API). Retria os pendentes ao ser aplicada. Depende da 010. |
 | `testes/012_suspeita.sql` | Roteiro da US-021 (U0 a U8c). Desfaz tudo ao final; força telefones, descrições e status de prof1, prof2 e prof3. |
+| `migrations/013_categorias_admin.sql` | Gestão de categorias (US-018, FR22/BR20): regras de formato (slug, nome, sigla, cor `#RRGGBB`, descrição), políticas `categorias: admin cria` / `admin edita` com `eh_admin()`, privilégio só nas colunas editáveis e **nenhum DELETE** pelo app (o `cascade` levaria os vínculos). Depende da 003 e da 005. Não altera dados. |
+| `testes/013_categorias_admin.sql` | Roteiro da US-018 (G1 a G18). Desfaz tudo ao final. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 

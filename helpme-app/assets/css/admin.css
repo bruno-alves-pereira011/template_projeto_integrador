@@ -736,3 +736,200 @@ body.painel .btn-secundario {
 .link-tabela-kpi {
     margin: 0.25rem 1rem 0.5rem;
 }
+
+/* ================= CATEGORIAS (US-018) ================= */
+
+.grade-categorias {
+    display: grid;
+    grid-template-columns: minmax(280px, 380px) 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.titulo-secao-admin {
+    margin: 0 0 0.25rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.15rem;
+    color: var(--painel-verde-escuro);
+}
+
+.form-categoria {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-weight: 600;
+}
+
+.form-categoria input[type="text"],
+.form-categoria textarea {
+    min-height: 44px;
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 400;
+}
+
+.form-categoria textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-categoria input[type="color"] {
+    width: 64px;
+    height: 44px;
+    padding: 2px;
+    border: 1px solid var(--painel-borda);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.form-categoria [aria-invalid="true"] {
+    border-color: var(--cor-perigo);
+}
+
+.form-categoria p {
+    margin: 0 0 0.4rem;
+    font-weight: 400;
+}
+
+.form-categoria .campo-erro-admin {
+    font-weight: 600;
+}
+
+.linha-campos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.campo-curto {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1 1 120px;
+}
+
+.acoes-form-categoria {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+}
+
+.acoes-form-categoria .btn,
+.acoes-form-categoria .btn-secundario,
+.card-categoria-acoes .btn-secundario {
+    min-height: 44px;
+}
+
+.aviso-decisao.aviso-erro {
+    border-color: #f0c4be;
+    background: #fdecea;
+    color: #8e2a20;
+}
+
+.lista-categorias-admin {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.card-categoria-admin {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+        "sigla info selo"
+        "sigla acoes acoes";
+    gap: 0.4rem 0.9rem;
+    align-items: start;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 12px;
+    background: #fff;
+    min-width: 0;
+}
+
+.card-categoria-admin.categoria-inativa {
+    background: #f6f7f7;
+}
+
+.sigla-categoria {
+    grid-area: sigla;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--painel-verde);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.card-categoria-info {
+    grid-area: info;
+    min-width: 0;
+}
+
+.card-categoria-nome {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.05rem;
+    color: var(--painel-verde-escuro);
+    overflow-wrap: anywhere;
+}
+
+.card-categoria-info p {
+    margin: 0.15rem 0 0;
+    color: var(--painel-texto-suave);
+    overflow-wrap: anywhere;
+}
+
+.selo-situacao-categoria {
+    grid-area: selo;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.situacao-ativa   { background: var(--painel-verde-claro); color: var(--painel-verde-escuro); }
+.situacao-inativa { background: #eceeed; color: #3f4947; }
+
+.card-categoria-acoes {
+    grid-area: acoes;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+@media (max-width: 760px) {
+    .grade-categorias {
+        grid-template-columns: 1fr;
+    }
+
+    .card-categoria-admin {
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+            "sigla info"
+            "selo selo"
+            "acoes acoes";
+    }
+
+    .selo-situacao-categoria {
+        justify-self: start;
+    }
+
+    .acoes-form-categoria .btn,
+    .acoes-form-categoria .btn-secundario {
+        width: 100%;
+        justify-content: center;
+    }
+}
