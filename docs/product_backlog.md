@@ -96,7 +96,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Review | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | In Progress | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
 | US-017 | - | Painel de indicadores do administrador | 5 | Review | Sprint 04 | - | - | - |
 | US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Backlog | - | - | - | - |
 | US-019 | - | Suspender/reativar profissional aprovado (Could) | 5 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |

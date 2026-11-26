@@ -6,7 +6,7 @@
 **Prioridade:** Media
 **Story Points:** 3
 **Sprint:** Sprint 04
-**Status:** In Progress
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -154,6 +154,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
 - 2026-11-26: implementada na branch `feat/US-021-sinais-suspeita` (empilhada sobre a US-013). Telas 31/31. Falta o PO revisar a lista de bloqueio, aplicar a `012_suspeita.sql` e rodar `supabase/testes/012_suspeita.sql` (U0-U8c) para ir a Review.
+- 2026-11-26: 012 aplicada pelo PO com a lista de bloqueio proposta. Roteiro 012 **23/23** no banco real; ponta a ponta real do admin (so leitura) **5/5**. US-021 em Review.
 
 ---
 

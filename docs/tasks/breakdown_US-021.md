@@ -73,13 +73,13 @@
 
 | ID | Cenário | Esperado | Gate |
 |---|---|---|---|
-| U0 | Perfil limpo | Verde, `status` na resposta | Review |
-| U1a–U1c | Telefone igual ao do prof1 (outro formato) | Suspeito como `em_analise` sem revelar; detalhe com nome e `outro_id`; prof1 (mais antigo) não marcado | Review |
-| U2a–U2d | Descrição | Link, telefone e termo → suspeito; "Rua 12, casa 3" → verde | Review |
-| U5a–U5b | Fila e lote | Fila mostra suspeito; lote ignora ("Triagem: suspeito") | Review |
-| U3a–U3b | Já recusado | Reenvio → suspeito; aprovação posterior resolve | Review |
-| U4a–U4h | BR18 | Aprovado edita com link **pela API** → pendente, fora do diretório, reenvio do sistema, cliente conclui a aceita, tela recebe `pendente`; edição limpa e sinal antigo não tiram do diretório; suspenso intocado | Review |
-| U8a–U8c | Sigilo | Lista de bloqueio, `reavaliar_profissional` e `checagens_suspeita` fechadas | Review |
+| U0 | Perfil limpo | Verde, `status` na resposta | Done |
+| U1a–U1c | Telefone igual ao do prof1 (outro formato) | Suspeito como `em_analise` sem revelar; detalhe com nome e `outro_id`; prof1 (mais antigo) não marcado | Done |
+| U2a–U2d | Descrição | Link, telefone e termo → suspeito; "Rua 12, casa 3" → verde | Done |
+| U5a–U5b | Fila e lote | Fila mostra suspeito; lote ignora ("Triagem: suspeito") | Done |
+| U3a–U3b | Já recusado | Reenvio → suspeito; aprovação posterior resolve | Done |
+| U4a–U4h | BR18 | Aprovado edita com link **pela API** → pendente, fora do diretório, reenvio do sistema, cliente conclui a aceita, tela recebe `pendente`; edição limpa e sinal antigo não tiram do diretório; suspenso intocado | Done |
+| U8a–U8c | Sigilo | Lista de bloqueio, `reavaliar_profissional` e `checagens_suspeita` fechadas | Done |
 | A1–D7, P1–P3 | Telas (login real de admin e prof1; RPCs simuladas; nada gravado) | Destaque e lote na fila (360px), filtro, "Suspeita"/"Atenção"/"OK", link para o outro cadastro, XSS, histórico; aviso BR18 no `completar-perfil` sem revelar o sinal | Done |
 
-**Resultados (2026-11-26):** telas **31/31**; telas da US-013 seguem **42/42**. Regex conferidas no banco real (10/10). Aguardando: aplicação da 012 e roteiro U0–U8c.
+**Resultados (2026-11-26):** telas **31/31**; telas da US-013 seguem **42/42**. Regex conferidas no banco real (10/10). `012` aplicada pelo PO com a lista de bloqueio proposta (conferido por leitura: trigger ativo, lista em `termos_bloqueados()`, pendentes retriados sem sinal real). Roteiro 012 **23/23**. Ponta a ponta real do admin, só leitura, **5/5**: fila real sem suspeitos, detalhe real com as 6 obrigatórias e os 6 sinais novos. `bruno@test.com` (aprovado, número do prof2) segue com a triagem anterior à 012 e será reavaliado quando editar o perfil (BR18).
