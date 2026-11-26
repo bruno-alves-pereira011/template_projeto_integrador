@@ -46,6 +46,7 @@
     let perfilExiste = false;          // já há linha em 'profissionais'?
     let primeiroCadastro = true;       // a página abriu sem perfil? (decide o redirecionamento final)
     let categoriasAtuais = new Set();  // ids gravados no banco neste momento
+    let idsAtivos = new Set();         // US-018: só estas aparecem e só estas são sincronizadas
     let statusAtual = null;            // status_aprovacao lido na carga (US-013: lembrete do reenvio)
 
     // ==========================================
@@ -204,7 +205,7 @@
             // data_nascimento não tem SELECT liberado na tabela (dado pessoal): vem da função
             // minha_data_nascimento(), que só devolve a do próprio usuário.
             const [respCategorias, respPerfil, respVinculos, respNascimento] = await Promise.all([
-                supabaseClient.from('categorias').select('id, slug, nome, descricao, sigla, cor').order('nome', { ascending: true }),
+                supabaseClient.from('categorias').select('id, slug, nome, descricao, sigla, cor, ativa').order('nome', { ascending: true }),
                 supabaseClient.from('profissionais')
                     .select('whatsapp, telefone, cidade, bairro, descricao, status_aprovacao')
                     .eq('id', uid)
@@ -225,8 +226,12 @@
             primeiroCadastro = !perfilExiste;
             categoriasAtuais = new Set((respVinculos.data || []).map((v) => v.categoria_id));
 
-            if (!respCategorias.data || respCategorias.data.length === 0) {
-                throw new Error('Nenhuma categoria cadastrada no banco.');
+            // US-018 (BR20): só as ativas aparecem na lista. As desativadas que o profissional já
+            // tinha continuam vinculadas (sincronizarCategorias não mexe nelas).
+            const ativas = (respCategorias.data || []).filter((c) => c.ativa !== false);
+            idsAtivos = new Set(ativas.map((c) => c.id));
+            if (ativas.length === 0) {
+                throw new Error('Nenhuma categoria ativa cadastrada no banco.');
             }
 
             if (perfilExiste) {
@@ -234,7 +239,7 @@
                 el.subtitulo.textContent = 'Mantenha seus dados de contato e categorias atualizados.';
             }
 
-            montarCategorias(respCategorias.data);
+            montarCategorias(ativas);
             preencherFormulario(perfil, sessao.usuario);
             mostrarStatus(perfil ? perfil.status_aprovacao : null);
 
@@ -309,7 +314,8 @@
     // ignoreDuplicates = "on conflict do nothing": reenviar não dá erro de chave duplicada.
     async function sincronizarCategorias(marcadas) {
         const adicionar = [...marcadas].filter((id) => !categoriasAtuais.has(id));
-        const remover = [...categoriasAtuais].filter((id) => !marcadas.has(id));
+        // Só remove o que estava na tela: vínculo com categoria desativada é mantido (BR20).
+        const remover = [...categoriasAtuais].filter((id) => idsAtivos.has(id) && !marcadas.has(id));
 
         if (adicionar.length) {
             const linhas = adicionar.map((id) => ({ profissional_id: uid, categoria_id: id }));

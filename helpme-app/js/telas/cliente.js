@@ -48,7 +48,8 @@ async function buscarEMostrarCategorias() {
     erro.hidden = true;
 
     try {
-        categoriasCarregadas = await carregarCategorias();
+        // US-018: categoria desativada pelo admin não aparece na home.
+        categoriasCarregadas = await carregarCategorias({ somenteAtivas: true });
         renderizarCategorias(document.getElementById('busca-categoria').value);
     } catch (falha) {
         // Detalhe técnico só no console; o usuário vê uma mensagem amigável

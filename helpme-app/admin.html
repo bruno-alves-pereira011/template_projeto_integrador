@@ -6,8 +6,8 @@
   ELEMENTOS (ids usados pelo js/telas/admin.js):
   - #admin-carregando / #admin-erro (+ #btn-tentar-novamente) / #admin-conteudo.
   - #admin-saudacao: "Olá, <primeiro nome>".
-  - Menu: Painel (esta página), Fila de análise (admin-analise.html, US-015), Categorias (US-018,
-    "em breve" até a tela existir) e #btn-sair.
+  - Menu: Painel (esta página), Fila de análise (admin-analise.html, US-015), Categorias (admin-categorias.html, US-018)
+    e #btn-sair.
   - Indicadores (US-017): #indicadores-carregando / #indicadores-erro / #indicadores-conteudo,
     #kpi-* (valores e notas), #tabela-contratacoes, #kpi-categorias-lista, #btn-atualizar-indicadores.
     Falha nos indicadores não esconde o resto do painel.
@@ -56,12 +56,10 @@
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
                 Contratações
             </a>
-            <!-- Vira link quando admin-categorias.html (US-018) existir. -->
-            <span class="menu-item menu-item-em-breve" aria-disabled="true">
+            <a href="admin-categorias.html" class="menu-item">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 Categorias
-                <span class="selo-em-breve">em breve</span>
-            </span>
+            </a>
         </nav>
 
         <button type="button" id="btn-sair" class="menu-item menu-sair">
@@ -105,7 +103,7 @@
                 <article class="card-admin">
                     <h2>Categorias</h2>
                     <p>Criar, editar e desativar tipos de serviço.</p>
-                    <span class="selo-em-breve">em breve</span>
+                    <a href="admin-categorias.html" class="btn-link-admin">Gerenciar categorias</a>
                 </article>
             </section>
 

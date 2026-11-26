@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Media
 **Story Points:** 3
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 04
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -59,6 +59,7 @@ Categoria nunca e apagada pelo app: o `on delete cascade` de `profissional_categ
 - **BDD previsto:** N/A
 - **Gates opcionais aplicaveis:** N/A (sem runner de testes no projeto); roteiro SQL manual em `supabase/testes/` quando a story mexe no banco (NFR11)
 - **Touch List preliminar:** supabase/migrations/003_admin.sql (coluna `categorias.ativa`, politicas de escrita do admin), helpme-app/admin-categorias.html (novo), helpme-app/js/admin-categorias.js (novo), helpme-app/js/categorias.js, helpme-app/js/completar-perfil.js
+- **Touch List aplicada (2026-11-26):** `supabase/migrations/013_categorias_admin.sql` (formatos, privilegio por coluna, politicas do admin, sem DELETE), `supabase/testes/013_categorias_admin.sql`, `helpme-app/admin-categorias.html`, `helpme-app/js/telas/admin-categorias.js`, `helpme-app/js/servicos/categorias.js`, `helpme-app/js/telas/cliente.js`, `helpme-app/js/telas/completar-perfil.js`, menu das paginas admin, `helpme-app/assets/css/admin.css`. A coluna `ativa` ja tinha entrado na 005. Detalhes em `docs/tasks/breakdown_US-018.md`.
 - **Task Issues previstas:** N/A
 
 ---
@@ -152,6 +153,8 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 ## Notas e Comentarios
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
+- 2026-11-26: implementada na branch `feat/US-018-gestao-categorias` (empilhada sobre a US-021, por causa do menu admin). Telas 37/37. Falta o PO aplicar a `013_categorias_admin.sql` e rodar `supabase/testes/013_categorias_admin.sql` (G1-G18) para ir a Review.
+- 2026-11-26: 013 aplicada pelo PO. Roteiro 013 **18/18** no banco real; ponta a ponta real (so leitura) **7/7**. US-018 em Review.
 
 ---
 

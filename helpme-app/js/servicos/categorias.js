@@ -5,19 +5,25 @@
 // DEPENDE DE: js/servicos/supabase-config.js carregado antes (usa a global `supabaseClient`).
 
 
-// Busca todas as categorias ordenadas por nome.
-// Retorna: [{ slug, nome, descricao, sigla, cor }, ...]
+// Busca as categorias ordenadas por nome.
+// opcoes.somenteAtivas (US-018, BR20): true na home, que só oferece categorias ativas.
+// Sem a opção vêm todas: o perfil público e a lista de profissionais precisam da cor/sigla
+// também das desativadas, porque o vínculo do profissional é mantido.
+// Retorna: [{ slug, nome, descricao, sigla, cor, ativa }, ...]
 // Em caso de falha (sem internet, RLS, tabela inexistente) LANÇA um erro:
 // quem chama decide como avisar o usuário (try/catch), em vez de receber uma lista vazia silenciosa.
-async function carregarCategorias() {
+async function carregarCategorias(opcoes) {
     if (!supabaseClient) {
         throw new Error('Cliente do Supabase indisponível.');
     }
 
-    const { data, error } = await supabaseClient
+    let consulta = supabaseClient
         .from('categorias')
-        .select('slug, nome, descricao, sigla, cor')
+        .select('slug, nome, descricao, sigla, cor, ativa')
         .order('nome', { ascending: true });
+    if (opcoes && opcoes.somenteAtivas) consulta = consulta.eq('ativa', true);
+
+    const { data, error } = await consulta;
 
     if (error) throw error;
 
