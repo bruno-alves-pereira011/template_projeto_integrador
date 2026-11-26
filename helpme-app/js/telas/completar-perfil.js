@@ -196,7 +196,7 @@
         el.form.hidden = true;
 
         try {
-            const sessao = await exigirSessao('profissional');
+            const sessao = await exigirSessao('profissional', { comContato: true });
             if (!sessao) return; // já redirecionou
 
             uid = sessao.user.id;

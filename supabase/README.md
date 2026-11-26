@@ -25,6 +25,8 @@
 | `testes/012_suspeita.sql` | Roteiro da US-021 (U0 a U8c). Desfaz tudo ao final; força telefones, descrições e status de prof1, prof2 e prof3. |
 | `migrations/013_categorias_admin.sql` | Gestão de categorias (US-018, FR22/BR20): regras de formato (slug, nome, sigla, cor `#RRGGBB`, descrição), políticas `categorias: admin cria` / `admin edita` com `eh_admin()`, privilégio só nas colunas editáveis e **nenhum DELETE** pelo app (o `cascade` levaria os vínculos). Depende da 003 e da 005. Não altera dados. |
 | `testes/013_categorias_admin.sql` | Roteiro da US-018 (G1 a G18). Desfaz tudo ao final. |
+| `migrations/014_privacidade_limites.sql` | DEBT-010 (banca de 2026-11-26): ninguém lê `usuarios.telefone` de outra pessoa (visitante só `id, nome`; logado `id, nome, tipo_usuario, created_at`); o diretório pega o telefone de contato por `telefone_publico()` e o dono lê o próprio por `meu_telefone()`. Limites de tamanho iguais aos das telas (nome 120, telefones 20, cidade/bairro 80, descrição do perfil 500, descrição da contratação 1000, endereço 200, comentário 500). Não altera dados. **Aplicar junto com o front da mesma branch.** |
+| `testes/014_privacidade_limites.sql` | Roteiro do DEBT-010 (P1 a P20). Desfaz tudo ao final. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 
@@ -32,7 +34,7 @@
 
 1. **SQL Editor → cole `migrations/001_schema.sql` → Run.**
 2. **Authentication → Users → Add user → Create new user**, marcando **Auto Confirm User**, para cada e-mail:
-   `cliente@helpme.test`, `prof1@helpme.test`, `prof2@helpme.test`, `prof3@helpme.test` (senha sugerida: `Helpme@123`).
+   `cliente@helpme.test`, `prof1@helpme.test`, `prof2@helpme.test`, `prof3@helpme.test`. Use uma senha forte (12+ caracteres) e guarde fora do repositório: o projeto real é acessível pela internet e o repositório pode ficar público.
 3. **SQL Editor → cole `seed.sql` → Run.** A última consulta mostra os 4 usuários com tipo e status.
 
 Por que essa ordem: a linha em `usuarios` é criada por um trigger no momento em que o login é criado no Auth. Se o
@@ -48,7 +50,7 @@ Os dois scripts podem ser rodados de novo sem duplicar dados. Rodar o schema de 
 Admin **não** é um `tipo_usuario`: é quem tem linha em `administradores` (BR11). O app não cria, lê nem remove admins; só o SQL Editor.
 
 1. Aplique `migrations/003_admin.sql` (uma vez) e rode `testes/003_admin.sql`: todas as linhas do relatório devem dizer `ok`.
-2. **Authentication → Users → Add user → Create new user**, com **Auto Confirm User**: `admin@helpme.test` (senha sugerida: `Helpme@123`). O trigger cria a linha em `usuarios` como cliente.
+2. **Authentication → Users → Add user → Create new user**, com **Auto Confirm User**: `admin@helpme.test`, com uma senha forte e exclusiva, guardada fora do repositório (nunca a mesma das contas de teste). O trigger cria a linha em `usuarios` como cliente.
 3. No SQL Editor:
 
 ```sql
