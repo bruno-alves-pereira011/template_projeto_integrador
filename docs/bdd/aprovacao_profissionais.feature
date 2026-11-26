@@ -105,7 +105,23 @@ Funcionalidade: Aprovação de profissionais pela área administrativa
     Dado que "Gabriel Gesseiro" foi recusado
     Quando ele corrige o perfil e clica em "Reenviar para análise"
     Então o status dele volta para "pendente"
+    E o reenvio aparece no histórico do detalhe do administrador
+    E ele continua na tela de cadastro em análise
+    # US-021 (BR14): a partir dela, a triagem registra "suspeito" por já ter sido recusado.
     E a triagem registra o resultado "suspeito" por já ter sido recusado
+
+  Cenário: Profissional recusado vê o motivo e as pendências
+    Dado que "Gabriel Gesseiro" foi recusado com o motivo "WhatsApp já usado por outro cadastro"
+    E a última triagem dele tem a pendência "Descrição com menos de 30 caracteres"
+    Quando ele entra no app
+    Então ele vê o motivo da recusa e essa pendência
+    E vê o link "Corrigir meu perfil" e o botão "Reenviar para análise"
+    Mas não vê nenhum sinal de suspeita da triagem
+
+  Cenário: Só o recusado pode reenviar
+    Dado que "Pedro Pedreiro" está "pendente"
+    Quando ele tenta reenviar o cadastro pela API
+    Então o reenvio é recusado e nada muda no histórico
 
   Cenário: Aprovado que edita o perfil com alerta sai do diretório
     Dado que "João Encanador" tem uma contratação "aceita"

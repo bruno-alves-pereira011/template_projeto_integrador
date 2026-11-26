@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Alta
 **Story Points:** 3
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 04
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -59,6 +59,7 @@ Hoje `bloqueio.html` mostra so "entre em contato com a equipe". Com a US-015 pas
 - **BDD previsto:** `docs/bdd/aprovacao_profissionais.feature` (revisao manual)
 - **Gates opcionais aplicaveis:** N/A (sem runner de testes no projeto); roteiro SQL manual em `supabase/testes/` quando a story mexe no banco (NFR11)
 - **Touch List preliminar:** supabase/migrations/003_admin.sql (politica de leitura do dono em `analises_profissional`, funcao `reenviar_para_analise()`), helpme-app/bloqueio.html, helpme-app/js/bloqueio.js
+- **Touch List aplicada (2026-11-26):** `supabase/migrations/010_reenvio.sql` (`minhas_pendencias()`, `reenviar_para_analise()`), `supabase/testes/010_reenvio.sql`, `helpme-app/bloqueio.html`, `helpme-app/js/telas/bloqueio.js`, `helpme-app/js/telas/completar-perfil.js`, `helpme-app/assets/css/auth.css`. Sem politica em `analises_profissional`: a 004 fechou a tabela e uma politica exporia campos internos (criterio 5). Detalhes em `docs/tasks/breakdown_US-013.md`.
 - **Task Issues previstas:** N/A
 
 ---
@@ -152,6 +153,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 ## Notas e Comentarios
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
+- 2026-11-26: implementada na branch `feat/US-013-motivo-reenvio` (empilhada sobre o DEBT-009, por depender da 007). Telas 39/39 com as RPCs simuladas. Falta o PO aplicar a `010_reenvio.sql` e rodar `supabase/testes/010_reenvio.sql` (R1-R16) para ir a Review.
 
 ---
 
