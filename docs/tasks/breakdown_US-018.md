@@ -59,10 +59,10 @@
 
 | ID | Cenário | Esperado | Gate |
 |---|---|---|---|
-| G1–G2 | Admin cria "Jardineiro" e edita | Ok | Review |
-| G3–G7 | Slug repetido, cor, slug e sigla fora do formato, id escolhido | Recusados pelo banco | Review |
-| G8–G12 | Desativar a categoria do prof1, apagar, vínculo, leitura da situação, reativar | Desativa; apagar recusado até para admin; vínculo mantido; visitante lê `ativa`; reativa | Review |
-| G13–G18 | Cliente, profissional e visitante tentam escrever | Insert recusado, update sem linha, delete recusado; nada mudou | Review |
+| G1–G2 | Admin cria "Jardineiro" e edita | Ok | Done |
+| G3–G7 | Slug repetido, cor, slug e sigla fora do formato, id escolhido | Recusados pelo banco | Done |
+| G8–G12 | Desativar a categoria do prof1, apagar, vínculo, leitura da situação, reativar | Desativa; apagar recusado até para admin; vínculo mantido; visitante lê `ativa`; reativa | Done |
+| G13–G18 | Cliente, profissional e visitante tentam escrever | Insert recusado, update sem linha, delete recusado; nada mudou | Done |
 | C0–C22, M1–M4, H1–H2, P1–P4 | Telas (login real de admin, cliente e prof1; tabela simulada no admin; nada gravado) | Menu e card do painel, lista com inativa, XSS, cor da sigla, slug automático, validações, criar/editar/desativar/reativar, 23505 e RLS, nunca DELETE; 360px, 44px, labels, foco; home pede só ativas; `completar-perfil` esconde a inativa e não apaga o vínculo | Done |
 
-**Resultados (2026-11-26):** telas **37/37**; telas da US-013 (**42/42**) e da US-021 (**31/31**) sem regressão. Aguardando: aplicação da 013 e roteiro G1–G18.
+**Resultados (2026-11-26):** telas **37/37**; telas da US-013 (**42/42**) e da US-021 (**31/31**) sem regressão. `013` aplicada pelo PO (conferido por leitura: políticas `admin cria`/`admin edita`, 5 regras de formato, sem DELETE para `authenticated`). Roteiro 013 **18/18**. Ponta a ponta real **7/7**: admin vê as 6 categorias reais sem enviar nada; cliente tentando insert/update/delete direto no banco real é recusado (42501 / nenhuma linha / 42501); home real pede só ativas e mostra 6.
