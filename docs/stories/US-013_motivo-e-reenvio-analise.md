@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 3
 **Sprint:** Sprint 04
-**Status:** In Progress
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -155,6 +155,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
 - 2026-11-26: implementada na branch `feat/US-013-motivo-reenvio` (empilhada sobre o DEBT-009, por depender da 007). Telas 39/39 com as RPCs simuladas.
 - 2026-11-26: 010 aplicada pelo PO. Por decisao do PO, a leitura das decisoes passou a ser por politica de RLS (011, com privilegio por coluna). Telas 42/42. Para ir a Review: relatorio do roteiro 010, aplicar a 011 e rodar `supabase/testes/011_leitura_analises.sql` (L1-L13).
+- 2026-11-26: 011 aplicada pelo PO. Roteiro 010 **16/16** e roteiro 011 **13/13** no banco real; ponta a ponta real (prof3 pendente, so leitura) **9/9**. US-013 em Review.
 
 ---
 

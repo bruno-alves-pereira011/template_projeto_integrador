@@ -73,14 +73,14 @@
 
 | ID | Cenário | Esperado | Gate |
 |---|---|---|---|
-| R1–R2 | Visitante e cliente chamam o reenvio | Sem permissão (critério 8) | Review |
-| R3–R5 | Pendente e suspenso chamam o reenvio | Erro 22023; nada muda, sem linha no histórico (critério 4) | Review |
-| R6–R7 | Admin recusa com motivo | Profissional lê o motivo pela `minha_ultima_decisao()` (critério 1) | Review |
-| R8 | Pendências | Profissional lê a pendência da descrição (critério 2) | Review |
-| R9–R11 | Reenvio | Volta a `pendente` com as pendências; `reenvio` no histórico com o profissional como autor; segundo reenvio recusado (critério 4) | Review |
-| R12–R13 | Admin | De volta à fila desde o reenvio; detalhe mostra o reenvio com o nome | Review |
-| R14–R16 | Privacidade | Checagens fechadas; prof1 não lê a recusa do prof3; sinal de suspeita não chega ao profissional (critério 5) | Review |
-| L1–L13 | Política da 011 | Dono lê o próprio motivo; `checagens`, `resultado`, `autor_id` e `select *` recusados; triagem invisível; sem insert/update/delete; prof1, cliente e admin não veem linhas do prof3; visitante sem acesso | Review |
+| R1–R2 | Visitante e cliente chamam o reenvio | Sem permissão (critério 8) | Done |
+| R3–R5 | Pendente e suspenso chamam o reenvio | Erro 22023; nada muda, sem linha no histórico (critério 4) | Done |
+| R6–R7 | Admin recusa com motivo | Profissional lê o motivo pela `minha_ultima_decisao()` (critério 1) | Done |
+| R8 | Pendências | Profissional lê a pendência da descrição (critério 2) | Done |
+| R9–R11 | Reenvio | Volta a `pendente` com as pendências; `reenvio` no histórico com o profissional como autor; segundo reenvio recusado (critério 4) | Done |
+| R12–R13 | Admin | De volta à fila desde o reenvio; detalhe mostra o reenvio com o nome | Done |
+| R14–R16 | Privacidade | Checagens fechadas; prof1 não lê a recusa do prof3; sinal de suspeita não chega ao profissional (critério 5) | Done |
+| L1–L13 | Política da 011 | Dono lê o próprio motivo; `checagens`, `resultado`, `autor_id` e `select *` recusados; triagem invisível; sem insert/update/delete; prof1, cliente e admin não veem linhas do prof3; visitante sem acesso | Done |
 | B1–B8 | Telas (login real do prof3; status, tabela e RPCs simulados; nada gravado) | Motivo com data e como texto (XSS), pendências, links, reenvio com sucesso / sem rede / status já mudado, sem a 010/011, suspenso intacto, leitura só das colunas liberadas e filtrada pelo próprio id, 360px, 44px, foco visível, aviso e lembrete em `completar-perfil` | Done |
 
-**Resultados (2026-11-26):** telas **42/42** (Playwright + Edge, script no scratchpad da sessão). `010` aplicada pelo PO (conferido por leitura: funções `security definer`, sem execute para `anon`). Aguardando: relatório do roteiro 010 (R1–R16), aplicação da `011` e roteiro 011 (L1–L13).
+**Resultados (2026-11-26):** telas **42/42** (Playwright + Edge, script no scratchpad da sessão). `010` e `011` aplicadas pelo PO (conferido por leitura: política `analises_dono_le` para `authenticated`; `motivo` liberado; `checagens`, `resultado` e `autor_id` fechados). Roteiro 010 **16/16**, roteiro 011 **13/13**. Ponta a ponta real, só leitura, com o prof3 pendente **9/9**: pendência real da descrição na tela, leitura pela política sem erro, `checagens` recusada (42501), nenhuma linha de outro profissional, reenvio de pendente recusado (22023) sem mudar o status.
