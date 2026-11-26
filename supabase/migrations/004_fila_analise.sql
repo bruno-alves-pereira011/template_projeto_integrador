@@ -379,8 +379,11 @@ begin
         raise exception '004: RLS desligado em analises_profissional';
     end if;
 
-    if exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'analises_profissional') then
-        raise exception '004: analises_profissional não pode ter políticas';
+    -- A única política aceita é a leitura do dono, criada pela 011 (US-013).
+    -- Se esta 004 for rodada de novo, o revoke acima tira o privilégio: rode a 011 depois.
+    if exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'analises_profissional'
+                 and policyname <> 'analises_dono_le') then
+        raise exception '004: analises_profissional só pode ter a política analises_dono_le (011)';
     end if;
 
     if has_table_privilege('authenticated', 'public.analises_profissional', 'SELECT')

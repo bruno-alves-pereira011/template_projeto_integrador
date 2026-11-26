@@ -136,11 +136,12 @@ begin
     -- ============ Critério 5: só as próprias análises, sem campos internos ============
     perform set_config('request.jwt.claims', json_build_object('sub', v_p3, 'role', 'authenticated')::text, true);
     execute 'set local role authenticated';
+    -- Com a 011 o dono lê algumas colunas pela política; as checagens seguem fechadas.
     begin
-        perform 1 from public.analises_profissional limit 1;
-        r := r || 'R14 FALHOU (profissional leu a tabela direto)' || E'\n';
+        perform a.checagens from public.analises_profissional a limit 1;
+        r := r || 'R14 FALHOU (profissional leu as checagens direto)' || E'\n';
     exception when insufficient_privilege then
-        r := r || 'R14 ok (tabela fechada para o app)' || E'\n';
+        r := r || 'R14 ok (checagens fechadas para o app)' || E'\n';
     end;
     execute 'reset role';
 

@@ -12,11 +12,9 @@
 --
 -- O motivo da recusa já é lido por minha_ultima_decisao() (007, US-019).
 --
--- POR QUE FUNÇÕES E NÃO UMA POLÍTICA DE SELECT EM analises_profissional?
---   A 004 fecha a tabela (sem políticas; a autoconferência dela falha se
---   alguma existir). Uma política liberaria a linha inteira: checagens de
---   suspeita e autor_id do admin (critério 5). As funções devolvem só o
---   que a tela precisa.
+-- A leitura das decisões pela tabela (política + privilégio por coluna) é
+-- da 011. As pendências ficam em função porque moram em 'checagens', junto
+-- com os sinais de suspeita (critério 5).
 --
 -- QUANDO RODAR: uma vez, no SQL Editor, depois da 007. Não apaga dados e
 -- pode ser rodado de novo. No final ele se confere sozinho: se algo ficou
@@ -151,10 +149,11 @@ begin
         raise exception '010: anon não pode chamar as funções da 010';
     end if;
 
-    -- A 004 continua valendo: a tabela segue fechada.
-    if exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'analises_profissional')
+    -- Nada de privilégio na tabela inteira; a única política aceita é a da 011.
+    if exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'analises_profissional'
+                 and policyname <> 'analises_dono_le')
        or has_table_privilege('authenticated', 'public.analises_profissional', 'SELECT') then
-        raise exception '010: analises_profissional não pode ser lida direto pelo app';
+        raise exception '010: analises_profissional não pode ser lida inteira pelo app';
     end if;
 
     if not exists (select 1 from pg_constraint

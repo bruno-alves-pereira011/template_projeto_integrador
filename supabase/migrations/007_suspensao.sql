@@ -399,8 +399,10 @@ begin
         raise exception '007: visitante não pode chamar as funções da 007';
     end if;
 
-    if exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'analises_profissional') then
-        raise exception '007: analises_profissional não pode ter políticas';
+    -- A única política aceita é a leitura do dono, criada pela 011 (US-013).
+    if exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'analises_profissional'
+                 and policyname <> 'analises_dono_le') then
+        raise exception '007: analises_profissional só pode ter a política analises_dono_le (011)';
     end if;
 end;
 $$;

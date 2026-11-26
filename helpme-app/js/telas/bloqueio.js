@@ -4,7 +4,9 @@
 // - Cliente: exigirSessao manda para a home.
 // - Profissional: a mesma regra do login (calcularDestino) decide. Se o destino não for
 //   esta página (aprovado ou perfil incompleto), redireciona; senão mostra pendente/recusado/suspenso.
-// - Motivo da recusa (US-013) e da suspensão (US-019): rpc('minha_ultima_decisao').
+// - Motivo da recusa (US-013) e da suspensão (US-019): última decisão lida direto em
+//   'analises_profissional' pela política analises_dono_le (011). Só as colunas liberadas
+//   (acao, motivo, created_at): pedir outra coluna dá erro de permissão.
 // - Pendências da última triagem (US-013): rpc('minhas_pendencias'), no pendente e no recusado.
 //   Sinais de suspeita nunca vêm do banco para cá.
 // - Reenvio (US-013, BR17): rpc('reenviar_para_analise'); o status volta a 'pendente' e a tela
@@ -30,16 +32,29 @@
         return quando && !Number.isNaN(quando.getTime()) ? ` em ${quando.toLocaleDateString('pt-BR')}` : '';
     }
 
+    // Decisões do admin (o reenvio é do próprio profissional e não conta como decisão).
+    const ACOES_DECISAO = ['aprovacao', 'recusa', 'suspensao', 'reativacao'];
+
     // acao: 'recusa' | 'suspensao'; prefixo dos ids: 'recusado' | 'suspenso'.
-    async function mostrarMotivo(acao, prefixo) {
+    // Mostra o motivo só se a ÚLTIMA decisão for a esperada (uma recusa antiga não aparece
+    // depois de uma aprovação, por exemplo).
+    async function mostrarMotivo(uid, acao, prefixo) {
         const caixa = document.getElementById(prefixo + '-motivo-caixa');
         caixa.hidden = true;
         try {
-            const { data, error } = await supabaseClient.rpc('minha_ultima_decisao');
+            const { data, error } = await supabaseClient
+                .from('analises_profissional')
+                .select('acao, motivo, created_at')
+                .eq('profissional_id', uid)
+                .in('acao', ACOES_DECISAO)
+                .order('created_at', { ascending: false })
+                .order('id', { ascending: false })
+                .limit(1)
+                .maybeSingle();
             if (error) throw error;
             if (!data || data.acao !== acao || !data.motivo) return;
             document.getElementById(prefixo + '-motivo').textContent = data.motivo;
-            document.getElementById(prefixo + '-data').textContent = dataCurta(data.em);
+            document.getElementById(prefixo + '-data').textContent = dataCurta(data.created_at);
             caixa.hidden = false;
         } catch (falha) {
             console.warn('Motivo da decisão indisponível:', falha);
@@ -108,11 +123,11 @@
             }
 
             if (situacao.status === 'recusado') {
-                await Promise.all([mostrarMotivo('recusa', 'recusado'), mostrarPendencias('recusado')]);
+                await Promise.all([mostrarMotivo(sessao.user.id, 'recusa', 'recusado'), mostrarPendencias('recusado')]);
                 carregando.hidden = true;
                 painelRecusado.hidden = false;
             } else if (situacao.status === 'suspenso') {
-                await mostrarMotivo('suspensao', 'suspenso');
+                await mostrarMotivo(sessao.user.id, 'suspensao', 'suspenso');
                 carregando.hidden = true;
                 painelSuspenso.hidden = false;
             } else {
