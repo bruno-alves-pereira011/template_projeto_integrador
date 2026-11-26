@@ -385,6 +385,16 @@
             const lembrete = statusAtual === 'recusado'
                 ? ' Quando terminar, use "Reenviar para análise" na situação do cadastro.'
                 : '';
+            // US-021 (BR18): aprovado cuja edição precisa de revisão voltou para 'pendente'.
+            // O motivo exato (sinal de suspeita) não é revelado; as pendências, sim.
+            if (statusAtual === 'aprovado' && triagem && triagem.status === 'pendente') {
+                mostrarStatus('pendente');
+                mostrarMensagem('Perfil salvo. Uma das alterações precisa ser revisada pela equipe do HelpMe, '
+                    + 'então seu perfil saiu do diretório até a nova análise. As contratações já aceitas continuam.'
+                    + (pendencias.length ? ' Falta corrigir: ' + pendencias.join('; ') + '.' : ''), 'info');
+                el.mensagem.focus();
+                return;
+            }
             if (pendencias.length) {
                 mostrarMensagem('Perfil salvo. Ainda falta corrigir: ' + pendencias.join('; ') + '.' + lembrete, 'info');
             } else {

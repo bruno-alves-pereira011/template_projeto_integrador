@@ -107,8 +107,23 @@ Funcionalidade: Aprovação de profissionais pela área administrativa
     Então o status dele volta para "pendente"
     E o reenvio aparece no histórico do detalhe do administrador
     E ele continua na tela de cadastro em análise
-    # US-021 (BR14): a partir dela, a triagem registra "suspeito" por já ter sido recusado.
     E a triagem registra o resultado "suspeito" por já ter sido recusado
+
+  Cenário: Aprovação posterior resolve o sinal de recusa
+    Dado que "Gabriel Gesseiro" foi recusado, reenviou e foi aprovado pelo administrador
+    Quando ele edita o perfil sem nenhum alerta novo
+    Então ele continua aprovado e no diretório
+
+  Cenário: Telefone repetido marca só o cadastro mais novo
+    Dado que "Marcos Eletricista" está aprovado com o WhatsApp "(11) 97777-0002"
+    Quando "Bruno Cópia" se cadastra com o mesmo número
+    Então a triagem de "Bruno Cópia" registra "suspeito" com o nome "Marcos Eletricista"
+    E o detalhe do administrador tem um link para o cadastro de "Marcos Eletricista"
+    Mas "Marcos Eletricista" continua aprovado
+
+  Cenário: Endereço com números não é sinal
+    Dado que o profissional "Pedro Pedreiro" escreveu "Rua 12, casa 3" na descrição
+    Então a triagem não registra sinal de suspeita por isso
 
   Cenário: Profissional recusado vê o motivo e as pendências
     Dado que "Gabriel Gesseiro" foi recusado com o motivo "WhatsApp já usado por outro cadastro"
