@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Media
 **Story Points:** 3
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 04
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -59,6 +59,7 @@ Complementa a US-016 (dividida no Modo Backlog para ficar abaixo de 8 pontos). S
 - **BDD previsto:** `docs/bdd/aprovacao_profissionais.feature` (revisao manual)
 - **Gates opcionais aplicaveis:** N/A (sem runner de testes no projeto); roteiro SQL manual em `supabase/testes/` quando a story mexe no banco (NFR11)
 - **Touch List preliminar:** supabase/migrations/004_triagem.sql, supabase/testes/004_triagem.sql, helpme-app/js/admin-analise.js, helpme-app/js/admin-profissional.js
+- **Touch List aplicada (2026-11-26):** `supabase/migrations/012_suspeita.sql`, `supabase/testes/012_suspeita.sql`, `helpme-app/js/telas/admin-analise.js`, `helpme-app/js/telas/admin-profissional.js`, `helpme-app/js/telas/completar-perfil.js`, `helpme-app/assets/css/admin.css`. Trigger para a BR18 valer mesmo editando pela API. Decisoes (telefone repetido so no cadastro mais novo, recusa resolvida por aprovacao posterior, BR18 so com problema novo, lista de bloqueio inicial) em `docs/tasks/breakdown_US-021.md`.
 - **Task Issues previstas:** N/A
 
 ---
@@ -152,6 +153,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 ## Notas e Comentarios
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
+- 2026-11-26: implementada na branch `feat/US-021-sinais-suspeita` (empilhada sobre a US-013). Telas 31/31. Falta o PO revisar a lista de bloqueio, aplicar a `012_suspeita.sql` e rodar `supabase/testes/012_suspeita.sql` (U0-U8c) para ir a Review.
 
 ---
 
