@@ -106,6 +106,10 @@
             });
             motivos.hidden = !(p.triagem_motivos || []).length;
 
+            // US-021: suspeito em destaque; nunca entra no lote (o banco também confere — BR15).
+            const suspeito = p.triagem === 'suspeito';
+            card.querySelector('.card-fila').classList.toggle('card-fila-suspeito', suspeito);
+
             const caixa = card.querySelector('.selecionar');
             const podeLote = p.triagem === 'verde';
             caixa.value = p.id;
@@ -113,7 +117,9 @@
             caixa.checked = selecionados.has(p.id);
             caixa.setAttribute('aria-label', podeLote
                 ? `Selecionar ${p.nome} para aprovação em lote`
-                : `${p.nome}: só triagem verde entra na aprovação em lote`);
+                : suspeito
+                    ? `${p.nome}: suspeito, decida pelo detalhe (fora da aprovação em lote)`
+                    : `${p.nome}: só triagem verde entra na aprovação em lote`);
             caixa.addEventListener('change', () => {
                 if (caixa.checked) selecionados.add(p.id); else selecionados.delete(p.id);
                 atualizarBotaoLote();

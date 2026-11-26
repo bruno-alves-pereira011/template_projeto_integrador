@@ -141,7 +141,17 @@
         checagens.forEach((c) => {
             const item = document.createElement('li');
             item.className = c.ok ? 'checagem-ok' : 'checagem-falhou';
-            item.textContent = (c.ok ? 'OK — ' : 'Atenção — ') + (c.mensagem || c.codigo || '');
+            // US-021: sinal de suspeita aparece como "Suspeita"; obrigatória como "Atenção".
+            const prefixo = c.ok ? 'OK — ' : (c.tipo === 'suspeita' ? 'Suspeita — ' : 'Atenção — ');
+            item.textContent = prefixo + (c.mensagem || c.codigo || '');
+            // Telefone repetido: link para comparar com o outro cadastro.
+            if (!c.ok && typeof c.outro_id === 'string' && c.outro_id) {
+                const link = document.createElement('a');
+                link.className = 'btn-link-admin';
+                link.href = 'admin-profissional.html?id=' + encodeURIComponent(c.outro_id);
+                link.textContent = 'Ver o outro cadastro';
+                item.append(' ', link);
+            }
             lista.appendChild(item);
         });
         lista.hidden = !checagens.length;

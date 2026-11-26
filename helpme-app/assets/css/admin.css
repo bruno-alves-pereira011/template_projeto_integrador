@@ -191,6 +191,12 @@ body.painel .btn-secundario {
     min-width: 0;
 }
 
+/* US-021: suspeito em destaque na fila (além do selo vermelho). */
+.card-fila.card-fila-suspeito {
+    border-left: 4px solid #8e2a20;
+    background: #fffafa;
+}
+
 .card-fila p {
     margin: 0;
     color: var(--painel-texto-suave);
