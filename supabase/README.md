@@ -17,6 +17,8 @@
 | `testes/008_contratacoes_admin.sql` | Roteiro da US-020 (C1 a C13). Desfaz tudo ao final. |
 | `migrations/009_admin_nao_contrata.sql` | Admin não contrata (DEBT-009, BR10/BR11): trigger `contratacoes_impedir_admin` recusa contratação cujo cliente está em `administradores` (a conta admin é do tipo `cliente`, e a política de INSERT só olhava o tipo). Não mexe nas políticas, então a autoconferência da 008 continua valendo. Depende da 003. Não altera dados. |
 | `testes/009_admin_nao_contrata.sql` | Roteiro do DEBT-009 (A1 a A4). Desfaz tudo ao final. Precisa do prof1 aprovado. |
+| `migrations/010_reenvio.sql` | Motivo e reenvio (US-013, FR21/BR17): `minhas_pendencias()` (pendências obrigatórias da última triagem do próprio cadastro, sem sinais de suspeita) e `reenviar_para_analise()` (só recusado: volta a `pendente`, grava `reenvio` no histórico e roda a triagem). O motivo da recusa vem da `minha_ultima_decisao()` da 007. A tabela `analises_profissional` continua fechada (sem políticas). Depende da 005 e da 007. Não altera dados. |
+| `testes/010_reenvio.sql` | Roteiro da US-013 (R1 a R16). Desfaz tudo ao final; força o status do prof3 dentro da transação. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 

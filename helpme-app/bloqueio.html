@@ -1,12 +1,15 @@
 <!--
-  TELA: Situação do cadastro (bloqueio.html) — US-006
-  OBJETIVO: Mostrar ao profissional pendente/recusado por que ele ainda não aparece no diretório.
-  A aprovação é manual, feita pela equipe no Table Editor do Supabase (decisão D2).
+  TELA: Situação do cadastro (bloqueio.html) — US-006, US-013, US-019
+  OBJETIVO: Mostrar ao profissional pendente/recusado/suspenso por que ele ainda não aparece no
+  diretório e o que fazer. A decisão é do administrador na área admin (D6).
   REGRAS (js/telas/bloqueio.js): exige sessão de profissional; cliente vai para a home;
   profissional aprovado ou com perfil incompleto é redirecionado (destinoDoUsuario em js/servicos/sessao.js).
-  ELEMENTOS: #bloqueio-carregando, #bloqueio-erro (+ #btn-recarregar), #painel-pendente,
-  #painel-recusado, #painel-suspenso (US-019: #suspenso-motivo-caixa, #suspenso-motivo, #suspenso-data)
-  e #btn-sair.
+  ELEMENTOS: #bloqueio-carregando, #bloqueio-erro (+ #btn-recarregar),
+  #painel-pendente (US-013: #pendente-reenviado, #pendente-pendencias-caixa, #pendente-pendencias, #link-perfil-pendente),
+  #painel-recusado (US-013: #recusado-motivo-caixa, #recusado-motivo, #recusado-data,
+    #recusado-pendencias-caixa, #recusado-pendencias, #reenvio-erro, #btn-reenviar),
+  #painel-suspenso (US-019: #suspenso-motivo-caixa, #suspenso-motivo, #suspenso-data) e #btn-sair.
+  Textos vindos do banco (motivo, pendências) entram só com textContent.
   Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/telas/bloqueio.js.
 -->
 <!DOCTYPE html>
@@ -42,23 +45,42 @@
             <button type="button" id="btn-recarregar" class="btn btn-contorno">Tentar novamente</button>
         </div>
 
-        <!-- Pendente: aguardando a equipe. -->
+        <!-- Pendente: aguardando a equipe. US-013: pendências da última triagem (rpc 'minhas_pendencias'). -->
         <section id="painel-pendente" class="status-painel" aria-labelledby="titulo-pendente" hidden>
             <span class="selo-status">Em análise</span>
             <h1 id="titulo-pendente">Seu cadastro está em análise</h1>
+            <p id="pendente-reenviado" class="mensagem mensagem-sucesso" role="status" tabindex="-1" hidden>Cadastro reenviado. A equipe do HelpMe vai analisar de novo.</p>
             <p>A equipe do HelpMe está conferindo seus dados. Assim que for aprovado, seu perfil passa a aparecer para os clientes no diretório.</p>
+            <div id="pendente-pendencias-caixa" class="motivo-decisao pendencias" hidden>
+                <p class="motivo-decisao-titulo">O que falta corrigir no seu perfil</p>
+                <ul id="pendente-pendencias" class="lista-pendencias"></ul>
+            </div>
             <p>Enquanto isso, você pode revisar suas informações.</p>
             <div class="acoes">
-                <a href="completar-perfil.html" class="btn btn-primario btn-bloco">Editar meu perfil</a>
+                <a id="link-perfil-pendente" href="completar-perfil.html" class="btn btn-primario btn-bloco">Editar meu perfil</a>
             </div>
         </section>
 
-        <!-- Recusado: orientação para falar com a equipe. -->
+        <!-- Recusado (US-013): motivo da última recusa (rpc 'minha_ultima_decisao'), pendências e reenvio
+             (rpc 'reenviar_para_analise'). Se o motivo não puder ser lido, o painel aparece sem ele. -->
         <section id="painel-recusado" class="status-painel" aria-labelledby="titulo-recusado" hidden>
             <span class="selo-status recusado">Recusado</span>
             <h1 id="titulo-recusado">Seu cadastro foi recusado</h1>
             <p>No momento seu perfil não pode ser publicado no diretório do HelpMe.</p>
-            <p>Entre em contato com a equipe do HelpMe para saber o motivo e como regularizar seu cadastro.</p>
+            <div id="recusado-motivo-caixa" class="motivo-decisao" hidden>
+                <p class="motivo-decisao-titulo">Motivo informado pela equipe<span id="recusado-data"></span></p>
+                <p id="recusado-motivo"></p>
+            </div>
+            <div id="recusado-pendencias-caixa" class="motivo-decisao pendencias" hidden>
+                <p class="motivo-decisao-titulo">O que falta corrigir no seu perfil</p>
+                <ul id="recusado-pendencias" class="lista-pendencias"></ul>
+            </div>
+            <p>Corrija o que for preciso no seu perfil e reenvie o cadastro para a equipe analisar de novo.</p>
+            <p id="reenvio-erro" class="mensagem mensagem-erro" role="alert" tabindex="-1" hidden></p>
+            <div class="acoes">
+                <a href="completar-perfil.html" class="btn btn-contorno btn-bloco">Corrigir meu perfil</a>
+                <button type="button" id="btn-reenviar" class="btn btn-primario btn-bloco">Reenviar para análise</button>
+            </div>
         </section>
 
         <!-- US-019: suspenso pelo administrador. Motivo e data de rpc('minha_ultima_decisao'). -->

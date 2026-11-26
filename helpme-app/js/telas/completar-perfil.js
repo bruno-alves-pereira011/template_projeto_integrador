@@ -46,6 +46,7 @@
     let perfilExiste = false;          // já há linha em 'profissionais'?
     let primeiroCadastro = true;       // a página abriu sem perfil? (decide o redirecionamento final)
     let categoriasAtuais = new Set();  // ids gravados no banco neste momento
+    let statusAtual = null;            // status_aprovacao lido na carga (US-013: lembrete do reenvio)
 
     // ==========================================
     // REGRAS PURAS (sem DOM/banco)
@@ -163,6 +164,7 @@
     // Aviso de acordo com o status real do banco (o ?aprovado=1 da URL é só a origem do redirecionamento;
     // não anunciamos "publicado" sem o banco confirmar).
     function mostrarStatus(status) {
+        statusAtual = status;
         el.statusAcoes.hidden = true;
         el.linkSituacao.hidden = true;
 
@@ -177,7 +179,8 @@
             el.linkSituacao.hidden = false;
         } else if (status === 'recusado') {
             el.status.className = 'mensagem mensagem-erro';
-            el.statusTexto.textContent = 'Seu cadastro foi recusado. Fale com a equipe do HelpMe para saber como regularizar.';
+            // US-013: o motivo e o botão "Reenviar para análise" ficam em bloqueio.html (link no fim do formulário).
+            el.statusTexto.textContent = 'Seu cadastro foi recusado. Corrija o que for preciso, salve e depois reenvie para análise na situação do cadastro.';
             el.linkSituacao.hidden = false;
         } else {
             el.status.hidden = true;
@@ -378,10 +381,14 @@
             }
 
             const pendencias = (triagem && Array.isArray(triagem.pendencias)) ? triagem.pendencias : [];
+            // Recusado: salvar não reabre a análise; só o botão de bloqueio.html (US-013, BR17).
+            const lembrete = statusAtual === 'recusado'
+                ? ' Quando terminar, use "Reenviar para análise" na situação do cadastro.'
+                : '';
             if (pendencias.length) {
-                mostrarMensagem('Perfil salvo. Ainda falta corrigir: ' + pendencias.join('; ') + '.', 'info');
+                mostrarMensagem('Perfil salvo. Ainda falta corrigir: ' + pendencias.join('; ') + '.' + lembrete, 'info');
             } else {
-                mostrarMensagem('Perfil salvo com sucesso.', 'sucesso');
+                mostrarMensagem('Perfil salvo com sucesso.' + lembrete, 'sucesso');
             }
             el.mensagem.focus();
         } catch (erro) {

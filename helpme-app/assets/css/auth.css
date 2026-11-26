@@ -333,6 +333,23 @@ fieldset[aria-invalid="true"] {
     margin-bottom: 4px;
 }
 
+/* Pendências da triagem (US-013): mesmo bloco, em tom de aviso em vez de erro. */
+.motivo-decisao.pendencias {
+    border-left-color: #6b3a12;
+    background: #fdf3e9;
+}
+
+.lista-pendencias {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--cor-texto);
+    overflow-wrap: anywhere;
+}
+
+.lista-pendencias li + li {
+    margin-top: 4px;
+}
+
 .selo-status.aprovado {
     background: var(--cor-primaria-clara);
     color: var(--cor-primaria-escura);
