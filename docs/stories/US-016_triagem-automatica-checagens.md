@@ -6,7 +6,7 @@
 **Prioridade:** Media
 **Story Points:** 5
 **Sprint:** Sprint 04
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -156,6 +156,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
 - 2026-11-13: em andamento em `feat/US-016-triagem` (a partir de `feat/US-015-fila-analise`; breakdown em `docs/tasks/breakdown_US-016.md`). Banco em `005_triagem.sql` (o 004 ficou com a fila da US-015, D7); `categorias.ativa` entra aqui com default true porque a BR13 conta so categoria ativa (tela de gestao continua na US-018). Triagem nunca muda o status; so pendencias obrigatorias voltam ao profissional. Tela do `completar-perfil` testada com login real e gravacoes interceptadas: **9/9**. **Falta:** aplicar a `005`, rodar `supabase/testes/005_triagem.sql` e o teste ponta a ponta.
 - 2026-11-23: `005_triagem.sql` aplicada e `supabase/testes/005_triagem.sql` rodado pelo PO (informado em 2026-11-23); conferencia por leitura confirmou a funcao `solicitar_analise()` no banco real. Status: Review (falta code review por quem nao escreveu e validacao do PO).
+- 2026-11-26: aprovada pela banca de revisão (hacker, usuário confuso, sênior, testador e chefe), sem achado bloqueante próprio. Done por decisão do PO. Os achados transversais seguem no DEBT-010.
 
 ---
 
