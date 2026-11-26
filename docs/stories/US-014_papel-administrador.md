@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 03
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -161,6 +161,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 - 2026-11-13: em andamento em `feat/US-014-admin` (breakdown em `docs/tasks/breakdown_US-014.md`). Front pronto e testado: 20/20 no Edge, com login real e `eh_admin` simulado no caminho do admin. `003_admin.sql` e `supabase/testes/003_admin.sql` escritos; **ainda nao aplicados nem executados no banco real** (aguardando o OK do PO). DEBT-005: `refactor/ui-polish` descartado por agora (PO).
 - 2026-11-13: `003_admin.sql` aplicada no Supabase real pelo PO (SQL Editor). Conferencia por leitura: tabela com RLS e 0 politicas, sem SELECT para `authenticated`, `eh_admin()` security definer/stable/search_path fixo, trigger atualizado. `supabase/testes/003_admin.sql` rodado pelo PO: **11/11 ok** (C1a-C1f, C4a-C4b, C5a-C5c). Falta criar `admin@helpme.test` e o teste de tela com login real de admin.
 - 2026-11-13: `admin@helpme.test` (Equipe HelpMe) criado pelo PO. Teste de tela ponta a ponta no Supabase real, sem simulacao: **9/9** (admin entra em `admin.html`, 360px, Sair; cliente e prof1 barrados em `admin.html`; prof3 pendente continua em `bloqueio.html`). Status: Review (falta code review por quem nao escreveu e validacao do PO).
+- 2026-11-26: liberada depois do DEBT-010. A banca de revisão tinha bloqueado esta story pela senha do admin escrita no repositório. A senha saiu do repositório e o PO trocou as senhas no Supabase. Conferido pela API de login real: a senha antiga é recusada nas 5 contas (`invalid_credentials`), sem sessão anterior à troca. Done por decisão do PO.
 
 ---
 
