@@ -59,7 +59,7 @@ Hoje `bloqueio.html` mostra so "entre em contato com a equipe". Com a US-015 pas
 - **BDD previsto:** `docs/bdd/aprovacao_profissionais.feature` (revisao manual)
 - **Gates opcionais aplicaveis:** N/A (sem runner de testes no projeto); roteiro SQL manual em `supabase/testes/` quando a story mexe no banco (NFR11)
 - **Touch List preliminar:** supabase/migrations/003_admin.sql (politica de leitura do dono em `analises_profissional`, funcao `reenviar_para_analise()`), helpme-app/bloqueio.html, helpme-app/js/bloqueio.js
-- **Touch List aplicada (2026-11-26):** `supabase/migrations/010_reenvio.sql` (`minhas_pendencias()`, `reenviar_para_analise()`), `supabase/testes/010_reenvio.sql`, `helpme-app/bloqueio.html`, `helpme-app/js/telas/bloqueio.js`, `helpme-app/js/telas/completar-perfil.js`, `helpme-app/assets/css/auth.css`. Sem politica em `analises_profissional`: a 004 fechou a tabela e uma politica exporia campos internos (criterio 5). Detalhes em `docs/tasks/breakdown_US-013.md`.
+- **Touch List aplicada (2026-11-26):** `supabase/migrations/010_reenvio.sql` (`minhas_pendencias()`, `reenviar_para_analise()`), `supabase/migrations/011_leitura_analises.sql` (politica `analises_dono_le` + privilegio por coluna), roteiros `supabase/testes/010_reenvio.sql` e `011_leitura_analises.sql`, autoconferencias da 004/007, `helpme-app/bloqueio.html`, `helpme-app/js/telas/bloqueio.js`, `helpme-app/js/telas/completar-perfil.js`, `helpme-app/assets/css/auth.css`. A politica (decisao do PO) libera so `acao`, `motivo` e data das proprias decisoes; `checagens`, `resultado` e `autor_id` seguem fechados (criterio 5). Detalhes em `docs/tasks/breakdown_US-013.md`.
 - **Task Issues previstas:** N/A
 
 ---
@@ -153,7 +153,8 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 ## Notas e Comentarios
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
-- 2026-11-26: implementada na branch `feat/US-013-motivo-reenvio` (empilhada sobre o DEBT-009, por depender da 007). Telas 39/39 com as RPCs simuladas. Falta o PO aplicar a `010_reenvio.sql` e rodar `supabase/testes/010_reenvio.sql` (R1-R16) para ir a Review.
+- 2026-11-26: implementada na branch `feat/US-013-motivo-reenvio` (empilhada sobre o DEBT-009, por depender da 007). Telas 39/39 com as RPCs simuladas.
+- 2026-11-26: 010 aplicada pelo PO. Por decisao do PO, a leitura das decisoes passou a ser por politica de RLS (011, com privilegio por coluna). Telas 42/42. Para ir a Review: relatorio do roteiro 010, aplicar a 011 e rodar `supabase/testes/011_leitura_analises.sql` (L1-L13).
 
 ---
 
