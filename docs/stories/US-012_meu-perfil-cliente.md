@@ -6,7 +6,7 @@
 **Prioridade:** Media
 **Story Points:** 2
 **Sprint:** Sprint 03
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -149,6 +149,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
 - 2026-11-13: implementada em `feat/US-012-meu-perfil` (breakdown e roteiro MP-01 a MP-11 em `docs/tasks/breakdown_US-012.md`). Supabase real: telas no Edge (Playwright) 23/23 com cliente@ e prof1@ (dados restaurados ao final); `supabase/testes/us012_meu_perfil.sql`: MP-08 (trigger barra `tipo_usuario`), RLS (0 linhas em outro usuario) e MP-09 (profissional ve o telefone novo depois do aceite) ok. `telefoneValido` passou para `telefone.js` e o cadastro usa a mesma regra (recusa 12/13 digitos sem 55).
+- 2026-11-26: liberada depois do DEBT-010. A banca de revisão tinha bloqueado esta story pelo telefone pessoal exposto e pela falta de limite de tamanho no banco. A 014 foi aplicada pelo PO: roteiro 014 **20/20** e ponta a ponta real só de leitura sem regressão. Done por decisão do PO.
 
 ---
 

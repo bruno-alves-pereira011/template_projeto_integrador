@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 02
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -156,6 +156,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
 - 2026-10-23: implementada na branch `feat/US-007-contratar` (a partir de `developer`, com o DEBT-004). Breakdown em `docs/tasks/breakdown_US-007.md`. Ate a US-009, o envio mostra a confirmacao na propria `solicitar-pedido.html` em vez de ir para `contratacao.html?id=` (criterio 4).
+- 2026-11-26: liberada depois do DEBT-010. A banca de revisão tinha bloqueado esta story pelo telefone pessoal exposto e pela falta de limite de tamanho no banco. A 014 foi aplicada pelo PO: roteiro 014 **20/20** e ponta a ponta real só de leitura sem regressão. Done por decisão do PO.
 
 ---
 
