@@ -136,7 +136,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-023 | - | Concluir so com valor aprovado e cancelar antes de aprovar | 3 | Review | Sprint 05 | - | - | - |
 | US-024 | - | Situacao do orcamento em Minhas contratacoes | 2 | Backlog | - | - | - | - |
 | US-025 | - | Avaliar o profissional depois do servico (HU04) | 3 | Review | Sprint 05 | - | - | - |
-| US-026 | - | Avaliacoes no perfil publico do profissional | 3 | In Progress | Sprint 05 | - | - | - |
+| US-026 | - | Avaliacoes no perfil publico do profissional | 3 | Review | Sprint 05 | - | - | - |
 | (a refinar) | - | Pagamento simulado (forma + status pago, sem gateway) | - | Ideia | - | - | - | - |
 | (a refinar) | - | HU05 — Favoritar profissional | - | Ideia | - | - | - | - |
 

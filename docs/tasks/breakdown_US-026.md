@@ -66,4 +66,4 @@ A política `avaliacoes: leitura publica` (001) deixa qualquer visitante ler a t
 | P9–P10 | Logado também lê; nome vazio vira "Cliente"; limite de 20 | Confere | Done |
 | T1–T19 | Tela com visitante e banco simulados: lista, estrelas com texto alternativo, data, comentário, vazio, HTML como texto, aviso de 20, falha só na seção com "Tentar de novo", leitura lenta, 360px, quebra de linha, contraste, 44px, Tab/foco | Todos passam | Done |
 
-**Resultados (2026-11-27):** tela **19/19** (visitante e banco simulados: nenhum dado gravado). **Pendente:** PO aplicar a `019` e rodar o roteiro P1–P10.
+**Resultados (2026-11-27):** tela **19/19** (visitante e banco simulados: nenhum dado gravado). PO aplicou a `019`: roteiro **P1–P10 ok**. Pela API real, como visitante, a função devolve a avaliação 2 com autor "Ana" e só as 4 colunas. Telas da contratação no banco real: **99/99**, sem regressão.
