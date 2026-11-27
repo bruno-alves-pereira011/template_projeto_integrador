@@ -124,8 +124,8 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 **Objetivo:** Orcamento, pagamento simulado, avaliacoes e favoritos.
 **Valor de negocio:** Medio
-**Estimativa:** 16 pts refinados (US-022 a US-026: orcamento + avaliacao); pagamento simulado e favoritos a refinar
-**Origem:** `docs/discovery/helpme-marco3-orcamento-avaliacao.md` e `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (G0 e G1 aprovados em 2026-11-27). Primeiro vertical slice: US-022 + US-023 (orcamento de ponta a ponta).
+**Estimativa:** 19 pts refinados (US-022 a US-026: orcamento + avaliacao; US-027: favoritos); pagamento simulado a refinar
+**Origem:** `docs/discovery/helpme-marco3-orcamento-avaliacao.md` e `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (G0 e G1 aprovados em 2026-11-27). Primeiro vertical slice: US-022 + US-023 (orcamento de ponta a ponta). Favoritos: `docs/discovery/helpme-favoritos.md` e `docs/requirements/helpme-favoritos.md` (G0 e G1 aprovados em 2026-11-27), US-027.
 **GitHub Epic Issue:** -
 
 ##### User Stories
@@ -138,7 +138,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | US-025 | - | Avaliar o profissional depois do servico (HU04) | 3 | Review | Sprint 05 | - | - | - |
 | US-026 | - | Avaliacoes no perfil publico do profissional | 3 | Review | Sprint 05 | - | - | - |
 | (a refinar) | - | Pagamento simulado (forma + status pago, sem gateway) | - | Ideia | - | - | - | - |
-| (a refinar) | - | HU05 — Favoritar profissional | - | Ideia | - | - | - | - |
+| US-027 | - | Favoritar profissional e ver "Meus favoritos" (HU05) | 3 | To Do | - | - | - | - |
 
 ---
 
@@ -237,6 +237,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | FR32 | US-024 |
 | FR33, FR34, BR27, BR28, BR29 | US-025 |
 | FR35, NFR15, A11 | US-026 |
+| FR36, FR37, FR38, FR39, BR30, BR31, BR32, BR33, NFR16, NFR17, NFR18 | US-027 |
 
 ---
 
