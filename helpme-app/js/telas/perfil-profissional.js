@@ -15,6 +15,8 @@
 //   profissional logado vê um aviso com "Editar meu perfil" e o "Voltar" leva ao painel dele (antes todas
 //   as saídas desta tela iam para a home do cliente e ele ficava indo e voltando entre as duas).
 //   "Próprio perfil" é decidido pelo id da sessão, que existe mesmo se a leitura do papel falhar.
+// - US-026: lista as até 20 avaliações mais recentes pela função avaliacoes_do_profissional (só o primeiro
+//   nome do autor, NFR15). Carregam DEPOIS do perfil aparecer: se demorarem ou falharem, só a seção avisa.
 // DEPENDE DE: supabase-config.js, categorias.js, telefone.js, sessao.js e navegacao.js carregados antes deste arquivo.
 // Tudo fica dentro de uma IIFE para não criar variáveis globais (evita colidir com outros scripts).
 
@@ -33,6 +35,9 @@
 
     // Evita que uma resposta antiga sobrescreva a mais nova (clique duplo em "Tentar novamente")
     let consultaAtual = 0;
+    let consultaAvaliacoes = 0;       // idem, para a lista de avaliações (tem o próprio "Tentar de novo")
+    let profissionalAtual = null;     // o perfil na tela (para o "Tentar de novo" das avaliações)
+    const LIMITE_AVALIACOES = 20;     // o mesmo limite da função no banco (019)
 
     // Quem está vendo a página (montarNavegacao, js/telas/navegacao.js): { papel, uid, paginaInicial, ... }.
     // Lido uma vez só, junto com o perfil, para decidir o "Contratar", o aviso e o "Voltar".
@@ -44,6 +49,9 @@
         aplicarVoltar(null, false);
 
         el('btn-tentar-novamente').addEventListener('click', carregarPerfil);
+        el('btn-recarregar-avaliacoes').addEventListener('click', () => {
+            if (profissionalAtual) carregarAvaliacoes(profissionalAtual);
+        });
 
         // Nunca rejeita: papel ilegível vira 'desconhecido' (com o uid, se houver sessão).
         quemVePromessa = montarNavegacao();
@@ -107,6 +115,8 @@
 
             preencherPerfil(profissional, mapaCategoriasPorSlug(categorias));
             mostrarEstado('perfil');
+            profissionalAtual = profissional;
+            carregarAvaliacoes(profissional);   // sem await: não segura o "Contratar" nem o "Voltar"
             await prepararAcoesDoPerfil(profissional, minhaConsulta);
         } catch (falha) {
             if (minhaConsulta !== consultaAtual) return;
@@ -133,6 +143,76 @@
         if (error) throw error;
 
         return data;
+    }
+
+
+    // ---------- Avaliações (US-026) ----------
+
+    function mostrarAvaliacoes(estado) {
+        el('avaliacoes-carregando').hidden = estado !== 'carregando';
+        el('avaliacoes-vazio').hidden = estado !== 'vazio';
+        el('avaliacoes-erro').hidden = estado !== 'erro';
+        el('lista-avaliacoes').hidden = estado !== 'lista';
+        if (estado !== 'lista') el('avaliacoes-limite').hidden = true;
+    }
+
+    // Nunca lança: a falha fica só nesta seção (o resto do perfil já está na tela).
+    async function carregarAvaliacoes(prof) {
+        const minhaConsulta = ++consultaAvaliacoes;
+        mostrarAvaliacoes('carregando');
+
+        try {
+            const { data, error } = await supabaseClient.rpc('avaliacoes_do_profissional', { p_profissional_id: prof.id });
+            if (error) throw error;
+            if (minhaConsulta !== consultaAvaliacoes) return;
+
+            const avaliacoes = Array.isArray(data) ? data : [];
+            if (!avaliacoes.length) {
+                mostrarAvaliacoes('vazio');
+                return;
+            }
+
+            el('lista-avaliacoes').replaceChildren(...avaliacoes.map(montarAvaliacao));
+            mostrarAvaliacoes('lista');
+
+            // A média e o total do topo contam todas; a lista mostra as 20 mais recentes.
+            const total = Number(prof.total_avaliacoes) || 0;
+            const limite = el('avaliacoes-limite');
+            limite.textContent = `Mostrando as ${LIMITE_AVALIACOES} avaliações mais recentes de ${total}.`;
+            limite.hidden = !(avaliacoes.length >= LIMITE_AVALIACOES && total > avaliacoes.length);
+        } catch (falha) {
+            if (minhaConsulta !== consultaAvaliacoes) return;
+            console.error('Erro ao carregar as avaliações (o resto do perfil continua):', falha);
+            mostrarAvaliacoes('erro');
+        }
+    }
+
+    // Uma avaliação: estrelas com texto alternativo, primeiro nome, data e comentário (tudo por textContent).
+    function montarAvaliacao(av) {
+        const item = el('modelo-avaliacao').content.cloneNode(true);
+        const nota = Math.min(5, Math.max(1, Math.round(Number(av.nota)) || 1));
+
+        const estrelas = item.querySelector('.item-avaliacao-estrelas');
+        estrelas.textContent = '★'.repeat(nota) + '☆'.repeat(5 - nota);
+        estrelas.setAttribute('aria-label', `Nota ${nota} de 5`);
+
+        item.querySelector('.item-avaliacao-autor').textContent = (av.autor || '').trim() || 'Cliente';
+
+        const data = item.querySelector('.item-avaliacao-data');
+        const quando = new Date(av.criada_em);
+        if (Number.isNaN(quando.getTime())) {
+            data.remove();
+        } else {
+            data.dateTime = quando.toISOString();
+            data.textContent = quando.toLocaleDateString('pt-BR');
+        }
+
+        const comentario = item.querySelector('.item-avaliacao-comentario');
+        const texto = (av.comentario || '').trim();
+        if (texto) comentario.textContent = texto;
+        else comentario.remove();
+
+        return item;
     }
 
 

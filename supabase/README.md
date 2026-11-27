@@ -35,6 +35,8 @@
 | `testes/017_contratacao_campos_obrigatorios.sql` | Roteiro do DEBT-012 (E1 a E8). Desfaz tudo ao final; força o prof1 como aprovado. |
 | `migrations/018_avaliacoes.sql` | Só avalia quem teve serviço concluído (US-025, BR27 a BR29). **Apaga** as avaliações sem contratação `concluida` entre autor e profissional (BR29; no banco real, só a do seed). `autor cria`/`autor edita` passam a exigir contratação concluída; `autor apaga` sai (BR28). Permissões por coluna: o app grava `usuario_id`, `profissional_id`, `nota`, `comentario` e só edita `nota` e `comentario`; visitante sem escrita. Precisa da 015 (o seed usa `orcamentos`). |
 | `testes/018_avaliacoes.sql` | Roteiro da US-025 (A1 a A16). Desfaz tudo ao final; força o prof1 como aprovado e cria contratações cliente → prof1. |
+| `migrations/019_avaliacoes_publicas.sql` | Avaliações no perfil público (US-026, FR35, NFR15): `avaliacoes_do_profissional(p_profissional_id)`, `security definer` com `search_path` fixo, para visitante e logado. Devolve só `nota`, `comentario`, `autor` (**primeiro nome**; nome vazio vira "Cliente") e `criada_em`, das 20 mais recentes, e só de profissional aprovado. Não altera dados. |
+| `testes/019_avaliacoes_publicas.sql` | Roteiro da US-026 (P1 a P10). Desfaz tudo ao final; troca nomes e grava avaliações do prof1 direto como postgres. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 

@@ -11,6 +11,8 @@
   - #aviso-perfil-proprio: aparece quando o profissional logado abre o próprio perfil (é assim que o cliente o vê).
   - #perfil-profissional: #perfil-nome, #perfil-iniciais, #perfil-local, #perfil-nota, #perfil-categorias
     (chips do <template id="modelo-chip-categoria">), #perfil-descricao.
+  - Avaliações (US-026): #avaliacoes-carregando, #avaliacoes-vazio, #avaliacoes-erro (+ #btn-recarregar-avaliacoes),
+    #lista-avaliacoes (itens do <template id="modelo-avaliacao">) e #avaliacoes-limite (mais de 20).
   - #btn-ligar (tel:) e #btn-whatsapp (wa.me, nova aba). Cada botão some se o número for inválido;
     #contato-indisponivel aparece se os dois sumirem.
   - #acoes-contratacao: recebe o link "Contratar" (US-007), criado pelo JS para visitante e cliente.
@@ -120,6 +122,20 @@
                      Vazio, o container some (.acoes-contratacao:empty). -->
                 <div id="acoes-contratacao" class="acoes-contratacao"></div>
             </section>
+
+            <!-- US-026: avaliações (função avaliacoes_do_profissional, só o primeiro nome do autor). Ficam depois do
+                 contato para o "Contratar" não descer com 20 avaliações. Carregam depois do perfil: se falharem, só esta seção avisa. -->
+            <section class="perfil-secao" aria-labelledby="titulo-avaliacoes">
+                <h2 id="titulo-avaliacoes">Avaliações</h2>
+                <p id="avaliacoes-carregando" class="subtitulo" role="status">Carregando avaliações...</p>
+                <p id="avaliacoes-vazio" class="subtitulo" hidden>Este profissional ainda não foi avaliado.</p>
+                <div id="avaliacoes-erro" role="alert" hidden>
+                    <p class="subtitulo">Não foi possível carregar as avaliações.</p>
+                    <button type="button" id="btn-recarregar-avaliacoes" class="btn-secundario">Tentar de novo</button>
+                </div>
+                <ol id="lista-avaliacoes" class="lista-avaliacoes" hidden></ol>
+                <p id="avaliacoes-limite" class="subtitulo" hidden></p>
+            </section>
         </article>
 
         <!-- Erro ao consultar o Supabase -->
@@ -144,6 +160,18 @@
     </main>
 
     <!-- Modelo de chip de categoria (cor e sigla vêm da tabela 'categorias') -->
+    <!-- Uma avaliação (US-026). Tudo preenchido por textContent. -->
+    <template id="modelo-avaliacao">
+        <li class="item-avaliacao">
+            <p class="item-avaliacao-topo">
+                <span class="item-avaliacao-estrelas" role="img"></span>
+                <span class="item-avaliacao-autor"></span>
+                <time class="item-avaliacao-data"></time>
+            </p>
+            <p class="item-avaliacao-comentario"></p>
+        </li>
+    </template>
+
     <template id="modelo-chip-categoria">
         <li class="chip-categoria">
             <span class="chip-categoria-sigla" aria-hidden="true"></span>
