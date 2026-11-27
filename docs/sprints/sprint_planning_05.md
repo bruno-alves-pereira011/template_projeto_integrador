@@ -8,7 +8,7 @@
 **GitHub Sprint Iteration:** -
 **GitHub Sprint Milestone:** -
 
-**Status do planejamento:** RASCUNHO — aguardando o Review & Adjust do PO (escopo, datas e responsáveis).
+**Status do planejamento:** APROVADO pelo PO em 2026-11-27 (escopo e datas). **Pendente:** nomear as duplas 1 (orçamento) e 2 (avaliação) antes de 01/12.
 
 ---
 
@@ -169,6 +169,7 @@ Ordem: US-022 → US-023 (cadeia do orçamento, 8 pts) e, em paralelo, US-025 �
 
 - **2026-11-27:** rascunho gerado a partir do `/scope-idea` (NORMAL PROCESS) do orçamento e da avaliação: C0, G0 e G1 aprovados pelo PO; stories US-022 a US-026 aprovadas no Modo Backlog.
 - **Primeiro vertical slice:** US-022 + US-023 (orçamento de ponta a ponta).
+- **2026-11-27 — aprovação:** PO aprovou datas (01/12 a 08/12) e escopo (15 pts) no Review & Adjust. Responsáveis das duplas ainda a definir.
 
 ---
 

@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Média
 **Story Points:** 3
-**Sprint:** -
-**Status:** Backlog
+**Sprint:** Sprint 05
+**Status:** To Do
 **Behavior Change Esperado:** YES
 
 ---
