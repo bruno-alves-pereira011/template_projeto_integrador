@@ -1,6 +1,6 @@
 # Requirements — Favoritar profissional (HU05)
 
-**Status:** DRAFT
+**Status:** REQUIREMENTS_READY
 **Discovery de origem:** `docs/discovery/helpme-favoritos.md` (PROBLEM_READY em 2026-11-27)
 **Classificacao de Processo:** NORMAL PROCESS
 **Numeração:** continua a de `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (último FR35, BR29, NFR15, A12), para as stories citarem IDs únicos no projeto.
@@ -83,16 +83,16 @@ O cliente marca profissionais como favoritos e volta a eles por uma lista própr
 
 O usuario pode **aprovar, editar, adicionar, remover ou reclassificar** qualquer requisito/regra antes do gate.
 
-- [ ] Proposta completa apresentada ao usuario
-- [ ] Ajustes solicitados incorporados
-- [ ] IDs estabilizados depois da revisao
-- [ ] Nenhuma pergunta bloqueante aberta
+- [x] Proposta completa apresentada ao usuario
+- [x] Ajustes solicitados incorporados
+- [x] IDs estabilizados depois da revisao
+- [x] Nenhuma pergunta bloqueante aberta
 
 ### User adjustments
-- (nenhum ainda)
+- 2026-11-27 (R1): PO aprovou os requisitos sem mudanças (FR36 a FR39, BR30 a BR33, NFR16 a NFR18, A13 a A16 e as decisões propostas).
 
 ## Gate G1 — REQUIREMENTS READY
 
-**Status:** PENDENTE
+**Status:** APPROVED (2026-11-27)
 
-**Aprovado pelo usuario:** não
+**Aprovado pelo usuario:** sim
