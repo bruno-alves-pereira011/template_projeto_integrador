@@ -2,12 +2,12 @@
 
 **Framework:** ScrumAIDev
 **Status do projeto:** ACTIVE_SPRINT
-**Projeto atual:** HelpMe — diretório de prestadores de serviço (Projeto Integrador, Marco 2)
+**Projeto atual:** HelpMe — diretório de prestadores de serviço (Projeto Integrador, Marcos 2 e 3)
 **Origem do contexto:** híbrido (código existente em `helpme-app/` + insumos em `arquivos/` + usuário)
 **Confiança do contexto:** alta
 **Contexto processado:** sim
-**Estado operacional:** Sprint 02 ativa (16/10 a 23/10/2026): núcleo do Fluxo 3 (DEBT-006, US-007 a US-009); US-001 a US-006 da Sprint 01 ainda em Review
-**Última atualização:** 2026-10-16
+**Estado operacional:** Sprint 04 ativa (23/11 a 30/11/2026). 20 das 21 stories em Done; só a US-011 em Review (falta a Redirect URL no Supabase e o teste com e-mail real). `main` é a única branch.
+**Última atualização:** 2026-11-27
 
 ## GitHub Planning Defaults
 
@@ -84,10 +84,23 @@ Após o primeiro /sprint-planning de um projeto derivado, atualizar este manifes
 
 ## Estado Atual do Projeto
 
-- Sprint ativa: **Sprint 02** (`docs/sprints/sprint_planning_02.md`), termina em 2026-10-23. Sprint 01 encerrada (`docs/retrospectives/sprint_01_retro.md`)
-- Backlog: **gerado** (`docs/product_backlog.md`): EPIC-001 a EPIC-004, EPIC-006 (admin, candidato) e EPIC-007 (conta do cliente, candidato) no Marco 2; EPIC-005 no Marco 3; DEBT-004 a DEBT-008 da revisão de 2026-10-16
-- Discovery e requisitos: `docs/discovery/helpme-mvp-marco2.md` (rev. 3 em DRAFT: área admin + aprovação de profissionais) e `docs/requirements/helpme-mvp-marco2.md`
-- Decisões do projeto: `docs/DECISOES.md` (D6 proposta no Discovery rev. 3)
-- Próximo passo sugerido: merge do DEBT-004 + testes manuais das US-001 a US-006 (Lucas, até 20/10) → decidir DEBT-005 → `/feature-development` do DEBT-006 e da US-007. Sprint 03 prevista: US-010 + US-014, US-015, US-013
+- **Sprint ativa:** Sprint 04 (`docs/sprints/sprint_planning_04.md`), de 23/11 a 30/11/2026. O arquivo ainda é o rascunho de 09/11, recuperado no DEBT-011: o escopo real da sprint foi além dele (US-021, US-019 e US-020 também entraram).
+- **Sprints anteriores:** Sprint 01 e Sprint 02 com retrospectiva (`docs/retrospectives/sprint_01_retro.md`, `sprint_02_retro.md`). Sprint 03 (`docs/sprints/sprint_planning_03.md`) **sem retrospectiva**.
+- **Backlog** (`docs/product_backlog.md`):
+  - Done: US-001 a US-010 e US-012 a US-021.
+  - Review: **US-011** (esqueci minha senha). Faltam a URL de `redefinir-senha.html` nas Redirect URLs do Supabase (TASK-004) e os casos RS-04/05/07/08 com e-mail real.
+  - Dívidas abertas: DEBT-001 (README com rastreabilidade, DoD do Marco 2), DEBT-002 (revisão final independente), DEBT-007 (fixar versão da CDN do supabase-js) e os itens 5 a 19 da banca do DEBT-010.
+  - DEBT-009, DEBT-010 (itens 1 a 4) e DEBT-011 já estão na `main`; o backlog ainda os mostra "Em Review".
+  - Marco 3: EPIC-005 (pós-contratação e avaliações) ainda não começou.
+- **Banco (Supabase `btjjbtjxcbvswgezpwgc`):** migrations 001 a 014 aplicadas pelo PO no SQL Editor; roteiros de teste em `supabase/testes/`. DDL e escrita no banco são sempre do PO.
+- **Segurança (DEBT-010):** telefone pessoal fechado (014), limites de tamanho no banco e senhas das contas de teste e do admin trocadas em 26/11, fora do repositório. Os testes automatizados (`supabase/testes/*.mjs`, Node) pedem a senha em `HELPME_SENHA`.
+- **Repositório:** só a `main`, local e no GitHub; todas as branches de feature foram mescladas e apagadas em 27/11.
+- **Discovery e requisitos:** `docs/discovery/helpme-mvp-marco2.md` e `docs/requirements/helpme-mvp-marco2.md` (rev. 3). Decisões em `docs/DECISOES.md`.
+- **Próximo passo sugerido:**
+  1. Fechar a US-011: Redirect URL e teste com e-mail real.
+  2. DEBT-001 e DEBT-002, que fecham o DoD do Marco 2.
+  3. `/sprint-retrospective` da Sprint 03 e, em 30/11, da Sprint 04.
+  4. Atualizar o backlog e o `sprint_planning_04.md` para o que foi entregue de fato.
+  5. Depois, `/sprint-planning` do Marco 3 (EPIC-005 e itens 5 a 19 da banca).
 
 > Atualize apenas ao final de cada sprint ou mudança relevante. Evite atualizações desnecessárias.
