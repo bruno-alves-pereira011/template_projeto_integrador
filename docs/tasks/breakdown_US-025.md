@@ -76,4 +76,4 @@
 | T1–T31 | Tela com sessão e banco simulados: quem vê, nota obrigatória, contador, duplo clique, criar e editar só com as colunas certas, cancelar edição, sem apagar, recusas (RLS em inglês, duplicada, rede), leitura lenta ou falhando, HTML no comentário como texto, `#avaliacao`, links da lista, 360px, 44px, labels, Tab/foco | Todos passam | Done |
 | US25-01..04 | Banco real (`contratacao_api.mjs`), depois da 018 | Recusas | Done |
 
-**Resultados (2026-11-27):** telas **33/33** (sessão e banco simulados: nenhum dado gravado); US-022 e US-023 na mesma tela sem regressão (**23/23** cada). **Pendente:** PO aplicar a `018` e rodar o roteiro A1–A16; depois, `contratacao_api.mjs`.
+**Resultados (2026-11-27):** telas **33/33** (sessão e banco simulados: nenhum dado gravado); US-022 e US-023 na mesma tela sem regressão (**23/23** cada). PO aplicou a `018`: roteiro **A1–A16 ok**; só a avaliação 2 ficou (a 1, do seed, saiu pela BR29). Banco real com login: API **71/71** (US25-01..04; a avaliação 2 continuou intacta) e telas **99/99**, sem regressão.

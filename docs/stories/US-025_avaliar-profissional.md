@@ -161,7 +161,7 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 - [x] Código implementado conforme os critérios de aceitação
 - [x] Roteiro SQL com todas as linhas "ok" no banco real
 - [ ] Code review por quem não escreveu o código
-- [ ] Critérios comuns de mobile e acessibilidade verificados
-- [ ] Documentação atualizada (`supabase/README.md` quando o banco mudar)
+- [x] Critérios comuns de mobile e acessibilidade verificados
+- [x] Documentação atualizada (`supabase/README.md` quando o banco mudar)
 - [ ] `Behavior change` documentado no PR
 - [ ] Aprovação do Product Owner
