@@ -159,7 +159,7 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 ## Definition of Done Checklist
 
 - [x] Código implementado conforme os critérios de aceitação
-- [ ] Roteiro SQL com todas as linhas "ok" no banco real
+- [x] Roteiro SQL com todas as linhas "ok" no banco real
 - [ ] Code review por quem não escreveu o código
 - [ ] Critérios comuns de mobile e acessibilidade verificados
 - [ ] Documentação atualizada (`supabase/README.md` quando o banco mudar)
