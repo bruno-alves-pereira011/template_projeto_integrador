@@ -132,7 +132,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-022 | - | Enviar e responder orcamento da contratacao | 5 | In Progress | Sprint 05 | - | - | - |
+| US-022 | - | Enviar e responder orcamento da contratacao | 5 | Review | Sprint 05 | - | - | - |
 | US-023 | - | Concluir so com valor aprovado e cancelar antes de aprovar | 3 | To Do | Sprint 05 | - | - | - |
 | US-024 | - | Situacao do orcamento em Minhas contratacoes | 2 | Backlog | - | - | - | - |
 | US-025 | - | Avaliar o profissional depois do servico (HU04) | 3 | To Do | Sprint 05 | - | - | - |
