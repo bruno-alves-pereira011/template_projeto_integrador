@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** 01
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -156,6 +156,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 ## Notas e Comentarios
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
+- 2026-11-26: liberada depois do DEBT-010. A banca de revisão tinha bloqueado esta story pelo telefone pessoal exposto e pela falta de limite de tamanho no banco. A 014 foi aplicada pelo PO: roteiro 014 **20/20** e ponta a ponta real só de leitura sem regressão. Done por decisão do PO.
 
 ---
 

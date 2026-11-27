@@ -107,15 +107,21 @@ function calcularDestino(situacao, voltar) {
 // Busca a linha do usuário em 'usuarios' (criada pelo trigger do cadastro).
 // comContato = true inclui o telefone: só as telas de perfil precisam dele, e o menu das
 // páginas públicas não deve trafegar dado de contato à toa.
+// O telefone não é lido pela tabela (migration 014: ninguém lê usuarios.telefone de outra
+// pessoa); o dono lê o próprio por meu_telefone().
 async function buscarUsuario(userId, comContato) {
-    const colunas = comContato ? 'id, nome, tipo_usuario, telefone' : 'id, nome, tipo_usuario';
     const { data, error } = await supabaseClient
         .from('usuarios')
-        .select(colunas)
+        .select('id, nome, tipo_usuario')
         .eq('id', userId)
         .maybeSingle();
 
     if (error) throw error;
+    if (!data || !comContato) return data;
+
+    const { data: telefone, error: erroTelefone } = await supabaseClient.rpc('meu_telefone');
+    if (erroTelefone) throw erroTelefone;
+    data.telefone = telefone;
     return data;
 }
 
@@ -210,9 +216,10 @@ async function destinoDoUsuario(userId, voltar) {
 // - sem sessão: vai ao login com ?voltar=<esta página>;
 // - papel diferente do esperado: vai para a página inicial do próprio papel (o voltar é ignorado,
 //   a página atual já é do papel errado). O admin NÃO passa em 'cliente' (BR10/BR11);
-// - ok: devolve { user, usuario, papel, situacao, ehAdmin } (usuario com telefone).
+// - ok: devolve { user, usuario, papel, situacao, ehAdmin }.
+// opcoes.comContato = true inclui usuario.telefone (só Meu perfil e Completar perfil usam).
 // Lança erro se o Supabase estiver indisponível ou a leitura falhar.
-async function exigirSessao(tipoEsperado) {
+async function exigirSessao(tipoEsperado, opcoes) {
     if (!supabaseClient) throw new Error('Cliente do Supabase indisponível.');
 
     const { data, error } = await supabaseClient.auth.getSession();
@@ -228,7 +235,7 @@ async function exigirSessao(tipoEsperado) {
         return null;
     }
 
-    const papelLido = await lerPapel(sessao.user.id, true);
+    const papelLido = await lerPapel(sessao.user.id, Boolean(opcoes && opcoes.comContato));
 
     if (!papelLido.usuario) {
         throw new Error('Perfil de usuário não encontrado.');

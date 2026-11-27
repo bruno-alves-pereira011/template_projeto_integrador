@@ -78,7 +78,7 @@
         mostrarEstado('carregando');
 
         try {
-            const sessao = await exigirSessao('cliente');
+            const sessao = await exigirSessao('cliente', { comContato: true });
             if (!sessao) return; // já redirecionou
 
             uid = sessao.user.id;
@@ -118,18 +118,20 @@
 
         try {
             // .select() devolve a linha alterada: se o RLS bloquear, vem vazio (sem erro) e não mostramos sucesso falso.
+            // Só 'nome' volta: usuarios.telefone não é lido pela tabela (migration 014), e o
+            // banco grava o telefone como foi enviado.
             const { data, error } = await supabaseClient
                 .from('usuarios')
                 .update({ nome: nome, telefone: telefone || null })
                 .eq('id', uid)
-                .select('nome, telefone')
+                .select('nome')
                 .maybeSingle();
 
             if (error) throw error;
             if (!data) throw new Error('Nenhuma linha alterada (sessão expirada ou sem permissão).');
 
             el.nome.value = data.nome || '';
-            el.telefone.value = data.telefone || '';
+            el.telefone.value = telefone || '';
             mostrarMensagem('Dados salvos!', 'sucesso');
             el.mensagem.focus();
 

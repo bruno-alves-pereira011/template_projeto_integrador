@@ -5,7 +5,7 @@
 --   1. Rode supabase/migrations/001_schema.sql.
 --   2. No painel do Supabase, vá em Authentication → Users → Add user →
 --      "Create new user", marque "Auto Confirm User" e crie os 4 logins
---      abaixo (a senha é livre; sugestão: Helpme@123):
+--      abaixo (senha forte, guardada fora do repositório):
 --         cliente@helpme.test   -> cliente
 --         prof1@helpme.test     -> profissional APROVADO (encanador)
 --         prof2@helpme.test     -> profissional APROVADO (eletricista + chaveiro)

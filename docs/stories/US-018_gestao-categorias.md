@@ -6,7 +6,7 @@
 **Prioridade:** Media
 **Story Points:** 3
 **Sprint:** Sprint 04
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -155,6 +155,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (rev. 3) (Key Decisions) e `docs/di
 - 2026-10-16: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 3), aprovada pelo usuario.
 - 2026-11-26: implementada na branch `feat/US-018-gestao-categorias` (empilhada sobre a US-021, por causa do menu admin). Telas 37/37. Falta o PO aplicar a `013_categorias_admin.sql` e rodar `supabase/testes/013_categorias_admin.sql` (G1-G18) para ir a Review.
 - 2026-11-26: 013 aplicada pelo PO. Roteiro 013 **18/18** no banco real; ponta a ponta real (so leitura) **7/7**. US-018 em Review.
+- 2026-11-26: aprovada pela banca de revisão (hacker, usuário confuso, sênior, testador e chefe), sem achado bloqueante próprio. Done por decisão do PO. Os achados transversais seguem no DEBT-010.
 
 ---
 

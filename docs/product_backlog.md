@@ -44,8 +44,8 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-002 | - | Listar profissionais aprovados por categoria | 5 | Review | Sprint 01 | - | - | - |
-| US-003 | - | Ver perfil e contatar profissional | 5 | Review | Done 01 | - | - | - |
+| US-002 | - | Listar profissionais aprovados por categoria | 5 | Done | Sprint 01 | - | - | - |
+| US-003 | - | Ver perfil e contatar profissional | 5 | Done | Sprint 01 | - | - | - |
 
 #### [EPIC-003] Conta e acesso
 
@@ -56,7 +56,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 ##### User Stories
 
-| ID | Issue | Titulo | Story Points | Status | Done | Spec | Contract | BDD |
+| ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
 | US-004 | - | Cadastro e login com roteamento por tipo | 5 | Done | Sprint 01 | - | - | - |
 | US-005 | - | Completar e editar perfil do profissional | 5 | Done | Sprint 01 | - | - | - |
@@ -73,9 +73,9 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-007 | - | Contratar profissional pelo perfil | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
-| US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Review | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-007 | - | Contratar profissional pelo perfil | 5 | Done | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-008 | - | Aceitar ou recusar solicitacao recebida | 5 | Done | Sprint 02 | - | - | docs/bdd/contratacao.feature |
+| US-009 | - | Acompanhar, cancelar e concluir contratacao | 5 | Done | Sprint 02 | - | - | docs/bdd/contratacao.feature |
 | US-010 | - | Chat em tempo real na contratacao | 5 | In Progress | - | - | - | docs/bdd/contratacao.feature |
 
 **Notas do Fluxo 3 (2026-10-16):** antes de US-007, fazer DEBT-004 (`main` estavel), DEBT-005 (decidir `refactor/ui-polish`) e DEBT-006 (remover legado de pedidos). US-008 troca `DESTINO_PROFISSIONAL_APROVADO` em `helpme-app/js/sessao.js` por `contratacoes.html`; US-009 inclui o item "Minhas contratacoes" no menu do cliente.
@@ -92,15 +92,15 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| US-014 | - | Papel de administrador e area admin | 5 | Review | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Review | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-017 | - | Painel de indicadores do administrador | 5 | Review | Sprint 04 | - | - | - |
-| US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Review | Sprint 04 | - | - | - |
-| US-019 | - | Suspender/reativar profissional aprovado (Could) | 5 | Review | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
-| US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Review | Sprint 04 | - | - | - |
+| US-014 | - | Papel de administrador e area admin | 5 | Done | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-015 | - | Fila de analise e aprovacao (individual e em lote) | 5 | Done | Sprint 03 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-013 | - | Motivo da pendencia/recusa e reenvio para analise | 3 | Done | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-016 | - | Triagem automatica: checagens obrigatorias | 5 | Done | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-021 | - | Triagem automatica: sinais de suspeita e reanalise de aprovados | 3 | Done | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-017 | - | Painel de indicadores do administrador | 5 | Done | Sprint 04 | - | - | - |
+| US-018 | - | Gestao de categorias (criar, editar, desativar) | 3 | Done | Sprint 04 | - | - | - |
+| US-019 | - | Suspender/reativar profissional aprovado (Could) | 5 | Done | Sprint 04 | - | - | docs/bdd/aprovacao_profissionais.feature |
+| US-020 | - | Consulta somente-leitura de contratacoes, sem chat (Could) | 3 | Done | Sprint 04 | - | - | - |
 
 #### [EPIC-007] Conta do cliente
 
@@ -114,7 +114,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
 | US-011 | - | Esqueci minha senha | 3 | Review | Sprint 03 | - | - | - |
-| US-012 | - | Meu perfil do cliente (nome e telefone) | 2 | Review | Sprint 03 | - | - | - |
+| US-012 | - | Meu perfil do cliente (nome e telefone) | 2 | Done | Sprint 03 | - | - | - |
 
 ---
 
@@ -149,6 +149,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | DEBT-007 | Fixar versao exata da CDN `@supabase/supabase-js@2` em todos os HTML | Baixa | 1 | App pode quebrar sozinho com versao nova |
 | DEBT-008 | Banco real ja tem dados: daqui em diante so migrations incrementais (`003_*`, `004_*`); nao editar nem reaplicar o `001` (reaplicar apaga dados e desfaz o `002`). Toda tabela nova com RLS no mesmo script (o `001` da `grant ... on all tables to authenticated`) | Alta (regra de trabalho) | 0 | Perda de dados / tabela exposta |
 | DEBT-009 | **Em Review (branch `fix/DEBT-009-navegacao-por-papel`).** Navegacao em vaivem no perfil do profissional: todas as saidas de `profissional.html`, `profissionais.html` e `home-cliente.html` levavam a home do cliente, e o profissional que abria o proprio perfil publico ficava preso entre as duas telas; o "Voltar" era link comum e o voltar do navegador reabria a tela anterior. Correcao: `js/telas/navegacao.js` (menu montado de uma lista unica, tambem em `contratacoes.html`; "Meu painel" pela mesma regra do login; "Voltar" pelo historico so quando a entrada anterior da aba e o destino, com trava contra clique multiplo; recarrega se a sessao mudar em outra aba ou no bfcache), `lerPapel()` em `js/servicos/sessao.js` como regra unica de papel, "Sair" que funciona sem rede, aviso de perfil proprio e "Voltar para o meu painel". Banca de revisao (2026-11-24) reprovou a 1a versao; os 16 itens foram corrigidos. Decisao do PO: **admin nao contrata** (sem "Contratar", telas de cliente mandam ao painel e migration 009 barra no banco — **009 pendente de aplicar no SQL Editor**). Junto: `helpme-app/js/` separado em `servicos/` (sem DOM) e `telas/`. Testes de tela real (Playwright/Edge): 42/42 + 66/66 + 31/31 + fumaca 8/8 nas 18 paginas | Alta | 2 | Profissional sem caminho de volta ao painel; historico do navegador em loop |
+| DEBT-010 | **Itens 1 a 4 concluídos; em Review (branch `fix/DEBT-010-achados-banca`).** Achados da banca de revisão de 2026-11-26 sobre as stories em Review (veredito: reprovado). Corrigidos nesta branch: (1) senha das contas de teste e do admin removida de `supabase/README.md` e `seed.sql` — **o PO precisa trocar as senhas no Supabase real**, porque a antiga continua no histórico do git; (2) migration **014**: ninguém lê `usuarios.telefone` de outra pessoa (antes o visitante lia pela API o telefone do cadastro de todo aprovado), o diretório usa `telefone_publico()` e o dono `meu_telefone()`; (4) limites de tamanho no banco iguais aos das telas. Também: "Done 01" na coluna Sprint da US-003. Testes de tela 16/16 (meu_telefone simulado). **014 aplicada pelo PO (2026-11-26):** roteiro **20/20**; ponta a ponta real só de leitura 10/11 (a falha foi do critério do teste: um aprovado não tem telefone algum, só WhatsApp, e a view devolve o mesmo valor da fórmula antiga para os 4 aprovados). US-002, 003, 007 e 012 liberadas para Done. **Senhas trocadas pelo PO (2026-11-26):** a senha antiga é recusada nas 5 contas e as sessões anteriores foram encerradas; US-014 liberada para Done. Itens 1 a 4 da banca concluídos. Ficam para depois (itens 5–19 da banca): avaliar sem ter contratado, testes versionados no repositório, `reenvio` com dois sentidos, efeito colateral de `solicitar_analise()`, tradutor de erro copiado em 8 arquivos, funções grandes, vínculo com categoria desativada pela API, menu admin copiado, migrations reeditadas, `minha_ultima_decisao()` sem uso, cálculo de tempo na fila duplicado, limite do nome 120 × 100, `cliente.js` fora do padrão IIFE, senha mínima de 6 e comentário desatualizado na 001 | Média (itens 5–19 em aberto) | 2 | Telefone pessoal exposto; senha de admin pública; texto sem limite pela API |
 | DEBT-001 | README do projeto: rastreabilidade HU × tela × tabela (secao 9), contratacao no minimundo/HUs, secao "Como rodar o projeto" | Alta (DoD do Marco 2) | 2 | Avaliacao da disciplina cobra rastreabilidade |
 | DEBT-002 | Revisao final por agente que nao escreveu o codigo: fluxos com usuarios do seed, tentativa de burlar RLS, checklist de acessibilidade/mobile | Alta (DoD do Marco 2) | 2 | Garante seguranca e qualidade antes da entrega |
 

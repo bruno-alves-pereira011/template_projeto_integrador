@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 02
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -160,6 +160,7 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
 - 2026-10-23: implementada na branch `feat/US-009-acompanhar-contratacao` (empilhada sobre a US-008), com as telas da decisao D8. Breakdown em `docs/tasks/breakdown_US-009.md`.
+- 2026-11-26: aprovada pela banca de revisão (hacker, usuário confuso, sênior, testador e chefe), sem achado bloqueante próprio. Done por decisão do PO. Os achados transversais seguem no DEBT-010.
 
 ---
 

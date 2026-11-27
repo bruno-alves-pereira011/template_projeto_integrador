@@ -6,7 +6,7 @@
 **Prioridade:** Baixa (Could)
 **Story Points:** 5
 **Sprint:** Sprint 04
-**Status:** Review
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -156,6 +156,7 @@ Profissional suspenso com contratacao aceita perde o acesso ao chat; o cliente c
 - 2026-11-23: aprovada pelo PO no Review & Adjust, com as decisoes propostas (recomendadas) sem ajuste.
 - 2026-11-23: implementada em `feat/US-019-suspensao` (breakdown em `docs/tasks/breakdown_US-019.md`). Banco em `007_suspensao.sql` (status `suspenso`, historico, `profissionais_admin`, `alterar_suspensao`, `minha_ultima_decisao`, painel com suspensos). Telas testadas com login real e RPCs simuladas: **33/33**. **Falta:** aplicar a `007`, rodar `supabase/testes/007_suspensao.sql` e o teste ponta a ponta.
 - 2026-11-23: `007_suspensao.sql` aplicada pelo PO. `supabase/testes/007_suspensao.sql`: 25/26 na primeira rodada; o S9b falhou por erro do proprio teste (contagem de referencia feita no papel `authenticated`, em que o RLS esconde os suspensos; o painel estava certo com 1) e foi corrigido. Conferencia por leitura: funcoes criadas, historico sem resto do teste. Ponta a ponta no banco real, so leitura (decisoes bloqueadas): **19/19** junto com a US-020. Status: Review (falta code review e validacao do PO, e uma suspensao de verdade pela tela, que muda dados reais).
+- 2026-11-26: aprovada pela banca de revisão (hacker, usuário confuso, sênior, testador e chefe), sem achado bloqueante próprio. Done por decisão do PO. Os achados transversais seguem no DEBT-010.
 
 ---
 
