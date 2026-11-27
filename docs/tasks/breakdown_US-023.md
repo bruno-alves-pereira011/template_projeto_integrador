@@ -73,4 +73,4 @@
 | T1–T21 | Tela com sessão e banco simulados: estados por papel e situação do orçamento, duplo clique, recusa do banco (tela desatualizada), RLS em inglês, sem rede, redirecionamento depois de cancelar, 360px, 44px, Tab/foco | Todos passam | Done |
 | US23-01..05, UI23-01..06 | Banco real pelos `.mjs` (gravam dados `[TESTE AUTO]`) | Todos passam | Done |
 
-**Resultados (2026-11-27):** telas **23/23** (sessão e banco simulados: nenhum dado gravado); US-022 na mesma tela sem regressão (**23/23**). **Pendente:** PO aplicar a `016` e rodar o roteiro C1–C22; `.mjs` dependem da senha de teste (`HELPME_SENHA`).
+**Resultados (2026-11-27):** telas **23/23** (sessão e banco simulados: nenhum dado gravado); US-022 na mesma tela sem regressão (**23/23**). PO aplicou a `016`: roteiro **C1–C22 ok**. Banco real com login: API **66/67** (só `US7-09` falha, que é o DEBT-012 já registrado: espaços em descrição/endereço) e telas **99/99**. Os checks UI8-03, UI9-03, UI9-04 e UI9-10 foram atualizados porque estavam desatualizados desde o DEBT-009 (menu montado sem ids) e a 014 (`usuarios.telefone` fechado; o teste passou a usar `meu_telefone()`).

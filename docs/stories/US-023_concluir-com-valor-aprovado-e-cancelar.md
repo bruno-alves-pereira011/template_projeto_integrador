@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 3
 **Sprint:** Sprint 05
-**Status:** In Progress
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -151,6 +151,7 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 
 ## Notas e Comentarios
 
+- 2026-11-27: PO aplicou a `016` e rodou o roteiro no banco real: **C1–C22 ok**. Testes logados no banco real: API (`contratacao_api.mjs`) **66/67**, a única falha é `US7-09` (descrição/endereço só com espaços aceitos pelo banco), que é o DEBT-012 já registrado e não faz parte desta story; telas (`contratacao_telas.mjs`) **99/99**, com UI23-01..06, UI9-11 e UI10-16. Na mesma rodada, 4 checks antigos das telas (UI8-03, UI9-03, UI9-04, UI9-10) foram atualizados: ainda procuravam ids do menu anteriores ao DEBT-009 e liam `usuarios.telefone`, que a 014 fechou (agora `meu_telefone()`). Status: **Review**. Pendente: code review e PR.
 - 2026-11-27: implementada na branch `feat/US-023-concluir-cancelar` (decisões em `docs/tasks/breakdown_US-023.md`). Telas com sessão e banco simulados **23/23**; US-022 na mesma tela sem regressão (23/23). Falta o PO aplicar a `016_conclusao_com_orcamento.sql` e rodar `supabase/testes/016_conclusao_com_orcamento.sql` (C1–C22); os `.mjs` atualizados gravam no banco real e precisam da senha de teste.
 - 2026-11-27: story gerada no Modo Backlog a partir de `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (REQUIREMENTS_READY), aprovada pelo PO.
 
@@ -158,10 +159,10 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 
 ## Definition of Done Checklist
 
-- [ ] Código implementado conforme os critérios de aceitação
-- [ ] Roteiro SQL com todas as linhas "ok" no banco real
+- [x] Código implementado conforme os critérios de aceitação
+- [x] Roteiro SQL com todas as linhas "ok" no banco real
 - [ ] Code review por quem não escreveu o código
-- [ ] Critérios comuns de mobile e acessibilidade verificados
-- [ ] Documentação atualizada (`supabase/README.md` quando o banco mudar)
+- [x] Critérios comuns de mobile e acessibilidade verificados
+- [x] Documentação atualizada (`supabase/README.md` quando o banco mudar)
 - [ ] `Behavior change` documentado no PR
 - [ ] Aprovação do Product Owner

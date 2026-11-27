@@ -219,7 +219,13 @@ async function main() {
     const p1 = await login('prof1@helpme.test');
     const p2 = await login('prof2@helpme.test');
     const nomeP1 = (await api(null, 'GET', `profissionais_publicos?select=nome&id=eq.${p1.id}`)).data?.[0]?.nome;
-    const nomeCli = (await api(cli, 'GET', `usuarios?select=nome,telefone&id=eq.${cli.id}`)).data?.[0];
+    // 014: a coluna telefone não é mais legível pela API; o dono lê o próprio por meu_telefone().
+    const nomeCli = {
+        nome: (await api(cli, 'GET', `usuarios?select=nome&id=eq.${cli.id}`)).data?.[0]?.nome,
+        telefone: (await api(cli, 'POST', 'rpc/meu_telefone', {})).data || null,
+    };
+    // DEBT-009: o menu é montado por navegacao.js (sem ids); procura o item pelo texto.
+    const itemMenu = (texto) => `[...document.querySelectorAll('[data-menu-papel] .menu-item')].find((e) => e.textContent.trim() === ${JSON.stringify(texto)} && e.getClientRects().length > 0)`;
     const criar = async (rotulo) => (await api(cli, 'POST', 'contratacoes', {
         cliente_id: cli.id, profissional_id: p1.id, descricao: `${TAG} ${rotulo}`, endereco: 'Rua Teste, 10 - Centro', data_desejada: AMANHA,
     })).data?.[0]?.id;
@@ -328,7 +334,7 @@ async function main() {
             return { grupo: ${grupoDoCard(idUI)}, desc: c.querySelector('.card-descricao')?.textContent, end: c.querySelector('.texto-endereco')?.textContent, data: c.querySelector('.card-data')?.textContent }; })()`);
         check('UI8-02', 'US-008', 'card na lista "Aguardando sua resposta" com descricao, endereco e data (c1, AC-01)',
             card.grupo === 'grupo-solicitadas' && card.desc?.includes('US-007 tela') && card.end && card.data?.startsWith('Para:'), JSON.stringify(card));
-        check('UI8-03', 'US-008', 'link "Editar meu perfil" visivel (c6, AC-07)', await B.visivel('#menu-editar-perfil'), await B.js(`document.getElementById('menu-editar-perfil')?.getAttribute('href')`));
+        check('UI8-03', 'US-008', 'link "Editar meu perfil" visivel (c6, AC-07)', (await B.esperar(itemMenu('Editar meu perfil'))) !== null, await B.js(`(${itemMenu('Editar meu perfil')})?.getAttribute('href')`));
 
         await B.realtimePronto();
         const t0 = Date.now();
@@ -419,7 +425,7 @@ async function main() {
 
         // home do cliente tem "Minhas contratações"
         await A.ir('home-cliente.html');
-        ms = await A.esperar(`!document.getElementById('link-minhas-contratacoes').hidden`);
+        ms = await A.esperar(itemMenu('Minhas contratações'));
         check('UI9-10', 'US-009', 'menu do cliente tem "Minhas contratacoes"', ms !== null);
 
         // auditorias US-009 (espera e servico)
