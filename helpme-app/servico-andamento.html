@@ -1,7 +1,8 @@
 <!--
   TELA: Serviço em andamento (servico-andamento.html?id=<id da contratação>) — US-009 (decisão D8)
   OBJETIVO: Contratação 'aceita': cliente e profissional veem o contato um do outro (Ligar / WhatsApp)
-  e qualquer um marca como concluída. 'concluida': mostra o resumo, sem ações.
+  e qualquer um marca como concluída (só com valor aprovado, US-023); o cliente cancela antes de aprovar.
+  'concluida': mostra o resumo, sem ações.
   (O nome antigo foi mantido; agora lê a tabela 'contratacoes', não a antiga 'pedidos'.)
   REGRAS: exige sessão. Só as partes enxergam a contratação (RLS). O contato vem da função
   contato_contraparte (BR07: o telefone do cliente só é liberado ao profissional depois do aceite).
@@ -11,7 +12,9 @@
   - #servico-carregando / #servico-erro (+ #btn-tentar-novamente) / #servico-nao-encontrada.
   - #servico-detalhe: #rotulo-outra-parte, #detalhe-outra-parte, #detalhe-status, #detalhe-data,
     #detalhe-descricao, #detalhe-endereco, #servico-situacao.
-  - Contato: #btn-ligar, #btn-whatsapp, #contato-indisponivel, #link-chat. Ação: #btn-concluir.
+  - Contato: #btn-ligar, #btn-whatsapp, #contato-indisponivel, #link-chat.
+  - Ações (US-023): #btn-concluir (só com valor aprovado; senão #concluir-bloqueado) e
+    #btn-cancelar-contratacao (só o cliente, enquanto não aprovou o valor).
   - Orçamento (US-022): #orcamento com #orcamento-situacao, #orcamento-observacao; cliente: #orcamento-resposta
     (#btn-aprovar-orcamento, #btn-recusar-orcamento); profissional: #form-orcamento (#orcamento-valor,
     #orcamento-obs, #btn-enviar-orcamento); histórico: #orcamento-historico / #orcamento-lista.
@@ -118,7 +121,10 @@
 
             <div class="acoes">
                 <a id="link-chat" class="btn btn-contorno btn-bloco">Abrir conversa</a>
+                <!-- US-023 (BR23): concluir só com valor aprovado; o cliente cancela enquanto não aprovou. O banco confere. -->
+                <p id="concluir-bloqueado" class="dica-campo" hidden>Combine e aprove o valor antes de concluir.</p>
                 <button type="button" id="btn-concluir" class="btn btn-primario btn-bloco" hidden>Marcar como concluído</button>
+                <button type="button" id="btn-cancelar-contratacao" class="btn btn-contorno btn-bloco btn-perigo" hidden>Cancelar contratação</button>
                 <a href="contratacoes.html" class="btn-link">Ver minhas contratações</a>
             </div>
         </section>

@@ -20,7 +20,7 @@
     const TEXTO_SITUACAO = {
         solicitada: 'Aguardando o profissional aceitar ou recusar. Você pode cancelar enquanto ele não responde.',
         recusada: 'O profissional recusou esta solicitação. Você pode procurar outro profissional da mesma categoria.',
-        cancelada: 'Você cancelou esta solicitação.'
+        cancelada: 'Você cancelou esta contratação.'
     };
 
     function mostrarEstado(estado) {
