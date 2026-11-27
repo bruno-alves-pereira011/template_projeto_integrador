@@ -61,4 +61,4 @@
 | E8 | A válida fica como foi gravada | Confere | Done |
 | US7-09 | Pela API (PostgREST) | `400` / `23514` | Done |
 
-**Resultados:** pendente. O PO apaga a 207, aplica a `017` e roda o roteiro; depois, `contratacao_api.mjs`.
+**Resultados (2026-11-27):** o PO apagou a 207 e as linhas `[TESTE AUTO]`, aplicou a `017` e rodou o roteiro: **E1–E8 ok**. Conferido só lendo: as duas constraints existem e estão validadas, nenhuma contratação em branco, nenhuma sobra do roteiro. `contratacao_api.mjs` no banco real: **67/67** (US7-09: `400` / `23514`). Status: **Review**.
