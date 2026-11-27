@@ -6,7 +6,7 @@
 **Prioridade:** Média
 **Story Points:** 3
 **Sprint:** Sprint 05
-**Status:** In Progress
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -144,6 +144,7 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 
 ## Notas e Comentarios
 
+- 2026-11-27: PO aplicou a `019` e rodou o roteiro no banco real: **P1–P10 ok**. Pela API real, como visitante: a função devolve a avaliação 2 com autor "Ana" e só `nota`, `comentario`, `autor`, `criada_em`. Telas da contratação no banco real (`contratacao_telas.mjs`, que passa pelo perfil): **99/99**, sem regressão. Status: **Review**. Pendente: code review e PR. Observação fora do escopo (leitura direta de `avaliacoes` com `usuario_id`) registrada no breakdown, aguardando decisão do PO.
 - 2026-11-27: implementada na branch `feat/US-026-avaliacoes-perfil` (decisões em `docs/tasks/breakdown_US-026.md`). Tela com visitante e banco simulados **19/19**. Falta o PO aplicar a `019_avaliacoes_publicas.sql` e rodar `supabase/testes/019_avaliacoes_publicas.sql` (P1–P10).
 - 2026-11-27: story gerada no Modo Backlog a partir de `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (REQUIREMENTS_READY), aprovada pelo PO.
 
@@ -151,10 +152,10 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 
 ## Definition of Done Checklist
 
-- [ ] Código implementado conforme os critérios de aceitação
-- [ ] Roteiro SQL com todas as linhas "ok" no banco real
+- [x] Código implementado conforme os critérios de aceitação
+- [x] Roteiro SQL com todas as linhas "ok" no banco real
 - [ ] Code review por quem não escreveu o código
-- [ ] Critérios comuns de mobile e acessibilidade verificados
-- [ ] Documentação atualizada (`supabase/README.md` quando o banco mudar)
+- [x] Critérios comuns de mobile e acessibilidade verificados
+- [x] Documentação atualizada (`supabase/README.md` quando o banco mudar)
 - [ ] `Behavior change` documentado no PR
 - [ ] Aprovação do Product Owner
