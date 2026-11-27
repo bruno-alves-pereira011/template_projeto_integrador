@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 5
 **Sprint:** Sprint 05
-**Status:** To Do
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -153,6 +153,7 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 ## Notas e Comentarios
 
 - 2026-11-27: story gerada no Modo Backlog a partir de `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (REQUIREMENTS_READY), aprovada pelo PO.
+- 2026-11-27: implementada na branch `feat/US-022-orcamento` (decisões em `docs/tasks/breakdown_US-022.md`). Telas com sessão e banco simulados **23/23**; telas vizinhas sem regressão (58/58). Falta o PO aplicar a `015_orcamentos.sql` e rodar `supabase/testes/015_orcamentos.sql` (O1–O23) para ir a Review.
 
 ---
 

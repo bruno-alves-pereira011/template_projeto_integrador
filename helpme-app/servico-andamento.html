@@ -12,6 +12,9 @@
   - #servico-detalhe: #rotulo-outra-parte, #detalhe-outra-parte, #detalhe-status, #detalhe-data,
     #detalhe-descricao, #detalhe-endereco, #servico-situacao.
   - Contato: #btn-ligar, #btn-whatsapp, #contato-indisponivel, #link-chat. Ação: #btn-concluir.
+  - Orçamento (US-022): #orcamento com #orcamento-situacao, #orcamento-observacao; cliente: #orcamento-resposta
+    (#btn-aprovar-orcamento, #btn-recusar-orcamento); profissional: #form-orcamento (#orcamento-valor,
+    #orcamento-obs, #btn-enviar-orcamento); histórico: #orcamento-historico / #orcamento-lista.
   - #servico-aviso: avisos de ação. #link-inicio ("Voltar para o início") na barra do topo (DEBT-013).
   - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js ->
     js/servicos/contratacao-comum.js -> js/telas/servico-andamento.js.
@@ -80,6 +83,38 @@
                 <a id="btn-whatsapp" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer" hidden>WhatsApp</a>
             </div>
             <p id="contato-indisponivel" class="dica-campo" hidden></p>
+
+            <!-- US-022: orçamento depois do aceite. Quem pode enviar/responder é o banco que decide. -->
+            <section id="orcamento" class="bloco-orcamento" aria-labelledby="orcamento-titulo" hidden>
+                <h2 id="orcamento-titulo">Orçamento</h2>
+                <p id="orcamento-situacao" class="orcamento-situacao" role="status"></p>
+                <p id="orcamento-observacao" class="orcamento-observacao" hidden></p>
+
+                <div id="orcamento-resposta" class="acoes-orcamento" hidden>
+                    <button type="button" id="btn-aprovar-orcamento" class="btn btn-primario">Aprovar valor</button>
+                    <button type="button" id="btn-recusar-orcamento" class="btn btn-contorno">Recusar</button>
+                </div>
+
+                <form id="form-orcamento" class="form-orcamento" novalidate hidden>
+                    <div class="input-group">
+                        <label for="orcamento-valor">Valor do serviço (R$)</label>
+                        <input type="text" id="orcamento-valor" name="orcamento-valor" inputmode="decimal" autocomplete="off" maxlength="20" placeholder="Ex.: 350,00" aria-describedby="dica-orcamento-valor erro-orcamento-valor">
+                        <p id="dica-orcamento-valor" class="dica-campo">Entre R$ 1,00 e R$ 100.000,00.</p>
+                        <p id="erro-orcamento-valor" class="campo-erro" hidden></p>
+                    </div>
+                    <div class="input-group">
+                        <label for="orcamento-obs">O que está incluso <span class="opcional">(opcional)</span></label>
+                        <textarea id="orcamento-obs" name="orcamento-obs" rows="2" maxlength="200" placeholder="Ex.: inclui material e mão de obra." aria-describedby="orcamento-contador"></textarea>
+                        <p id="orcamento-contador" class="dica-campo">0 de 200 caracteres.</p>
+                    </div>
+                    <button type="submit" id="btn-enviar-orcamento" class="btn btn-primario btn-bloco">Enviar orçamento</button>
+                </form>
+
+                <details id="orcamento-historico" class="orcamento-historico" hidden>
+                    <summary>Histórico de valores</summary>
+                    <ol id="orcamento-lista"></ol>
+                </details>
+            </section>
 
             <div class="acoes">
                 <a id="link-chat" class="btn btn-contorno btn-bloco">Abrir conversa</a>

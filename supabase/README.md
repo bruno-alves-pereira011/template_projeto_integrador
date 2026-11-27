@@ -27,6 +27,8 @@
 | `testes/013_categorias_admin.sql` | Roteiro da US-018 (G1 a G18). Desfaz tudo ao final. |
 | `migrations/014_privacidade_limites.sql` | DEBT-010 (banca de 2026-11-26): ninguém lê `usuarios.telefone` de outra pessoa (visitante só `id, nome`; logado `id, nome, tipo_usuario, created_at`); o diretório pega o telefone de contato por `telefone_publico()` e o dono lê o próprio por `meu_telefone()`. Limites de tamanho iguais aos das telas (nome 120, telefones 20, cidade/bairro 80, descrição do perfil 500, descrição da contratação 1000, endereço 200, comentário 500). Não altera dados. **Aplicar junto com o front da mesma branch.** |
 | `testes/014_privacidade_limites.sql` | Roteiro do DEBT-010 (P1 a P20). Desfaz tudo ao final. |
+| `migrations/015_orcamentos.sql` | Orçamento da contratação (US-022, FR27–FR30, BR24–BR26): tabela `orcamentos` (valor em centavos de R$ 1,00 a R$ 100.000,00, observação até 200, situação `aguardando`/`aprovado`/`recusado`), um aguardando e um aprovado por contratação (índice único), leitura só das partes, **nenhuma escrita direta pelo app**: `enviar_orcamento()` (profissional) e `responder_orcamento()` (cliente), `security definer`. Entra no Realtime. Não altera dados. |
+| `testes/015_orcamentos.sql` | Roteiro da US-022 (O1 a O23). Desfaz tudo ao final; cria duas contratações cliente → prof1 e força o prof1 como aprovado. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 
