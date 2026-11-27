@@ -124,16 +124,20 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 **Objetivo:** Orcamento, pagamento simulado, avaliacoes e favoritos.
 **Valor de negocio:** Medio
-**Estimativa:** a refinar
+**Estimativa:** 16 pts refinados (US-022 a US-026: orcamento + avaliacao); pagamento simulado e favoritos a refinar
+**Origem:** `docs/discovery/helpme-marco3-orcamento-avaliacao.md` e `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (G0 e G1 aprovados em 2026-11-27). Primeiro vertical slice: US-022 + US-023 (orcamento de ponta a ponta).
 **GitHub Epic Issue:** -
 
 ##### User Stories
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| (a refinar) | - | Orcamento: profissional envia valor, cliente aprova | - | Ideia | - | - | - | - |
+| US-022 | - | Enviar e responder orcamento da contratacao | 5 | To Do | Sprint 05 | - | - | - |
+| US-023 | - | Concluir so com valor aprovado e cancelar antes de aprovar | 3 | To Do | Sprint 05 | - | - | - |
+| US-024 | - | Situacao do orcamento em Minhas contratacoes | 2 | Backlog | - | - | - | - |
+| US-025 | - | Avaliar o profissional depois do servico (HU04) | 3 | To Do | Sprint 05 | - | - | - |
+| US-026 | - | Avaliacoes no perfil publico do profissional | 3 | To Do | Sprint 05 | - | - | - |
 | (a refinar) | - | Pagamento simulado (forma + status pago, sem gateway) | - | Ideia | - | - | - | - |
-| (a refinar) | - | HU04 — Avaliar profissional (1–5 + comentario). **Atencao:** a politica `avaliacoes: autor cria` (001) deixa qualquer usuario logado avaliar; a HU04 precisa exigir contratacao `concluida` | - | Ideia | - | - | - | - |
 | (a refinar) | - | HU05 — Favoritar profissional | - | Ideia | - | - | - | - |
 
 ---
@@ -151,7 +155,7 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | DEBT-009 | **Done (mesclado na `main`).** Navegacao em vaivem no perfil do profissional: todas as saidas de `profissional.html`, `profissionais.html` e `home-cliente.html` levavam a home do cliente, e o profissional que abria o proprio perfil publico ficava preso entre as duas telas; o "Voltar" era link comum e o voltar do navegador reabria a tela anterior. Correcao: `js/telas/navegacao.js` (menu montado de uma lista unica, tambem em `contratacoes.html`; "Meu painel" pela mesma regra do login; "Voltar" pelo historico so quando a entrada anterior da aba e o destino, com trava contra clique multiplo; recarrega se a sessao mudar em outra aba ou no bfcache), `lerPapel()` em `js/servicos/sessao.js` como regra unica de papel, "Sair" que funciona sem rede, aviso de perfil proprio e "Voltar para o meu painel". Banca de revisao (2026-11-24) reprovou a 1a versao; os 16 itens foram corrigidos. Decisao do PO: **admin nao contrata** (sem "Contratar", telas de cliente mandam ao painel e migration 009 barra no banco — 009 aplicada (conferido no banco real em 2026-11-27)). Junto: `helpme-app/js/` separado em `servicos/` (sem DOM) e `telas/`. Testes de tela real (Playwright/Edge): 42/42 + 66/66 + 31/31 + fumaca 8/8 nas 18 paginas | Alta | 2 | Profissional sem caminho de volta ao painel; historico do navegador em loop |
 | DEBT-010 | **Itens 1 a 4 Done (mesclados na `main`); itens 5 a 19 em aberto.** Achados da banca de revisão de 2026-11-26 sobre as stories em Review (veredito: reprovado). Corrigidos nesta branch: (1) senha das contas de teste e do admin removida de `supabase/README.md` e `seed.sql` — **o PO precisa trocar as senhas no Supabase real**, porque a antiga continua no histórico do git; (2) migration **014**: ninguém lê `usuarios.telefone` de outra pessoa (antes o visitante lia pela API o telefone do cadastro de todo aprovado), o diretório usa `telefone_publico()` e o dono `meu_telefone()`; (4) limites de tamanho no banco iguais aos das telas. Também: "Done 01" na coluna Sprint da US-003. Testes de tela 16/16 (meu_telefone simulado). **014 aplicada pelo PO (2026-11-26):** roteiro **20/20**; ponta a ponta real só de leitura 10/11 (a falha foi do critério do teste: um aprovado não tem telefone algum, só WhatsApp, e a view devolve o mesmo valor da fórmula antiga para os 4 aprovados). US-002, 003, 007 e 012 liberadas para Done. **Senhas trocadas pelo PO (2026-11-26):** a senha antiga é recusada nas 5 contas e as sessões anteriores foram encerradas; US-014 liberada para Done. Itens 1 a 4 da banca concluídos. Ficam para depois (itens 5–19 da banca): avaliar sem ter contratado, testes versionados no repositório, `reenvio` com dois sentidos, efeito colateral de `solicitar_analise()`, tradutor de erro copiado em 8 arquivos, funções grandes, vínculo com categoria desativada pela API, menu admin copiado, migrations reeditadas, `minha_ultima_decisao()` sem uso, cálculo de tempo na fila duplicado, limite do nome 120 × 100, `cliente.js` fora do padrão IIFE, senha mínima de 6 e comentário desatualizado na 001 | Média (itens 5–19 em aberto) | 2 | Telefone pessoal exposto; senha de admin pública; texto sem limite pela API |
 | DEBT-011 | **Done (mesclado na `main` em 2026-11-27).** A branch `docs/sprint-03-planning` nunca foi mesclada e guardava arquivos que não existiam na `main`. Recuperados: `docs/sprints/sprint_planning_03.md` e `sprint_planning_04.md`, `docs/retrospectives/sprint_02_retro.md`, `docs/tasks/testes_contratacao.md` e os testes `supabase/testes/_supabase.mjs`, `contratacao_api.mjs`, `contratacao_telas.mjs` e `us010_chat_rls.sql`; US-010 em Done (decisão do PO de 2026-11-09). Os testes `.mjs` foram ajustados aos caminhos do DEBT-009 (`js/servicos/`, `js/telas/`) e exigem a senha em `HELPME_SENHA` (sem senha padrão, DEBT-010). O conteúdo dos planejamentos é o de 09/11, sem atualização | Média | 1 | Planejamento das Sprints 03/04 e testes da contratação fora da `main` |
-| DEBT-012 | **Aberto.** Banco aceita `descricao` e `endereco` vazios ou só com espaços em `contratacoes` (achado US7-09 dos testes de 2026-11-09; só o formulário barra). Era o DEBT-009 da Sprint 03, nunca feito; o número 009 foi reaproveitado para outra dívida em 24/11 (retrospectiva da Sprint 03). Correção: migration nova com `check (char_length(btrim(descricao)) > 0)` e `check (char_length(btrim(endereco)) > 0)` (a 014 já limita o máximo), validada antes contra os dados reais; `node supabase/testes/contratacao_api.mjs` US7-09 passa | Média | 1 | Contratação sem descrição ou endereço criada pela API |
+| DEBT-012 | **Sprint 05 (To Do).** Banco aceita `descricao` e `endereco` vazios ou só com espaços em `contratacoes` (achado US7-09 dos testes de 2026-11-09; só o formulário barra). Era o DEBT-009 da Sprint 03, nunca feito; o número 009 foi reaproveitado para outra dívida em 24/11 (retrospectiva da Sprint 03). Correção: migration nova com `check (char_length(btrim(descricao)) > 0)` e `check (char_length(btrim(endereco)) > 0)` (a 014 já limita o máximo), validada antes contra os dados reais; `node supabase/testes/contratacao_api.mjs` US7-09 passa | Média | 1 | Contratação sem descrição ou endereço criada pela API |
 | DEBT-013 | **Em Review (branch `fix/DEBT-013-sair-no-topo`).** Pedido do PO (2026-11-27): o "Sair" no canto de cima das telas do cliente era clicado por engano, por hábito de "voltar". Em `meu-perfil`, `espera-cliente`, `servico-andamento`, `contratacao` (conversa) e `solicitar-pedido`, o topo agora tem "Voltar para o início": o cliente vai à home e o profissional ao painel (mesma regra do login, `destinoDoPapel`). "Sair" fica no rodapé de Meu perfil e no menu da home e de Minhas contratações; `bloqueio` e `completar-perfil` (profissional) mantêm o "Sair". Testes sem login (360 e 1280px): 58/58. Falta conferir logado | Média | 1 | Cliente sai da conta sem querer |
 | DEBT-001 | **Aberto.** README do projeto: rastreabilidade HU × tela × tabela (secao 9), contratacao no minimundo/HUs, secao "Como rodar o projeto" | Alta (DoD do Marco 2) | 2 | Avaliacao da disciplina cobra rastreabilidade |
 | DEBT-002 | **Aberto.** Revisao final por agente que nao escreveu o codigo: fluxos com usuarios do seed, tentativa de burlar RLS, checklist de acessibilidade/mobile | Alta (DoD do Marco 2) | 2 | Garante seguranca e qualidade antes da entrega |
@@ -228,6 +232,11 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | FR24 | US-012 |
 | FR25, FR26, BR21 | US-019, US-020 (Could) |
 | NFR11 | US-014, US-015, US-016 (criterio comum) |
+| FR27, FR28, FR29, FR30, BR24, BR25, BR26, NFR12, NFR13 | US-022 |
+| BR23 (altera BR06), FR31, NFR14 | US-023 |
+| FR32 | US-024 |
+| FR33, FR34, BR27, BR28, BR29 | US-025 |
+| FR35, NFR15, A11 | US-026 |
 
 ---
 
