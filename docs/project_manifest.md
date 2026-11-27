@@ -84,13 +84,13 @@ Após o primeiro /sprint-planning de um projeto derivado, atualizar este manifes
 
 ## Estado Atual do Projeto
 
-- **Sprint ativa:** Sprint 04 (`docs/sprints/sprint_planning_04.md`), de 23/11 a 30/11/2026. O arquivo ainda é o rascunho de 09/11, recuperado no DEBT-011: o escopo real da sprint foi além dele (US-021, US-019 e US-020 também entraram).
+- **Sprint ativa:** Sprint 04 (`docs/sprints/sprint_planning_04.md`), de 23/11 a 30/11/2026. Foram entregues 27 pontos contra 16 planejados: além do rascunho, entraram US-021, US-019 e US-020. A seção "Execução real" do arquivo registra o que foi feito.
 - **Sprints anteriores:** Sprint 01 e Sprint 02 com retrospectiva (`docs/retrospectives/sprint_01_retro.md`, `sprint_02_retro.md`). Sprint 03 (`docs/sprints/sprint_planning_03.md`) **sem retrospectiva**.
 - **Backlog** (`docs/product_backlog.md`):
   - Done: US-001 a US-010 e US-012 a US-021.
   - Review: **US-011** (esqueci minha senha). Faltam a URL de `redefinir-senha.html` nas Redirect URLs do Supabase (TASK-004) e os casos RS-04/05/07/08 com e-mail real.
   - Dívidas abertas: DEBT-001 (README com rastreabilidade, DoD do Marco 2), DEBT-002 (revisão final independente), DEBT-007 (fixar versão da CDN do supabase-js) e os itens 5 a 19 da banca do DEBT-010.
-  - DEBT-009, DEBT-010 (itens 1 a 4) e DEBT-011 já estão na `main`; o backlog ainda os mostra "Em Review".
+  - DEBT-003 a DEBT-006, DEBT-009, DEBT-010 (itens 1 a 4) e DEBT-011 em Done.
   - Marco 3: EPIC-005 (pós-contratação e avaliações) ainda não começou.
 - **Banco (Supabase `btjjbtjxcbvswgezpwgc`):** migrations 001 a 014 aplicadas pelo PO no SQL Editor; roteiros de teste em `supabase/testes/`. DDL e escrita no banco são sempre do PO.
 - **Segurança (DEBT-010):** telefone pessoal fechado (014), limites de tamanho no banco e senhas das contas de teste e do admin trocadas em 26/11, fora do repositório. Os testes automatizados (`supabase/testes/*.mjs`, Node) pedem a senha em `HELPME_SENHA`.
@@ -100,7 +100,6 @@ Após o primeiro /sprint-planning de um projeto derivado, atualizar este manifes
   1. Fechar a US-011: Redirect URL e teste com e-mail real.
   2. DEBT-001 e DEBT-002, que fecham o DoD do Marco 2.
   3. `/sprint-retrospective` da Sprint 03 e, em 30/11, da Sprint 04.
-  4. Atualizar o backlog e o `sprint_planning_04.md` para o que foi entregue de fato.
-  5. Depois, `/sprint-planning` do Marco 3 (EPIC-005 e itens 5 a 19 da banca).
+  4. Depois, `/sprint-planning` do Marco 3 (EPIC-005 e itens 5 a 19 da banca).
 
 > Atualize apenas ao final de cada sprint ou mudança relevante. Evite atualizações desnecessárias.
