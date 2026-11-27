@@ -12,7 +12,7 @@
   - #servico-detalhe: #rotulo-outra-parte, #detalhe-outra-parte, #detalhe-status, #detalhe-data,
     #detalhe-descricao, #detalhe-endereco, #servico-situacao.
   - Contato: #btn-ligar, #btn-whatsapp, #contato-indisponivel, #link-chat. Ação: #btn-concluir.
-  - #servico-aviso: avisos de ação. #btn-sair na barra do topo.
+  - #servico-aviso: avisos de ação. #link-inicio ("Voltar para o início") na barra do topo (DEBT-013).
   - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js ->
     js/servicos/contratacao-comum.js -> js/telas/servico-andamento.js.
 -->
@@ -41,7 +41,8 @@
                 </span>
                 HelpMe
             </a>
-            <button type="button" id="btn-sair" class="btn btn-contorno">Sair</button>
+            <!-- DEBT-013: "Voltar para o início" no lugar do "Sair", que era clicado por engano. O script troca o destino pelo início do papel (profissional: o painel) -->
+            <a href="home-cliente.html" id="link-inicio" class="btn btn-contorno btn-voltar-inicio">Voltar para o início</a>
         </div>
 
         <header class="login-header">

@@ -34,7 +34,7 @@
         data: document.getElementById('data_desejada'),
         btnEnviar: document.getElementById('btn-enviar'),
         linkVoltarPerfil: document.getElementById('link-voltar-perfil'),
-        btnSair: document.getElementById('btn-sair')
+        // Sem "Sair" nesta tela (DEBT-013): a barra do topo tem "Voltar para o início".
     };
 
     const idProfissional = (new URLSearchParams(window.location.search).get('profissional') || '').trim();
@@ -263,7 +263,6 @@
 
     el.form.addEventListener('submit', enviar);
     el.btnRecarregar.addEventListener('click', carregar);
-    el.btnSair.addEventListener('click', sair);
 
     carregar();
 })();
