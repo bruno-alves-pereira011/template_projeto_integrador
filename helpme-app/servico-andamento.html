@@ -2,7 +2,7 @@
   TELA: Serviço em andamento (servico-andamento.html?id=<id da contratação>) — US-009 (decisão D8)
   OBJETIVO: Contratação 'aceita': cliente e profissional veem o contato um do outro (Ligar / WhatsApp)
   e qualquer um marca como concluída (só com valor aprovado, US-023); o cliente cancela antes de aprovar.
-  'concluida': mostra o resumo, sem ações.
+  'concluida': mostra o resumo, sem ações; o cliente avalia o profissional (US-025) e edita depois.
   (O nome antigo foi mantido; agora lê a tabela 'contratacoes', não a antiga 'pedidos'.)
   REGRAS: exige sessão. Só as partes enxergam a contratação (RLS). O contato vem da função
   contato_contraparte (BR07: o telefone do cliente só é liberado ao profissional depois do aceite).
@@ -18,6 +18,10 @@
   - Orçamento (US-022): #orcamento com #orcamento-situacao, #orcamento-observacao; cliente: #orcamento-resposta
     (#btn-aprovar-orcamento, #btn-recusar-orcamento); profissional: #form-orcamento (#orcamento-valor,
     #orcamento-obs, #btn-enviar-orcamento); histórico: #orcamento-historico / #orcamento-lista.
+  - Avaliação (US-025, só o cliente e só 'concluida'): #avaliacao com #avaliacao-titulo, #avaliacao-situacao;
+    #avaliacao-resumo (#avaliacao-nota-texto, #avaliacao-comentario-texto, #btn-editar-avaliacao);
+    #form-avaliacao (radios name="avaliacao-nota" em #avaliacao-notas, #erro-avaliacao-nota, #avaliacao-comentario,
+    #avaliacao-contador, #btn-enviar-avaliacao, #btn-cancelar-edicao). "#avaliacao" na URL rola até o bloco.
   - #servico-aviso: avisos de ação. #link-inicio ("Voltar para o início") na barra do topo (DEBT-013).
   - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js ->
     js/servicos/contratacao-comum.js -> js/telas/servico-andamento.js.
@@ -117,6 +121,41 @@
                     <summary>Histórico de valores</summary>
                     <ol id="orcamento-lista"></ol>
                 </details>
+            </section>
+
+            <!-- US-025: o cliente avalia o profissional depois de concluída. Quem pode é o banco que decide (018, BR27). -->
+            <section id="avaliacao" class="bloco-orcamento bloco-avaliacao" aria-labelledby="avaliacao-titulo" hidden>
+                <h2 id="avaliacao-titulo" tabindex="-1">Avaliar profissional</h2>
+                <p id="avaliacao-situacao" class="orcamento-observacao"></p>
+
+                <div id="avaliacao-resumo" class="avaliacao-resumo" hidden>
+                    <p id="avaliacao-nota-texto" class="orcamento-situacao"></p>
+                    <p id="avaliacao-comentario-texto" class="avaliacao-comentario" hidden></p>
+                    <button type="button" id="btn-editar-avaliacao" class="btn btn-contorno">Editar avaliação</button>
+                </div>
+
+                <form id="form-avaliacao" class="form-orcamento" novalidate hidden>
+                    <fieldset id="avaliacao-notas" class="grupo-opcoes" aria-describedby="erro-avaliacao-nota">
+                        <legend>Nota, de 1 a 5 (obrigatória)</legend>
+                        <div class="notas-avaliacao">
+                            <label class="opcao"><input type="radio" name="avaliacao-nota" value="1"> 1 <span aria-hidden="true">★</span></label>
+                            <label class="opcao"><input type="radio" name="avaliacao-nota" value="2"> 2 <span aria-hidden="true">★</span></label>
+                            <label class="opcao"><input type="radio" name="avaliacao-nota" value="3"> 3 <span aria-hidden="true">★</span></label>
+                            <label class="opcao"><input type="radio" name="avaliacao-nota" value="4"> 4 <span aria-hidden="true">★</span></label>
+                            <label class="opcao"><input type="radio" name="avaliacao-nota" value="5"> 5 <span aria-hidden="true">★</span></label>
+                        </div>
+                    </fieldset>
+                    <p id="erro-avaliacao-nota" class="campo-erro" role="alert" hidden></p>
+                    <div class="input-group">
+                        <label for="avaliacao-comentario">Comentário <span class="opcional">(opcional)</span></label>
+                        <textarea id="avaliacao-comentario" name="avaliacao-comentario" rows="3" maxlength="500" placeholder="Ex.: chegou no horário e resolveu o problema." aria-describedby="avaliacao-contador"></textarea>
+                        <p id="avaliacao-contador" class="dica-campo">0 de 500 caracteres.</p>
+                    </div>
+                    <div class="acoes-orcamento">
+                        <button type="submit" id="btn-enviar-avaliacao" class="btn btn-primario">Enviar avaliação</button>
+                        <button type="button" id="btn-cancelar-edicao" class="btn btn-contorno" hidden>Cancelar edição</button>
+                    </div>
+                </form>
             </section>
 
             <div class="acoes">

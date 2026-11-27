@@ -9,6 +9,7 @@
 //   Orçamento (US-022): VALOR_MINIMO_CENTAVOS, VALOR_MAXIMO_CENTAVOS, formatarReais, lerValorEmCentavos,
 //   buscarOrcamentos, enviarOrcamento, responderOrcamento, assinarOrcamentos, traduzirErroOrcamento.
 //   Concluir/cancelar (US-023): traduzirErroContratacao.
+//   Avaliação (US-025): COMENTARIO_AVALIACAO_MAXIMO, buscarMinhaAvaliacao, salvarAvaliacao, traduzirErroAvaliacao.
 // SEGURANÇA: quem decide o que cada um lê e quais transições valem é o banco (RLS, trigger
 // validar_contratacao e função contato_contraparte). Aqui só se consome.
 
@@ -240,4 +241,62 @@ function traduzirErroOrcamento(falha) {
         return 'O orçamento ainda não está disponível. Avise a equipe (migration 015).';
     }
     return 'Não foi possível concluir agora. Tente novamente.';
+}
+
+
+// ---------- Avaliação (US-025) ----------
+// Quem avalia é o banco que decide (migration 018, BR27): só o cliente com contratação concluída com o
+// profissional, uma vez por profissional, e pelo app só se edita nota e comentário. Ninguém apaga (BR28).
+
+const COMENTARIO_AVALIACAO_MAXIMO = 500; // mesmo limite da 014 (avaliacoes_comentario_tamanho)
+const COLUNAS_AVALIACAO = 'id, nota, comentario, created_at';
+
+// A avaliação de quem está logado para o profissional, ou null.
+async function buscarMinhaAvaliacao(uid, profissionalId) {
+    const { data, error } = await supabaseClient
+        .from('avaliacoes')
+        .select(COLUNAS_AVALIACAO)
+        .eq('usuario_id', uid)
+        .eq('profissional_id', profissionalId)
+        .maybeSingle();
+
+    if (error) throw error;
+    return data;
+}
+
+
+// Cria (idAvaliacao null) ou edita a avaliação. Na edição só vão nota e comentário: o banco não deixa
+// mudar outra coluna. Devolve a linha salva. Se a edição não mudar nenhuma linha, lança { code: 'SEM_LINHA' }.
+async function salvarAvaliacao({ idAvaliacao, uid, profissionalId, nota, comentario }) {
+    const campos = { nota: nota, comentario: comentario || null };
+
+    const consulta = idAvaliacao
+        ? supabaseClient.from('avaliacoes').update(campos).eq('id', idAvaliacao).select(COLUNAS_AVALIACAO).maybeSingle()
+        : supabaseClient.from('avaliacoes')
+            .insert({ usuario_id: uid, profissional_id: profissionalId, ...campos })
+            .select(COLUNAS_AVALIACAO).single();
+
+    const { data, error } = await consulta;
+    if (error) throw error;
+    if (!data) throw { code: 'SEM_LINHA', message: 'Nenhuma avaliação foi alterada.' };
+    return data;
+}
+
+
+// Mensagem para a tela. O RLS e as constraints falam inglês, então cada código vira texto fixo.
+function traduzirErroAvaliacao(falha) {
+    const codigo = falha && falha.code;
+    const texto = ((falha && falha.message) || '').toLowerCase();
+
+    if (codigo === '23505') return 'Você já tinha avaliado este profissional. A tela foi atualizada.';
+    if (codigo === 'SEM_LINHA') return 'Não encontramos sua avaliação para editar. A tela foi atualizada.';
+    if (codigo === '42501') {
+        return 'Não foi possível salvar: só o cliente de um serviço concluído avalia o profissional, e ele precisa estar ativo.';
+    }
+    if (codigo === '23514') return 'Confira a nota (de 1 a 5) e o comentário (até 500 caracteres).';
+    if (texto.includes('failed to fetch') || texto.includes('network')) {
+        return 'Sem conexão com o servidor. Verifique sua internet e tente de novo.';
+    }
+    if (texto.includes('jwt') || codigo === 'PGRST301') return 'Sua sessão expirou. Entre de novo para avaliar.';
+    return 'Não foi possível salvar a avaliação agora. Tente novamente.';
 }

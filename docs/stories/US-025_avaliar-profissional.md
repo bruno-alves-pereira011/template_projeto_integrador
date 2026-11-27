@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 3
 **Sprint:** Sprint 05
-**Status:** To Do
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -150,6 +150,7 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 
 ## Notas e Comentarios
 
+- 2026-11-27: implementada na branch `feat/US-025-avaliar-profissional` (decisões em `docs/tasks/breakdown_US-025.md`). Telas com sessão e banco simulados **33/33**; US-022 e US-023 na mesma tela sem regressão (23/23 cada). Falta o PO aplicar a `018_avaliacoes.sql` e rodar `supabase/testes/018_avaliacoes.sql` (A1–A16); depois, `contratacao_api.mjs` (US25-01..04, só recusas).
 - 2026-11-27: story gerada no Modo Backlog a partir de `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (REQUIREMENTS_READY), aprovada pelo PO.
 
 ---
