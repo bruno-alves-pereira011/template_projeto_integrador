@@ -1,5 +1,5 @@
 // ===================================================================
-// HelpMe — teste das TELAS de US-007 a US-010 no Chrome real (headless)
+// HelpMe — teste das TELAS de US-007 a US-010 e US-023 no Chrome real (headless)
 // ===================================================================
 // COMO RODAR (Node 22+, Python 3 e Google Chrome; sem instalar nada):
 //   node supabase/testes/contratacao_telas.mjs
@@ -224,6 +224,11 @@ async function main() {
         cliente_id: cli.id, profissional_id: p1.id, descricao: `${TAG} ${rotulo}`, endereco: 'Rua Teste, 10 - Centro', data_desejada: AMANHA,
     })).data?.[0]?.id;
     const status = (u, id, de, para) => api(u, 'PATCH', `contratacoes?id=eq.${id}&status=eq.${de}`, { status: para });
+    // US-023 (BR23): concluir exige valor aprovado. prof1 envia R$ 350,00 e o cliente aprova (pela API).
+    const aprovarValor = async (id) => {
+        const env = await api(p1, 'POST', 'rpc/enviar_orcamento', { p_contratacao_id: id, p_valor_centavos: 35000 });
+        return (await api(cli, 'POST', 'rpc/responder_orcamento', { p_orcamento_id: env.data?.id, p_aprovar: true })).data?.situacao === 'aprovado';
+    };
     const qtdContratacoes = async () => (await api(cli, 'GET', 'contratacoes?select=id&cliente_id=eq.' + cli.id)).data.length;
     const cardSel = (id) => `[...document.querySelectorAll('.card-numero')].find((e) => e.textContent.trim() === 'Solicitação nº ${id}')`;
     const grupoDoCard = (id) => `(${cardSel(id)})?.closest('section')?.id`;
@@ -535,6 +540,7 @@ async function main() {
         await A.esperar(`!document.getElementById('chat-detalhe').hidden`); await B.esperar(`!document.getElementById('chat-detalhe').hidden`);
         await A.realtimePronto(); await B.realtimePronto();
         const qtdAntes = await A.js(`document.querySelectorAll('#chat-lista > *').length`);
+        await aprovarValor(idUI);
         t = Date.now();
         await status(cli, idUI, 'aceita', 'concluida');
         const fechado = `document.getElementById('chat-texto').disabled && document.getElementById('btn-enviar').disabled && !document.getElementById('chat-encerrado').hidden`;
@@ -565,14 +571,39 @@ async function main() {
         const voltar = await B.js(`document.getElementById('link-voltar').getAttribute('href')`);
         check('UI10-20', 'US-010', 'chat abre e "Voltar" leva para a lista (D9, CH-10)', ms !== null && voltar === 'contratacoes.html', voltar);
 
-        // US-009 c5 pela tela: concluir com as duas abertas (AP-06)
+        // US-009 c5 pela tela: concluir com as duas abertas (AP-06), agora só depois do valor aprovado (US-023)
         await A.ir(`servico-andamento.html?id=${idAntes}`); await B.ir(`servico-andamento.html?id=${idAntes}`);
         await A.esperar(`!document.getElementById('servico-detalhe').hidden`); await B.esperar(`!document.getElementById('servico-detalhe').hidden`);
         await A.realtimePronto(); await B.realtimePronto();
+        const semValor = await Promise.all([A, B].map(async (x) => [await x.visivel('#btn-concluir'), await x.visivel('#concluir-bloqueado'), await x.visivel('#btn-cancelar-contratacao')]));
+        check('UI23-01', 'US-023', 'sem valor aprovado: nenhuma tela mostra Concluir e as duas explicam "Combine e aprove o valor" (c1)',
+            semValor.every(([conc, bloq]) => !conc && bloq) && (await A.texto('#concluir-bloqueado')) === 'Combine e aprove o valor antes de concluir.', JSON.stringify(semValor));
+        check('UI23-02', 'US-023', 'sem valor aprovado: "Cancelar contratacao" so para o cliente (c3)', semValor[0][2] && !semValor[1][2], JSON.stringify(semValor));
+        const consoleConclui = await B.js(`(async () => { const r = await supabaseClient.from('contratacoes').update({ status: 'concluida' }).eq('id', ${idAntes}).select('id'); return r.error?.code || 'sem erro'; })()`);
+        check('UI23-03', 'US-023', 'console do profissional: concluir sem valor aprovado volta 22023 (c2)', consoleConclui === '22023', consoleConclui);
+        const valorOk = await aprovarValor(idAntes);
+        const comValor = `!document.getElementById('btn-concluir').hidden && document.getElementById('concluir-bloqueado').hidden && document.getElementById('btn-cancelar-contratacao').hidden`;
+        const [va, vb] = await Promise.all([A.esperar(comValor, 8000), B.esperar(comValor, 8000)]);
+        check('UI23-04', 'US-023', 'valor aprovado: Concluir aparece e Cancelar some nas duas telas sem recarregar (c1, c4)', valorOk && va !== null && vb !== null, `A ${va} ms, B ${vb} ms`);
         await B.clicar('#btn-concluir');
         const concluida = `document.getElementById('detalhe-status').textContent === 'Concluída' && document.getElementById('btn-concluir').hidden`;
         const [ca, cb] = await Promise.all([A.esperar(concluida, 8000), B.esperar(concluida, 8000)]);
         check('UI9-11', 'US-009', 'profissional conclui; as duas telas atualizam e nao ha mais acoes (c5, AP-06)', ca !== null && cb !== null, `A ${ca} ms, B ${cb} ms`);
+
+        // US-023 c3 pela tela: o cliente cancela a aceita antes de aprovar; o profissional vê "Cancelada pelo cliente"
+        const idCancelAceita = await criar('US-023 cancelar aceita'); criadas.push(idCancelAceita);
+        await status(p1, idCancelAceita, 'solicitada', 'aceita');
+        await A.ir(`servico-andamento.html?id=${idCancelAceita}`); await B.ir(`servico-andamento.html?id=${idCancelAceita}`);
+        await A.esperar(`!document.getElementById('servico-detalhe').hidden`); await B.esperar(`!document.getElementById('servico-detalhe').hidden`);
+        await A.realtimePronto(); await B.realtimePronto();
+        await A.clicar('#btn-cancelar-contratacao');
+        const [xa, xb] = await Promise.all([
+            A.esperar(`location.pathname.endsWith('espera-cliente.html') && document.getElementById('detalhe-status')?.textContent === 'Cancelada por você'`, 10000),
+            B.esperar(`location.pathname.endsWith('contratacoes.html') && [...document.querySelectorAll('.card-numero')].find((e) => e.textContent.trim() === 'Solicitação nº ${idCancelAceita}')?.closest('.card-pedido')?.querySelector('.badge-status')?.textContent === 'Cancelada pelo cliente'`, 10000),
+        ]);
+        check('UI23-05', 'US-023', 'cliente cancela pela tela: ele ve "Cancelada por voce" e o profissional "Cancelada pelo cliente" (c3, FR31)', xa !== null && xb !== null, `A ${xa} ms, B ${xb} ms`);
+        const linhaCancel = (await api(cli, 'GET', `contratacoes?select=status&id=eq.${idCancelAceita}`)).data?.[0]?.status;
+        check('UI23-06', 'US-023', 'status no banco: cancelada', linhaCancel === 'cancelada', linhaCancel);
 
         // Erros de JavaScript nas páginas
         const erros = [A, B, C].flatMap((x) => x.errosJs.map((e) => `${x.nome}: ${String(e).split('\n')[0]}`));

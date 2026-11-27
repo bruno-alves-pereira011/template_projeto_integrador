@@ -1,5 +1,5 @@
 // ===================================================================
-// HelpMe — teste de API, RLS, triggers e Realtime (US-007 a US-010)
+// HelpMe — teste de API, RLS, triggers e Realtime (US-007 a US-010, US-023)
 // ===================================================================
 // COMO RODAR (Node 22+ , sem instalar nada):
 //   node supabase/testes/contratacao_api.mjs
@@ -26,6 +26,12 @@ const novaC = (u, prof, extra = {}) => insertC(u, {
     endereco: 'Rua Teste, 1 - Centro', data_desejada: AMANHA, ...(extra.campos || {}),
 });
 const contato = (u, id) => api(u, 'POST', 'rpc/contato_contraparte', { p_contratacao_id: id });
+// US-023 (BR23): concluir exige orçamento aprovado (migrations 015 e 016). O profissional envia, o cliente aprova.
+async function aprovarValor(prof, cli, id, centavos = 35000) {
+    const env = await api(prof, 'POST', 'rpc/enviar_orcamento', { p_contratacao_id: id, p_valor_centavos: centavos });
+    const res = await api(cli, 'POST', 'rpc/responder_orcamento', { p_orcamento_id: env.data?.id, p_aprovar: true });
+    return res.data?.situacao === 'aprovado' ? null : `envio ${env.status} ${env.msg || ''} / resposta ${res.status} ${res.msg || ''}`;
+}
 
 // ---------- Realtime (protocolo Phoenix do Supabase, WebSocket nativo) ----------
 class Realtime {
@@ -213,8 +219,9 @@ async function main() {
     // ================= US-009 — cancelar / concluir =================
     r = await updateC(p1, c2?.id, { status: 'cancelada' });
     check('US9-03', 'US-009', 'profissional nao cancela', r.status >= 400, `${r.status} ${r.msg}`);
-    r = await updateC(cli, c1?.id, { status: 'cancelada' });
-    check('US9-04', 'US-009', 'cliente nao cancela depois do aceite', r.status >= 400, `${r.status} ${r.msg}`);
+    // US-023 mudou a BR06: o cliente PODE cancelar a aceita sem valor aprovado (US23-03); o profissional não.
+    r = await updateC(p1, c1?.id, { status: 'cancelada' });
+    check('US9-04', 'US-023', 'profissional nao cancela contratacao aceita (BR23)', r.status >= 400 && r.code === '42501', `${r.status} ${r.code} ${r.msg}`);
     r = await updateC(p2, c1?.id, { status: 'concluida' });
     check('US9-05', 'US-009', 'terceiro nao conclui', r.status === 200 && r.data.length === 0, `${r.status} ${JSON.stringify(r.data)}`);
 
@@ -288,6 +295,15 @@ async function main() {
     r = await api(null, 'GET', `mensagens?select=id&contratacao_id=eq.${c1?.id}`);
     check('US10-17', 'US-010', 'visitante nao le mensagens', (r.status === 200 && r.data.length === 0) || r.status === 401, `${r.status}`);
 
+    // ================= US-023 — concluir só com valor aprovado =================
+    r = await updateC(cli, c1?.id, { status: 'concluida' }, '&status=eq.aceita');
+    check('US23-01', 'US-023', 'concluir sem valor aprovado e recusado pelo banco (c2, BR23)',
+        r.status >= 400 && r.code === '22023' && /aprove o valor/i.test(r.msg || ''), `${r.status} ${r.code} ${r.msg}`);
+    const falhaValor = await aprovarValor(p1, cli, c1?.id);
+    check('US23-02', 'US-023', 'profissional envia e cliente aprova o valor (pre-requisito de concluir)', !falhaValor, falhaValor || '');
+    r = await updateC(cli, c1?.id, { status: 'cancelada' }, '&status=eq.aceita');
+    check('US23-04', 'US-023', 'cliente nao cancela depois do valor aprovado (c4, BR23)', r.status >= 400 && r.code === '22023', `${r.status} ${r.code} ${r.msg}`);
+
     // Concluir c1 e conferir que o chat fecha (US-009 c5, US-010 c4)
     r = await updateC(cli, c1?.id, { status: 'concluida' }, '&status=eq.aceita');
     check('US9-06', 'US-009', 'cliente conclui contratacao aceita (c5)', r.data?.[0]?.status === 'concluida', `${r.status} ${r.msg}`);
@@ -304,8 +320,18 @@ async function main() {
     r = await novaC(cli, p1, { rotulo: 'US-009 prof conclui' });
     const c4 = r.data?.[0];
     await updateC(p1, c4?.id, { status: 'aceita' }, '&status=eq.solicitada');
+    await aprovarValor(p1, cli, c4?.id);
     r = await updateC(p1, c4?.id, { status: 'concluida' }, '&status=eq.aceita');
-    check('US9-14', 'US-009', 'profissional tambem conclui (c5)', r.data?.[0]?.status === 'concluida', `${r.status} ${r.msg}`);
+    check('US9-14', 'US-009', 'profissional tambem conclui com valor aprovado (c5)', r.data?.[0]?.status === 'concluida', `${r.status} ${r.msg}`);
+
+    // US-023 c3: cliente cancela a aceita antes de aprovar; o profissional recebe pelo Realtime
+    r = await novaC(cli, p1, { rotulo: 'US-023 cancela aceita' });
+    const c5 = r.data?.[0];
+    await updateC(p1, c5?.id, { status: 'aceita' }, '&status=eq.solicitada');
+    r = await updateC(cli, c5?.id, { status: 'cancelada' }, '&status=eq.aceita');
+    check('US23-03', 'US-023', 'cliente cancela contratacao aceita sem valor aprovado (c3, FR31)', r.data?.[0]?.status === 'cancelada', `${r.status} ${r.code} ${r.msg}`);
+    const ev5 = await rtP1.esperar((e) => e.type === 'UPDATE' && e.record?.id === c5?.id && e.record?.status === 'cancelada');
+    check('US23-05', 'US-023', 'Realtime: profissional recebe o cancelamento em ate 3s (c3)', !!ev5, 'sem evento');
 
     // Chat em recusada / cancelada
     r = await msg(cli, c2?.id, 'em recusada');
@@ -316,7 +342,7 @@ async function main() {
     check('US10-22', 'US-010', 'nao envia em concluida pelo profissional (c4)', r.status === 403, `${r.status}`);
 
     // Vazamento de Realtime de contratacoes para o terceiro
-    const mine = [c1, c2, c3, c4, cForj, cVazia].filter(Boolean).map((c) => c.id);
+    const mine = [c1, c2, c3, c4, c5, cForj, cVazia].filter(Boolean).map((c) => c.id);
     const vaz = rtP2.eventos.filter((e) => mine.includes(e.record?.id) || mine.includes(e.old_record?.id));
     check('US8-14', 'US-008', 'Realtime: terceiro nao recebe eventos das contratacoes alheias', vaz.length === 0, `${vaz.length} eventos vazaram`);
 

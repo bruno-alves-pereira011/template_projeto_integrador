@@ -29,6 +29,8 @@
 | `testes/014_privacidade_limites.sql` | Roteiro do DEBT-010 (P1 a P20). Desfaz tudo ao final. |
 | `migrations/015_orcamentos.sql` | Orçamento da contratação (US-022, FR27–FR30, BR24–BR26): tabela `orcamentos` (valor em centavos de R$ 1,00 a R$ 100.000,00, observação até 200, situação `aguardando`/`aprovado`/`recusado`), um aguardando e um aprovado por contratação (índice único), leitura só das partes, **nenhuma escrita direta pelo app**: `enviar_orcamento()` (profissional) e `responder_orcamento()` (cliente), `security definer`. Entra no Realtime. Não altera dados. |
 | `testes/015_orcamentos.sql` | Roteiro da US-022 (O1 a O23). Desfaz tudo ao final; cria duas contratações cliente → prof1 e força o prof1 como aprovado. |
+| `migrations/016_conclusao_com_orcamento.sql` | Concluir só com valor aprovado e cancelar antes de aprovar (US-023, BR23, FR31): troca o corpo do trigger `validar_contratacao` (001). `aceita → concluida` passa a exigir orçamento aprovado; **novo** `aceita → cancelada`, só o cliente e só sem orçamento aprovado. As transições antigas não mudam. A função continua **sem** `security definer` (de propósito: `eh_papel_cliente_api()` olha o `current_user`) e ganha `search_path` fixo. Precisa da 015. Não altera dados. |
+| `testes/016_conclusao_com_orcamento.sql` | Roteiro da US-023 (C1 a C22). Desfaz tudo ao final; cria contratações cliente → prof1 em vários status e força o prof1 como aprovado. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 

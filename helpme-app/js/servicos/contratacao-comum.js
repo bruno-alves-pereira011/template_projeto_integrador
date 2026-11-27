@@ -8,6 +8,7 @@
 //   paginaDaContratacao, linkDoChat.
 //   Orçamento (US-022): VALOR_MINIMO_CENTAVOS, VALOR_MAXIMO_CENTAVOS, formatarReais, lerValorEmCentavos,
 //   buscarOrcamentos, enviarOrcamento, responderOrcamento, assinarOrcamentos, traduzirErroOrcamento.
+//   Concluir/cancelar (US-023): traduzirErroContratacao.
 // SEGURANÇA: quem decide o que cada um lê e quais transições valem é o banco (RLS, trigger
 // validar_contratacao e função contato_contraparte). Aqui só se consome.
 
@@ -95,6 +96,24 @@ function assinarContratacao(id, aoMudar) {
             { event: 'UPDATE', schema: 'public', table: 'contratacoes', filter: `id=eq.${id}` },
             (evento) => aoMudar(evento && evento.new))
         .subscribe();
+}
+
+
+// Mensagem para a tela quando o banco recusa concluir ou cancelar (BR23, migration 016).
+// As regras novas do trigger falam português com 22023/42501 (texto fixo da migration, sem dado de
+// ninguém): mostrado como veio. Rede vira texto fixo; o resto, `textoPadrao`.
+function traduzirErroContratacao(falha, textoPadrao) {
+    const codigo = falha && falha.code;
+    const texto = ((falha && falha.message) || '').toLowerCase();
+
+    // 42501 do RLS vem em inglês ("row-level security"): esse não vai para a tela.
+    if ((codigo === '22023' || codigo === '42501') && falha.message && !texto.includes('row-level security')) {
+        return falha.message;
+    }
+    if (texto.includes('failed to fetch') || texto.includes('network')) {
+        return 'Sem conexão com o servidor. Verifique sua internet e tente de novo.';
+    }
+    return textoPadrao;
 }
 
 

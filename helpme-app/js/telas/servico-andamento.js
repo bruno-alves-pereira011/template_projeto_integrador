@@ -5,8 +5,10 @@
 //   1. exigirSessao() + ?id=. Não é parte (ou não existe): "não encontrada".
 //   2. Só 'aceita' e 'concluida' ficam aqui; os outros status vão para a tela certa.
 //   3. Contato da outra parte pela função contato_contraparte (BR07) -> botões Ligar/WhatsApp.
-//   4. 'aceita': qualquer parte conclui (update condicionado a status = 'aceita'). Depois, sem ações.
-//   5. Realtime: se a outra parte concluir, a tela atualiza sozinha.
+//   4. 'aceita': qualquer parte conclui (update condicionado a status = 'aceita'), mas só com valor
+//      aprovado (US-023, BR23). Sem valor aprovado, o cliente pode cancelar. Depois, sem ações.
+//      Quem decide é o trigger validar_contratacao (016); a tela só esconde o que não cabe.
+//   5. Realtime: se a outra parte concluir ou cancelar, a tela atualiza sozinha.
 //   6. Orçamento (US-022): o profissional envia o valor; o cliente aprova ou recusa. Quem pode fazer o quê
 //      é o banco (enviar_orcamento / responder_orcamento); aqui só mostramos o que cabe a cada papel.
 //      Realtime dos orçamentos: a outra parte vê o envio e a resposta sem recarregar.
@@ -21,7 +23,7 @@
     let consultaAtual = 0;
     let assinada = false;
     let orcamentoAguardando = null;   // o orçamento que o cliente pode responder agora
-    let ocupado = false;              // trava contra duplo clique em enviar/aprovar/recusar
+    let ocupado = false;              // trava contra duplo clique em enviar/aprovar/recusar/concluir/cancelar
 
     function mostrarEstado(estado) {
         el('servico-carregando').hidden = estado !== 'carregando';
@@ -85,15 +87,24 @@
         el('detalhe-descricao').textContent = c.descricao;
         el('detalhe-endereco').textContent = c.endereco;
 
-        el('servico-situacao').textContent = c.status === 'concluida'
-            ? `Serviço concluído em ${new Date(c.updated_at).toLocaleDateString('pt-BR')}.`
-            : 'Contratação aceita. Combine os detalhes e marque como concluído quando o serviço terminar.';
-
-        el('btn-concluir').hidden = c.status !== 'aceita';
-        el('btn-concluir').disabled = false;
-
         el('link-chat').href = linkDoChat(c.id);
         el('link-chat').textContent = c.status === 'aceita' ? 'Abrir conversa' : 'Ver conversa';
+    }
+
+    // Situação e ações da contratação (US-023): concluir só com valor aprovado; o cliente cancela antes.
+    function preencherAcoes(c, papel, lista) {
+        const aceita = c.status === 'aceita';
+        const aprovado = lista.some((o) => o.situacao === 'aprovado');
+
+        let situacao;
+        if (!aceita) situacao = `Serviço concluído em ${new Date(c.updated_at).toLocaleDateString('pt-BR')}.`;
+        else if (aprovado) situacao = 'Valor aprovado. Marque como concluído quando o serviço terminar.';
+        else situacao = 'Contratação aceita. Combinem o valor no orçamento abaixo antes de concluir.';
+        el('servico-situacao').textContent = situacao;
+
+        el('btn-concluir').hidden = !(aceita && aprovado);
+        el('concluir-bloqueado').hidden = !(aceita && !aprovado);
+        el('btn-cancelar-contratacao').hidden = !(aceita && !aprovado && papel === 'cliente');
     }
 
     // ---------- Orçamento (US-022) ----------
@@ -168,6 +179,8 @@
         el('btn-enviar-orcamento').disabled = valor;
         el('btn-aprovar-orcamento').disabled = valor;
         el('btn-recusar-orcamento').disabled = valor;
+        el('btn-concluir').disabled = valor;
+        el('btn-cancelar-contratacao').disabled = valor;
     }
 
     function mostrarErroValor(texto) {
@@ -264,6 +277,7 @@
             if (minhaConsulta !== consultaAtual) return;
 
             preencher(c, papel, contato);
+            preencherAcoes(c, papel, orcamentos);
             preencherOrcamento(c, papel, orcamentos);
             mostrarEstado('detalhe');
 
@@ -280,20 +294,45 @@
     }
 
     async function concluir() {
+        if (ocupado) return;
         if (!window.confirm('Marcar este serviço como concluído? Depois disso não dá para desfazer.')) return;
 
-        el('btn-concluir').disabled = true;
+        definirOcupado(true);
         mostrarAviso('');
 
         try {
             const mudou = await mudarStatusContratacao(idContratacao, 'aceita', 'concluida');
-            mostrarAviso(mudou ? 'Serviço marcado como concluído.' : 'A outra parte já tinha concluído este serviço.');
+            mostrarAviso(mudou ? 'Serviço marcado como concluído.' : 'Esta contratação já tinha mudado. A tela foi atualizada.');
         } catch (falha) {
+            // Ex.: o valor ainda não estava aprovado (BR23) — o banco explica em português.
             console.error('Erro ao concluir:', falha);
-            const texto = ((falha && falha.message) || '').toLowerCase();
-            mostrarAviso(texto.includes('failed to fetch') || texto.includes('network')
-                ? 'Sem conexão com o servidor. Verifique sua internet e tente de novo.'
-                : 'Não foi possível concluir agora. Tente novamente.');
+            mostrarAviso(traduzirErroContratacao(falha, 'Não foi possível concluir agora. Tente novamente.'));
+        } finally {
+            definirOcupado(false);
+        }
+
+        el('servico-aviso').focus();
+        await carregar();
+    }
+
+    // Cliente cancela a contratação aceita enquanto não aprovou o valor (FR31). Depois de cancelada,
+    // carregar() leva o cliente para espera-cliente.html (desfecho) e o profissional para a lista.
+    async function cancelarContratacao() {
+        if (ocupado) return;
+        if (!window.confirm('Cancelar esta contratação? O profissional verá que ela foi cancelada por você.')) return;
+
+        definirOcupado(true);
+        mostrarAviso('');
+
+        try {
+            const mudou = await mudarStatusContratacao(idContratacao, 'aceita', 'cancelada');
+            if (!mudou) mostrarAviso('Esta contratação já tinha mudado. A tela foi atualizada.');
+        } catch (falha) {
+            // Ex.: o valor foi aprovado em outra aba (BR23).
+            console.error('Erro ao cancelar:', falha);
+            mostrarAviso(traduzirErroContratacao(falha, 'Não foi possível cancelar agora. Tente novamente.'));
+        } finally {
+            definirOcupado(false);
         }
 
         el('servico-aviso').focus();
@@ -324,6 +363,7 @@
     }
 
     el('btn-concluir').addEventListener('click', concluir);
+    el('btn-cancelar-contratacao').addEventListener('click', cancelarContratacao);
     el('form-orcamento').addEventListener('submit', enviarValor);
     el('orcamento-valor').addEventListener('input', () => mostrarErroValor(''));
     el('orcamento-obs').addEventListener('input', atualizarContador);

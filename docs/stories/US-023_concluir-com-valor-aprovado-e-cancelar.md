@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 3
 **Sprint:** Sprint 05
-**Status:** To Do
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -151,6 +151,7 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 
 ## Notas e Comentarios
 
+- 2026-11-27: implementada na branch `feat/US-023-concluir-cancelar` (decisões em `docs/tasks/breakdown_US-023.md`). Telas com sessão e banco simulados **23/23**; US-022 na mesma tela sem regressão (23/23). Falta o PO aplicar a `016_conclusao_com_orcamento.sql` e rodar `supabase/testes/016_conclusao_com_orcamento.sql` (C1–C22); os `.mjs` atualizados gravam no banco real e precisam da senha de teste.
 - 2026-11-27: story gerada no Modo Backlog a partir de `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (REQUIREMENTS_READY), aprovada pelo PO.
 
 ---
