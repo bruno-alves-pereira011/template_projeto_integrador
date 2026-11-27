@@ -10,7 +10,7 @@
   - #resumo-profissional com #resumo-nome e #resumo-local.
   - #form-contratar com #descricao, #endereco, #data_desejada. Erros: #erro-<campo>. Mensagem geral: #contratar-mensagem.
   - Depois do envio, o JS vai para espera-cliente.html?id=<id> (acompanhamento, US-009).
-  - #link-voltar-perfil e #btn-sair na barra do topo.
+  - #link-voltar-perfil; "Voltar para o início" na barra do topo (DEBT-013).
   - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/telas/solicitar-pedido.js.
 -->
 <!DOCTYPE html>
@@ -38,7 +38,8 @@
                 </span>
                 HelpMe
             </a>
-            <button type="button" id="btn-sair" class="btn btn-contorno">Sair</button>
+            <!-- DEBT-013: "Voltar para o início" no lugar do "Sair", que era clicado por engano. -->
+            <a href="home-cliente.html" id="link-inicio" class="btn btn-contorno btn-voltar-inicio">Voltar para o início</a>
         </div>
 
         <header class="login-header">

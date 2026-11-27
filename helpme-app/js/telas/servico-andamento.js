@@ -156,6 +156,8 @@
             const sessao = await exigirSessao();
             if (!sessao) return; // já redirecionou para o login
             uid = sessao.user.id;
+            // "Voltar para o início" (DEBT-013): mesma regra do login; o profissional vai ao painel dele.
+            document.getElementById('link-inicio').href = destinoDoPapel(sessao, null);
         } catch (falha) {
             console.error('Erro ao verificar a sessão:', falha);
             mostrarEstado('erro');
@@ -172,7 +174,6 @@
 
     el('btn-concluir').addEventListener('click', concluir);
     el('btn-tentar-novamente').addEventListener('click', () => (uid ? carregar() : iniciar()));
-    el('btn-sair').addEventListener('click', sair);
 
     iniciar();
 })();

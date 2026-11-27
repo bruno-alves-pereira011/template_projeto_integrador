@@ -10,7 +10,7 @@
   - #espera-carregando / #espera-erro (+ #btn-tentar-novamente) / #espera-nao-encontrada.
   - #espera-detalhe: #detalhe-profissional, #detalhe-status, #detalhe-data, #detalhe-descricao, #detalhe-endereco,
     #espera-situacao (texto do momento) e #btn-cancelar.
-  - #espera-aviso: avisos de ação. #btn-sair na barra do topo.
+  - #espera-aviso: avisos de ação. "Voltar para o início" na barra do topo, sem "Sair" (DEBT-013: sair fica na home, em Minhas contratações e em Meu perfil).
   - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/contratacao-comum.js -> js/telas/espera-cliente.js.
 -->
 <!DOCTYPE html>
@@ -38,7 +38,8 @@
                 </span>
                 HelpMe
             </a>
-            <button type="button" id="btn-sair" class="btn btn-contorno">Sair</button>
+            <!-- DEBT-013: no topo fica "Voltar para o início"; "Sair" no topo era clicado por engano -->
+            <a href="home-cliente.html" id="link-inicio" class="btn btn-contorno btn-voltar-inicio">Voltar para o início</a>
         </div>
 
         <header class="login-header">
