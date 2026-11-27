@@ -295,3 +295,67 @@ input[type="datetime-local"] {
     color: #8e2a20;
     font-weight: 700;
 }
+
+/* ==========================================
+   ORÇAMENTO (US-022) — servico-andamento.html
+   ========================================== */
+.bloco-orcamento {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    background: var(--cor-branco);
+}
+
+.bloco-orcamento h2 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.orcamento-situacao {
+    margin: 0;
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+    overflow-wrap: anywhere;
+}
+
+.orcamento-observacao {
+    margin: 0;
+    color: var(--cor-texto-suave);
+    overflow-wrap: anywhere;
+}
+
+.acoes-orcamento {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.acoes-orcamento .btn {
+    flex: 1 1 140px;
+    min-height: 44px;
+}
+
+.form-orcamento {
+    display: grid;
+    gap: 12px;
+}
+
+.orcamento-historico summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--cor-primaria);
+}
+
+.orcamento-historico ol {
+    margin: 4px 0 0;
+    padding-left: 1.2rem;
+    display: grid;
+    gap: 6px;
+    color: var(--cor-texto-suave);
+}
+
