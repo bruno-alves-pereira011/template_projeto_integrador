@@ -1,6 +1,6 @@
 # Requirements — Marco 3: orçamento da contratação e avaliação do profissional
 
-**Status:** DRAFT
+**Status:** REQUIREMENTS_READY
 **Discovery de origem:** `docs/discovery/helpme-marco3-orcamento-avaliacao.md` (PROBLEM_READY em 2026-11-27)
 **Classificacao de Processo:** NORMAL PROCESS
 **Numeração:** continua a de `docs/requirements/helpme-mvp-marco2.md` (último FR26, BR22, NFR11, A09) para as stories citarem IDs únicos no projeto.
@@ -97,8 +97,8 @@ O cliente sabe e aprova o preço dentro do app antes de o serviço ser concluíd
 - Pagamento real ou simulado; favoritos; profissional avaliar cliente; contraproposta do cliente; resposta do profissional a uma avaliação; moderação e denúncia; valor do orçamento no admin e nos indicadores (todos no LATER/OUT do Discovery).
 
 ## Open Questions
-- [BLOCKING? não] **BR28 — apagar avaliação:** a proposta é o autor **não** apagar (só editar). Hoje o banco deixa apagar. Confirma tirar essa opção?
-- [BLOCKING? não] **Profissional cancelar depois do aceite:** não está no escopo (só o cliente cancela, FR31). Se o profissional desistir, ele usa o chat e o cliente cancela. Confirma?
+- [RESOLVIDA 2026-11-27] BR28: o autor não apaga a avaliação, só edita (a política `avaliacoes: autor apaga` sai).
+- [RESOLVIDA 2026-11-27] Só o cliente cancela depois do aceite; o profissional que desistir combina pelo chat.
 
 ## Key Decisions Proposed
 - **Sem status novo em `contratacoes`:** a contratação continua `aceita` durante o orçamento; a situação do orçamento vem da tabela nova. Assim as telas e regras atuais (contato liberado no aceite, BR07; chat) não mudam.
@@ -111,16 +111,16 @@ O cliente sabe e aprova o preço dentro do app antes de o serviço ser concluíd
 
 O usuario pode **aprovar, editar, adicionar, remover ou reclassificar** qualquer requisito/regra antes do gate.
 
-- [ ] Proposta completa apresentada ao usuario
-- [ ] Ajustes solicitados incorporados
-- [ ] IDs estabilizados depois da revisao
-- [ ] Nenhuma pergunta bloqueante aberta
+- [x] Proposta completa apresentada ao usuario
+- [x] Ajustes solicitados incorporados
+- [x] IDs estabilizados depois da revisao
+- [x] Nenhuma pergunta bloqueante aberta
 
 ### User adjustments
-- ...
+- 2026-11-27 (R1): PO confirmou BR28 (sem apagar avaliação) e que só o cliente cancela depois do aceite; aprovou os requisitos sem outras mudanças.
 
 ## Gate G1 — REQUIREMENTS READY
 
-**Status:** PENDING
+**Status:** APPROVED (2026-11-27)
 
-**Aprovado pelo usuario:** nao
+**Aprovado pelo usuario:** sim
