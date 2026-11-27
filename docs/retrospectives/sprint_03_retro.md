@@ -110,7 +110,7 @@ Propostas para as próximas sprints, a decidir pela equipe:
 | Marcar a revisão independente no penúltimo dia útil de cada sprint (banca ou code review cruzado), e só chamar de entregue o que estiver em Done no último dia | Bruno Alves (PO) | Sprint 05 | ≥ 70% dos pontos em Done até o último dia | [ ] |
 | Cada responsável abre o PR da própria story; o PO não implementa story atribuída a outra pessoa | [EQUIPE] cada dupla | Sprint 05 | Commits de ≥ 3 autores no período da sprint | [ ] |
 | Mesclar planejamento e retrospectiva na `main` em até 1 dia útil | Bruno Alves (PO) | A partir desta retrospectiva | Nenhum documento de sprint fora da `main` por mais de 1 dia | [ ] |
-| Registrar o achado US7-09 como dívida nova (próximo ID livre, DEBT-012), sem reaproveitar o DEBT-009: `check (char_length(trim(...)) > 0)` em `contratacoes.descricao` e `endereco` | [EQUIPE] | Sprint 04 ou 05 | `contratacao_api.mjs` US7-09 passa | [ ] |
+| Registrar o achado US7-09 como dívida nova (próximo ID livre, DEBT-012), sem reaproveitar o DEBT-009: `check (char_length(trim(...)) > 0)` em `contratacoes.descricao` e `endereco` | [EQUIPE] | Sprint 04 ou 05 | `contratacao_api.mjs` US7-09 passa || Registrado no backlog (PO, 2026-11-27) |
 | Fechar DEBT-001 e DEBT-002, pendentes do Marco 2 | Luiz Felipe Moro (DEBT-001), Lucas dos Santos Felipe (DEBT-002), conforme o planejamento | 30/11 | As duas em Done no backlog | [ ] |
 
 ---
@@ -159,7 +159,7 @@ Propostas para as próximas sprints, a decidir pela equipe:
 
 - A retrospectiva estava prevista para 23/11, antes da Sprint 04, e não aconteceu. A Sprint 04 começou sem ela.
 - O Marco 2 foi entregue em 11/11 com US-001 a US-010 (decisão do PO de 09/11).
-- Esta retrospectiva não altera o backlog: o DEBT-012 só é registrado se a equipe aprovar o action item.
+- 2026-11-27: o PO aprovou o registro do DEBT-012 no backlog.
 
 ---
 
