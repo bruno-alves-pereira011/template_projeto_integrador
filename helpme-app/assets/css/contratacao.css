@@ -359,3 +359,47 @@ input[type="datetime-local"] {
     color: var(--cor-texto-suave);
 }
 
+
+/* ==========================================
+   AVALIAÇÃO (US-025) — servico-andamento.html
+   Reaproveita .bloco-orcamento, .grupo-opcoes e .opcao (auth.css: 44px e foco visível).
+   ========================================== */
+.notas-avaliacao {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); /* colunas iguais; em 360px cabem 4 + 1 */
+    gap: 6px;
+}
+
+.notas-avaliacao .opcao {
+    min-width: 44px;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 6px;
+    font-weight: 700;
+}
+
+.notas-avaliacao .opcao input {
+    width: 18px;
+    height: 18px;
+}
+
+.avaliacao-resumo {
+    display: grid;
+    gap: 8px;
+    justify-items: start;
+}
+
+.avaliacao-resumo .btn {
+    min-height: 44px;
+}
+
+.estrelas-avaliacao {
+    color: #a3501a; /* contraste 5,6:1 no branco; o laranja da marca (#e07b33) fica abaixo de 3:1 */
+    letter-spacing: 1px;
+}
+
+.avaliacao-comentario {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}

@@ -2,7 +2,7 @@
 -- HelpMe — seed.sql (dados de TESTE)
 --
 -- ANTES DE RODAR:
---   1. Rode supabase/migrations/001_schema.sql.
+--   1. Rode as migrations de supabase/migrations/, em ordem (o passo 8 usa a 015).
 --   2. No painel do Supabase, vá em Authentication → Users → Add user →
 --      "Create new user", marque "Auto Confirm User" e crie os 4 logins
 --      abaixo (senha forte, guardada fora do repositório):
@@ -79,13 +79,8 @@ begin
     join public.categorias c on c.slug = v.slug
     on conflict do nothing;
 
-    -- 4. Avaliações da cliente.
-    insert into public.avaliacoes (usuario_id, profissional_id, nota, comentario) values
-        (v_cliente, v_prof1, 5, 'Chegou rápido e resolveu o vazamento. Recomendo!'),
-        (v_cliente, v_prof2, 4, null)
-    on conflict (usuario_id, profissional_id) do update
-        set nota = excluded.nota,
-            comentario = excluded.comentario;
+    -- 4. Avaliações: depois das contratações (passo 8), porque desde a 018 toda avaliação
+    --    precisa de contratação concluída entre as partes (BR29, US-025).
 
     -- 5. Favorito da cliente.
     insert into public.favoritos (usuario_id, profissional_id) values (v_cliente, v_prof1)
@@ -108,6 +103,26 @@ begin
     insert into public.mensagens (contratacao_id, autor_id, conteudo, created_at) values
         (v_contratacao, v_cliente, 'Oi, João! Consegue vir no período da manhã?', now() - interval '10 minutes'),
         (v_contratacao, v_prof1,   'Bom dia, Ana! Consigo sim, chego por volta das 9h.', now() - interval '5 minutes');
+
+    -- 8. Um serviço já concluído com o prof2, com valor aprovado (BR23), e a avaliação dele (BR27/BR29).
+    --    A data desejada precisa estar no futuro na criação (BR09); o status entra direto como postgres.
+    insert into public.contratacoes (cliente_id, profissional_id, descricao, endereco, data_desejada, status)
+    values (v_cliente, v_prof2,
+            'Trocar o disjuntor do quadro de luz que desarma toda hora.',
+            'Rua das Palmeiras, 152 - Centro',
+            now() + interval '1 hour', 'concluida')
+    returning id into v_contratacao;
+
+    insert into public.orcamentos (contratacao_id, valor_centavos, observacao, situacao, respondido_em)
+    values (v_contratacao, 18000, 'Disjuntor novo e mão de obra.', 'aprovado', now());
+
+    -- Avaliação sem contratação concluída não fica (BR29): a do prof1 saiu na 018.
+    delete from public.avaliacoes where usuario_id = v_cliente and profissional_id <> v_prof2;
+    insert into public.avaliacoes (usuario_id, profissional_id, nota, comentario) values
+        (v_cliente, v_prof2, 4, 'Resolveu o disjuntor no mesmo dia.')
+    on conflict (usuario_id, profissional_id) do update
+        set nota = excluded.nota,
+            comentario = excluded.comentario;
 end;
 $$;
 

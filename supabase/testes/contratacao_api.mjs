@@ -1,5 +1,5 @@
 // ===================================================================
-// HelpMe — teste de API, RLS, triggers e Realtime (US-007 a US-010, US-023)
+// HelpMe — teste de API, RLS, triggers e Realtime (US-007 a US-010, US-023, US-025)
 // ===================================================================
 // COMO RODAR (Node 22+ , sem instalar nada):
 //   node supabase/testes/contratacao_api.mjs
@@ -10,6 +10,8 @@
 // "[TESTE AUTO <data>]" na descrição. Para limpar depois (SQL Editor):
 //   delete from public.contratacoes where descricao like '[TESTE AUTO%';
 // (as mensagens saem junto, por cascade)
+// US-025: rode SÓ depois da migration 018. Antes dela o autor ainda podia apagar a
+// avaliação, e o US25-01 apagaria de verdade a avaliação do seed.
 // ===================================================================
 
 import { URL, KEY, TAG, sleep, login, api, criarRelatorio } from './_supabase.mjs';
@@ -341,6 +343,33 @@ async function main() {
     check('US10-21', 'US-010', 'nao envia em cancelada (c4)', r.status === 403, `${r.status}`);
     r = await msg(p1, c4?.id, 'oi');
     check('US10-22', 'US-010', 'nao envia em concluida pelo profissional (c4)', r.status === 403, `${r.status}`);
+
+    // ================= US-025 — avaliacoes (so recusas: nada aqui cria avaliacao) =================
+    // Avaliacao nao se apaga pelo app (BR28): uma criada aqui ficaria no perfil do profissional.
+    // Criar com contratacao concluida e o resto das regras: roteiro supabase/testes/018_avaliacoes.sql.
+    const minhas = (await api(cli, 'GET', `avaliacoes?select=id,profissional_id,nota,comentario&usuario_id=eq.${cli.id}`)).data || [];
+    const av = minhas[0];
+    if (!av) {
+        ['US25-01', 'US25-02', 'US25-03'].forEach((id) => bloqueado(id, 'US-025', 'precisa de uma avaliacao do cliente (seed: cliente -> prof2)', 'nenhuma'));
+    } else {
+        const outroProf = av.profissional_id === p1.id ? p2.id : p1.id;
+        const autorDoAv = av.profissional_id === p2.id ? p2 : p1;
+        const igual = async () => {
+            const d = (await api(cli, 'GET', `avaliacoes?select=profissional_id,nota&id=eq.${av.id}`)).data?.[0];
+            return d && d.profissional_id === av.profissional_id && d.nota === av.nota;
+        };
+        r = await api(cli, 'DELETE', `avaliacoes?id=eq.${av.id}`);
+        check('US25-01', 'US-025', 'autor nao apaga a propria avaliacao (BR28)',
+            (r.status === 403 || (Array.isArray(r.data) && r.data.length === 0)) && await igual(), `${r.status} ${r.code}`);
+        r = await api(cli, 'PATCH', `avaliacoes?id=eq.${av.id}`, { profissional_id: outroProf });
+        check('US25-02', 'US-025', 'autor nao muda o profissional da avaliacao (so nota e comentario)',
+            r.status === 403 && r.code === '42501' && await igual(), `${r.status} ${r.code}`);
+        r = await api(autorDoAv, 'PATCH', `avaliacoes?id=eq.${av.id}`, { nota: av.nota === 1 ? 2 : 1 });
+        check('US25-03', 'US-025', 'profissional avaliado nao edita a avaliacao (BR28)',
+            Array.isArray(r.data) && r.data.length === 0 && await igual(), `${r.status} ${JSON.stringify(r.data)}`);
+    }
+    r = await api(null, 'POST', 'avaliacoes', { usuario_id: cli.id, profissional_id: p1.id, nota: 5 });
+    check('US25-04', 'US-025', 'visitante nao avalia', r.status === 401 || r.status === 403, `${r.status} ${r.code}`);
 
     // Vazamento de Realtime de contratacoes para o terceiro
     const mine = [c1, c2, c3, c4, c5, cForj, cVazia].filter(Boolean).map((c) => c.id);

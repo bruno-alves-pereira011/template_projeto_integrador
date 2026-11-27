@@ -12,6 +12,8 @@
 //   6. Orçamento (US-022): o profissional envia o valor; o cliente aprova ou recusa. Quem pode fazer o quê
 //      é o banco (enviar_orcamento / responder_orcamento); aqui só mostramos o que cabe a cada papel.
 //      Realtime dos orçamentos: a outra parte vê o envio e a resposta sem recarregar.
+//   7. Avaliação (US-025): na 'concluida', só o cliente vê o bloco; avalia (nota 1-5 + comentário opcional)
+//      e depois edita. Quem pode é o banco (018, BR27/BR28); "#avaliacao" na URL rola até o bloco.
 
 (function () {
     'use strict';
@@ -23,7 +25,12 @@
     let consultaAtual = 0;
     let assinada = false;
     let orcamentoAguardando = null;   // o orçamento que o cliente pode responder agora
-    let ocupado = false;              // trava contra duplo clique em enviar/aprovar/recusar/concluir/cancelar
+    let ocupado = false;              // trava contra duplo clique em enviar/aprovar/recusar/concluir/cancelar/avaliar
+    let contratacaoAtual = null;      // a última lida (o profissional dela é quem é avaliado)
+    let minhaAvaliacao = null;        // a avaliação do cliente para este profissional, ou null
+    let editandoAvaliacao = false;    // formulário aberto por "Editar avaliação"
+    let rolouParaAvaliacao = false;   // "#avaliacao" na URL: rola uma vez só
+    const FALHA_AVALIACAO = { falhou: true }; // a leitura da avaliação falhou (só o bloco avisa)
 
     function mostrarEstado(estado) {
         el('servico-carregando').hidden = estado !== 'carregando';
@@ -181,6 +188,145 @@
         el('btn-recusar-orcamento').disabled = valor;
         el('btn-concluir').disabled = valor;
         el('btn-cancelar-contratacao').disabled = valor;
+        el('btn-enviar-avaliacao').disabled = valor;
+        el('btn-editar-avaliacao').disabled = valor;
+    }
+
+    // ---------- Avaliação (US-025) ----------
+
+    // Mostra o resumo (já avaliou) ou o formulário (ainda não avaliou, ou editando). Não mexe no que a
+    // pessoa está digitando: o Realtime da contratação chama carregar() de novo a qualquer momento.
+    function preencherAvaliacao(c, papel, avaliacao, nomeProfissional) {
+        const mostrar = papel === 'cliente' && c.status === 'concluida';
+        el('avaliacao').hidden = !mostrar;
+        if (!mostrar) return;
+
+        // Sem saber se já avaliou, nem formulário nem resumo: enviar daria duplicada ou editaria às cegas.
+        if (avaliacao === FALHA_AVALIACAO) {
+            el('avaliacao-titulo').textContent = 'Avaliar profissional';
+            el('avaliacao-situacao').textContent = 'Não foi possível carregar sua avaliação. Verifique sua conexão e recarregue a página.';
+            el('avaliacao-resumo').hidden = true;
+            el('form-avaliacao').hidden = true;
+            return;
+        }
+
+        minhaAvaliacao = avaliacao;
+        if (!avaliacao) editandoAvaliacao = false;
+        const comFormulario = !avaliacao || editandoAvaliacao;
+
+        el('avaliacao-titulo').textContent = avaliacao ? 'Sua avaliação' : 'Avaliar profissional';
+        if (!avaliacao) {
+            el('avaliacao-situacao').textContent =
+                `Como foi o serviço de ${nomeProfissional || 'o profissional'}? Sua nota ajuda outros clientes a escolher.`;
+        } else {
+            el('avaliacao-situacao').textContent = editandoAvaliacao
+                ? 'Troque a nota ou o comentário e salve.'
+                : 'Obrigado por avaliar. Você pode editar quando quiser.';
+        }
+
+        el('avaliacao-resumo').hidden = comFormulario;
+        if (avaliacao) {
+            const estrelas = document.createElement('span');
+            estrelas.setAttribute('aria-hidden', 'true');
+            estrelas.className = 'estrelas-avaliacao';
+            estrelas.textContent = '★'.repeat(avaliacao.nota) + '☆'.repeat(5 - avaliacao.nota);
+            el('avaliacao-nota-texto').replaceChildren(estrelas, document.createTextNode(` Sua nota: ${avaliacao.nota} de 5`));
+            el('avaliacao-comentario-texto').textContent = avaliacao.comentario || '';
+            el('avaliacao-comentario-texto').hidden = !avaliacao.comentario;
+        }
+
+        el('form-avaliacao').hidden = !comFormulario;
+        el('btn-enviar-avaliacao').textContent = avaliacao ? 'Salvar alterações' : 'Enviar avaliação';
+        el('btn-cancelar-edicao').hidden = !avaliacao;
+
+        if (!rolouParaAvaliacao && window.location.hash === '#avaliacao') {
+            rolouParaAvaliacao = true;
+            el('avaliacao').scrollIntoView({ block: 'start' });
+            el('avaliacao-titulo').focus({ preventScroll: true });
+        }
+    }
+
+    function notaEscolhida() {
+        const marcada = document.querySelector('input[name="avaliacao-nota"]:checked');
+        return marcada ? Number(marcada.value) : null;
+    }
+
+    function mostrarErroNota(texto) {
+        el('erro-avaliacao-nota').textContent = texto || '';
+        el('erro-avaliacao-nota').hidden = !texto;
+        if (texto) el('avaliacao-notas').setAttribute('aria-invalid', 'true');
+        else el('avaliacao-notas').removeAttribute('aria-invalid');
+    }
+
+    function atualizarContadorAvaliacao() {
+        el('avaliacao-contador').textContent =
+            `${el('avaliacao-comentario').value.length} de ${COMENTARIO_AVALIACAO_MAXIMO} caracteres.`;
+    }
+
+    // "Editar avaliação": abre o formulário com a nota e o comentário atuais.
+    function abrirEdicao() {
+        if (!minhaAvaliacao || ocupado) return;
+        editandoAvaliacao = true;
+        el('form-avaliacao').reset();
+        const radio = document.querySelector(`input[name="avaliacao-nota"][value="${minhaAvaliacao.nota}"]`);
+        if (radio) radio.checked = true;
+        el('avaliacao-comentario').value = minhaAvaliacao.comentario || '';
+        atualizarContadorAvaliacao();
+        mostrarErroNota('');
+        preencherAvaliacao(contratacaoAtual, 'cliente', minhaAvaliacao, '');
+        (radio || el('avaliacao-comentario')).focus();
+    }
+
+    function cancelarEdicao() {
+        editandoAvaliacao = false;
+        mostrarErroNota('');
+        preencherAvaliacao(contratacaoAtual, 'cliente', minhaAvaliacao, '');
+        el('btn-editar-avaliacao').focus();
+    }
+
+    async function enviarAvaliacao(evento) {
+        evento.preventDefault();
+        if (ocupado || !contratacaoAtual) return;
+
+        mostrarAviso('');
+        const nota = notaEscolhida();
+        if (!nota) {
+            mostrarErroNota('Escolha uma nota de 1 a 5.');
+            document.querySelector('input[name="avaliacao-nota"]').focus();
+            return;
+        }
+        const comentario = el('avaliacao-comentario').value.trim();
+        if (comentario.length > COMENTARIO_AVALIACAO_MAXIMO) {
+            mostrarAviso(`O comentário pode ter até ${COMENTARIO_AVALIACAO_MAXIMO} caracteres.`);
+            el('avaliacao-comentario').focus();
+            return;
+        }
+        mostrarErroNota('');
+
+        const editando = Boolean(minhaAvaliacao);
+        definirOcupado(true);
+        try {
+            minhaAvaliacao = await salvarAvaliacao({
+                idAvaliacao: editando ? minhaAvaliacao.id : null,
+                uid: uid,
+                profissionalId: contratacaoAtual.profissional_id,
+                nota: nota,
+                comentario: comentario
+            });
+            editandoAvaliacao = false;
+            el('form-avaliacao').reset();
+            atualizarContadorAvaliacao();
+            mostrarAviso(editando ? 'Avaliação atualizada.' : 'Avaliação enviada. Obrigado!');
+        } catch (falha) {
+            console.error('Erro ao salvar a avaliação:', falha);
+            // Já existia (outra aba) ou sumiu: a releitura mostra o que está no banco.
+            if (falha && (falha.code === '23505' || falha.code === 'SEM_LINHA')) editandoAvaliacao = false;
+            mostrarAviso(traduzirErroAvaliacao(falha));
+        } finally {
+            definirOcupado(false);
+        }
+        el('servico-aviso').focus();
+        await carregar();
     }
 
     function mostrarErroValor(texto) {
@@ -253,6 +399,34 @@
         await carregar();
     }
 
+    // A avaliação vem DEPOIS de a contratação aparecer: se a leitura dela demorar ou falhar (o supabase-js
+    // tenta de novo sozinho por alguns segundos), só o bloco de avaliação espera ou avisa.
+    async function carregarAvaliacao(c, papel, minhaConsulta) {
+        if (!(papel === 'cliente' && c.status === 'concluida')) {
+            preencherAvaliacao(c, papel, null, '');
+            return;
+        }
+
+        if (el('avaliacao').hidden) {   // primeira vez: o bloco aparece já dizendo que está carregando
+            el('avaliacao').hidden = false;
+            el('avaliacao-situacao').textContent = 'Carregando sua avaliação...';
+            el('avaliacao-resumo').hidden = true;
+            el('form-avaliacao').hidden = true;
+        }
+
+        let avaliacao;
+        try {
+            avaliacao = await buscarMinhaAvaliacao(uid, c.profissional_id);
+        } catch (falha) {
+            console.error('Erro ao ler a avaliação (o resto da tela continua):', falha);
+            avaliacao = FALHA_AVALIACAO;
+        }
+        if (minhaConsulta !== consultaAtual) return;
+
+        // Depois de a contratação aparecer: o "#avaliacao" da URL só rola com o bloco já visível.
+        preencherAvaliacao(c, papel, avaliacao, el('detalhe-outra-parte').textContent);
+    }
+
     async function carregar() {
         const minhaConsulta = ++consultaAtual;
 
@@ -276,6 +450,7 @@
             const [contato, orcamentos] = await Promise.all([buscarContatoContraparte(c.id), buscarOrcamentos(c.id)]);
             if (minhaConsulta !== consultaAtual) return;
 
+            contratacaoAtual = c;
             preencher(c, papel, contato);
             preencherAcoes(c, papel, orcamentos);
             preencherOrcamento(c, papel, orcamentos);
@@ -286,6 +461,8 @@
                 assinarContratacao(c.id, () => carregar());
                 assinarOrcamentos(c.id, () => carregar());
             }
+
+            await carregarAvaliacao(c, papel, minhaConsulta);
         } catch (falha) {
             if (minhaConsulta !== consultaAtual) return;
             console.error('Erro ao carregar a contratação:', falha);
@@ -369,6 +546,11 @@
     el('orcamento-obs').addEventListener('input', atualizarContador);
     el('btn-aprovar-orcamento').addEventListener('click', () => responder(true));
     el('btn-recusar-orcamento').addEventListener('click', () => responder(false));
+    el('form-avaliacao').addEventListener('submit', enviarAvaliacao);
+    el('avaliacao-comentario').addEventListener('input', atualizarContadorAvaliacao);
+    document.querySelectorAll('input[name="avaliacao-nota"]').forEach((r) => r.addEventListener('change', () => mostrarErroNota('')));
+    el('btn-editar-avaliacao').addEventListener('click', abrirEdicao);
+    el('btn-cancelar-edicao').addEventListener('click', cancelarEdicao);
     el('btn-tentar-novamente').addEventListener('click', () => (uid ? carregar() : iniciar()));
 
     iniciar();

@@ -9,6 +9,8 @@
 //      mudar, o cliente cancelou antes (ou outra aba respondeu): aviso e recarga.
 //      Cliente: cada card leva ao acompanhamento (espera-cliente.html ou servico-andamento.html — D8).
 //   4. Realtime: qualquer mudança nas contratações da pessoa recarrega a lista.
+//   5. Cliente (US-025): contratação concluída ganha "Avaliar profissional" (ou "Ver minha avaliação", se
+//      ele já avaliou aquele profissional), que leva ao bloco de avaliação do serviço em andamento.
 // SEGURANÇA: o trigger validar_contratacao (BR06) recusa qualquer outra transição, inclusive pelo console.
 
 (function () {
@@ -47,6 +49,7 @@
     let papel = null;            // 'cliente' | 'profissional'
     let consultaAtual = 0;       // descarta respostas antigas (Realtime + "Tentar novamente")
     let recargaAgendada = null;  // junta vários eventos do Realtime em uma recarga só
+    let avaliados = new Set();   // profissionais que o cliente já avaliou (US-025)
 
     // ==========================================
     // REGRAS PURAS (sem DOM/banco)
@@ -164,6 +167,14 @@
             acoes.appendChild(criarLink('Ver contato e detalhes', `Ver contato e detalhes da solicitação nº ${c.id}`, paginaDaContratacao(c)));
         } else if (papel === 'cliente') {
             acoes.appendChild(criarLink('Acompanhar', `Acompanhar a solicitação nº ${c.id}`, paginaDaContratacao(c)));
+            if (c.status === 'concluida') {
+                const jaAvaliou = avaliados.has(c.profissional_id);
+                const nome = nomes[c.profissional_id] || 'o profissional';
+                acoes.appendChild(criarLink(
+                    jaAvaliou ? 'Ver minha avaliação' : 'Avaliar profissional',
+                    jaAvaliou ? `Ver minha avaliação de ${nome}` : `Avaliar ${nome}, da solicitação nº ${c.id}`,
+                    `${paginaDaContratacao(c)}#avaliacao`));
+            }
         }
 
         // Conversa (US-010): disponível em todo status; depois do fim, só para ler.
@@ -217,6 +228,24 @@
         }
     }
 
+    // Profissionais que o cliente já avaliou (US-025), só se houver concluída. Falha não impede a lista:
+    // o link sai como "Avaliar profissional" e a tela do serviço mostra o que está no banco.
+    async function buscarAvaliados(contratacoes) {
+        if (!contratacoes.some((c) => c.status === 'concluida')) return new Set();
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('avaliacoes')
+                .select('profissional_id')
+                .eq('usuario_id', uid);
+            if (error) throw error;
+            return new Set((data || []).map((a) => a.profissional_id));
+        } catch (falha) {
+            console.error('Erro ao ler as avaliações do cliente (a lista aparece sem elas):', falha);
+            return new Set();
+        }
+    }
+
     async function carregar() {
         const minhaConsulta = ++consultaAtual;
         const coluna = papel === 'cliente' ? 'cliente_id' : 'profissional_id';
@@ -231,8 +260,11 @@
             if (error) throw error;
 
             const contratacoes = data || [];
-            const nomes = papel === 'cliente' ? await buscarNomesProfissionais(contratacoes) : {};
+            const [nomes, jaAvaliados] = papel === 'cliente'
+                ? await Promise.all([buscarNomesProfissionais(contratacoes), buscarAvaliados(contratacoes)])
+                : [{}, new Set()];
             if (minhaConsulta !== consultaAtual) return;
+            avaliados = jaAvaliados;
 
             renderizar(contratacoes, nomes);
         } catch (falha) {

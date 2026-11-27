@@ -33,6 +33,8 @@
 | `testes/016_conclusao_com_orcamento.sql` | Roteiro da US-023 (C1 a C22). Desfaz tudo ao final; cria contratações cliente → prof1 em vários status e força o prof1 como aprovado. |
 | `migrations/017_contratacao_campos_obrigatorios.sql` | Descrição e endereço obrigatórios no banco (DEBT-012, achado US7-09): constraints `contratacoes_descricao_preenchida` e `contratacoes_endereco_preenchido` (`~ '\S'`: vazio ou só espaços, tabs e quebras de linha é recusado, para todos). **Para antes** se já houver contratação em branco e lista os ids; não apaga nada sozinha. Precisa da 016. |
 | `testes/017_contratacao_campos_obrigatorios.sql` | Roteiro do DEBT-012 (E1 a E8). Desfaz tudo ao final; força o prof1 como aprovado. |
+| `migrations/018_avaliacoes.sql` | Só avalia quem teve serviço concluído (US-025, BR27 a BR29). **Apaga** as avaliações sem contratação `concluida` entre autor e profissional (BR29; no banco real, só a do seed). `autor cria`/`autor edita` passam a exigir contratação concluída; `autor apaga` sai (BR28). Permissões por coluna: o app grava `usuario_id`, `profissional_id`, `nota`, `comentario` e só edita `nota` e `comentario`; visitante sem escrita. Precisa da 015 (o seed usa `orcamentos`). |
+| `testes/018_avaliacoes.sql` | Roteiro da US-025 (A1 a A16). Desfaz tudo ao final; força o prof1 como aprovado e cria contratações cliente → prof1. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 

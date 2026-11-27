@@ -6,7 +6,7 @@
 **Prioridade:** Alta
 **Story Points:** 3
 **Sprint:** Sprint 05
-**Status:** To Do
+**Status:** Review
 **Behavior Change Esperado:** YES
 
 ---
@@ -150,16 +150,18 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 
 ## Notas e Comentarios
 
+- 2026-11-27: PO aplicou a `018` e rodou o roteiro no banco real: **A1–A16 ok**. Conferido só lendo: sobrou só a avaliação 2 (cliente@ → prof2, com contratação concluída); políticas `leitura publica`, `autor cria` e `autor edita` (sem `autor apaga`); sem permissão de apagar nem de mudar o profissional; visitante sem escrita; nada do roteiro ficou. Banco real com login: API **71/71** (US25-01..04, só recusas; a avaliação 2 continuou intacta) e telas **99/99** (sem regressão em Minhas contratações e no serviço em andamento). Status: **Review**. Pendente: code review e PR.
+- 2026-11-27: implementada na branch `feat/US-025-avaliar-profissional` (decisões em `docs/tasks/breakdown_US-025.md`). Telas com sessão e banco simulados **33/33**; US-022 e US-023 na mesma tela sem regressão (23/23 cada). Falta o PO aplicar a `018_avaliacoes.sql` e rodar `supabase/testes/018_avaliacoes.sql` (A1–A16); depois, `contratacao_api.mjs` (US25-01..04, só recusas).
 - 2026-11-27: story gerada no Modo Backlog a partir de `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (REQUIREMENTS_READY), aprovada pelo PO.
 
 ---
 
 ## Definition of Done Checklist
 
-- [ ] Código implementado conforme os critérios de aceitação
-- [ ] Roteiro SQL com todas as linhas "ok" no banco real
+- [x] Código implementado conforme os critérios de aceitação
+- [x] Roteiro SQL com todas as linhas "ok" no banco real
 - [ ] Code review por quem não escreveu o código
-- [ ] Critérios comuns de mobile e acessibilidade verificados
-- [ ] Documentação atualizada (`supabase/README.md` quando o banco mudar)
+- [x] Critérios comuns de mobile e acessibilidade verificados
+- [x] Documentação atualizada (`supabase/README.md` quando o banco mudar)
 - [ ] `Behavior change` documentado no PR
 - [ ] Aprovação do Product Owner
