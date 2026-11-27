@@ -124,16 +124,20 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 
 **Objetivo:** Orcamento, pagamento simulado, avaliacoes e favoritos.
 **Valor de negocio:** Medio
-**Estimativa:** a refinar
+**Estimativa:** 16 pts refinados (US-022 a US-026: orcamento + avaliacao); pagamento simulado e favoritos a refinar
+**Origem:** `docs/discovery/helpme-marco3-orcamento-avaliacao.md` e `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (G0 e G1 aprovados em 2026-11-27). Primeiro vertical slice: US-022 + US-023 (orcamento de ponta a ponta).
 **GitHub Epic Issue:** -
 
 ##### User Stories
 
 | ID | Issue | Titulo | Story Points | Status | Sprint | Spec | Contract | BDD |
 |----|-------|--------|--------------|--------|--------|------|----------|-----|
-| (a refinar) | - | Orcamento: profissional envia valor, cliente aprova | - | Ideia | - | - | - | - |
+| US-022 | - | Enviar e responder orcamento da contratacao | 5 | Backlog | - | - | - | - |
+| US-023 | - | Concluir so com valor aprovado e cancelar antes de aprovar | 3 | Backlog | - | - | - | - |
+| US-024 | - | Situacao do orcamento em Minhas contratacoes | 2 | Backlog | - | - | - | - |
+| US-025 | - | Avaliar o profissional depois do servico (HU04) | 3 | Backlog | - | - | - | - |
+| US-026 | - | Avaliacoes no perfil publico do profissional | 3 | Backlog | - | - | - | - |
 | (a refinar) | - | Pagamento simulado (forma + status pago, sem gateway) | - | Ideia | - | - | - | - |
-| (a refinar) | - | HU04 — Avaliar profissional (1–5 + comentario). **Atencao:** a politica `avaliacoes: autor cria` (001) deixa qualquer usuario logado avaliar; a HU04 precisa exigir contratacao `concluida` | - | Ideia | - | - | - | - |
 | (a refinar) | - | HU05 — Favoritar profissional | - | Ideia | - | - | - | - |
 
 ---
@@ -228,6 +232,11 @@ Use `Spec`, `Contract` e `BDD` para rastrear os artefatos tecnicos quando a User
 | FR24 | US-012 |
 | FR25, FR26, BR21 | US-019, US-020 (Could) |
 | NFR11 | US-014, US-015, US-016 (criterio comum) |
+| FR27, FR28, FR29, FR30, BR24, BR25, BR26, NFR12, NFR13 | US-022 |
+| BR23 (altera BR06), FR31, NFR14 | US-023 |
+| FR32 | US-024 |
+| FR33, FR34, BR27, BR28, BR29 | US-025 |
+| FR35, NFR15, A11 | US-026 |
 
 ---
 
