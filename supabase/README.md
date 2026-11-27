@@ -31,6 +31,8 @@
 | `testes/015_orcamentos.sql` | Roteiro da US-022 (O1 a O23). Desfaz tudo ao final; cria duas contratações cliente → prof1 e força o prof1 como aprovado. |
 | `migrations/016_conclusao_com_orcamento.sql` | Concluir só com valor aprovado e cancelar antes de aprovar (US-023, BR23, FR31): troca o corpo do trigger `validar_contratacao` (001). `aceita → concluida` passa a exigir orçamento aprovado; **novo** `aceita → cancelada`, só o cliente e só sem orçamento aprovado. As transições antigas não mudam. A função continua **sem** `security definer` (de propósito: `eh_papel_cliente_api()` olha o `current_user`) e ganha `search_path` fixo. Precisa da 015. Não altera dados. |
 | `testes/016_conclusao_com_orcamento.sql` | Roteiro da US-023 (C1 a C22). Desfaz tudo ao final; cria contratações cliente → prof1 em vários status e força o prof1 como aprovado. |
+| `migrations/017_contratacao_campos_obrigatorios.sql` | Descrição e endereço obrigatórios no banco (DEBT-012, achado US7-09): constraints `contratacoes_descricao_preenchida` e `contratacoes_endereco_preenchido` (`~ '\S'`: vazio ou só espaços, tabs e quebras de linha é recusado, para todos). **Para antes** se já houver contratação em branco e lista os ids; não apaga nada sozinha. Precisa da 016. |
+| `testes/017_contratacao_campos_obrigatorios.sql` | Roteiro do DEBT-012 (E1 a E8). Desfaz tudo ao final; força o prof1 como aprovado. |
 | `testes/003_admin.sql` | Roteiro da US-014 (critérios 1, 4 e 5). Desfaz tudo ao final e mostra o relatório na mensagem de erro. |
 | `seed.sql` | Dados de teste: 1 cliente, 3 profissionais (2 aprovados, 1 pendente), avaliações, 1 favorito, 1 contratação `solicitada` (cliente → prof1, daqui a 2 dias) e 2 mensagens. |
 
