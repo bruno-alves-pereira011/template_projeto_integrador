@@ -243,6 +243,23 @@ fieldset[aria-invalid="true"] {
     text-decoration: underline;
 }
 
+/* "Sair" no rodapé (DEBT-013): botão com cara de link, igual aos links ao lado. */
+button.btn-link {
+    background: none;
+    border: 0;
+    font: inherit;
+    font-weight: 600;
+    color: var(--cor-primaria);
+    cursor: pointer;
+}
+
+/* "Voltar para o início" no topo: não quebra a linha ao lado do logo. */
+.btn-voltar-inicio {
+    white-space: nowrap;
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+}
+
 /* "Esqueci minha senha" (US-011): logo abaixo do campo de senha, alinhado à direita. */
 .link-esqueci-senha {
     align-self: flex-end;

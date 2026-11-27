@@ -7,7 +7,7 @@
   ELEMENTOS (ids usados pelo js/telas/meu-perfil.js):
   - #perfil-carregando / #perfil-erro-carga (+ #btn-recarregar).
   - #form-perfil: #nome, #telefone, #erro-nome, #erro-telefone, #perfil-email (só leitura), #btn-salvar.
-  - #perfil-mensagem: confirmação ou erro ao salvar. #btn-sair na barra do topo.
+  - #perfil-mensagem: confirmação ou erro ao salvar. "Voltar para o início" na barra do topo; #btn-sair no rodapé (DEBT-013).
   - Scripts: Supabase CDN -> js/servicos/supabase-config.js -> js/servicos/sessao.js -> js/servicos/telefone.js -> js/telas/meu-perfil.js.
 -->
 <!DOCTYPE html>
@@ -34,7 +34,8 @@
                 </span>
                 HelpMe
             </a>
-            <button type="button" id="btn-sair" class="btn btn-contorno">Sair</button>
+            <!-- DEBT-013: no topo fica "Voltar para o início"; "Sair" no topo era clicado por engano -->
+            <a href="home-cliente.html" class="btn btn-contorno btn-voltar-inicio">Voltar para o início</a>
         </div>
 
         <header class="login-header">
@@ -76,8 +77,8 @@
         </form>
 
         <footer class="login-footer">
-            <a href="home-cliente.html" class="btn-link">Voltar para o início</a>
             <a href="contratacoes.html" class="btn-link">Minhas contratações</a>
+            <button type="button" id="btn-sair" class="btn-link">Sair</button>
         </footer>
     </main>
 

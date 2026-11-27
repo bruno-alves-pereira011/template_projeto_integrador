@@ -149,7 +149,7 @@
 
     el('btn-cancelar').addEventListener('click', cancelar);
     el('btn-tentar-novamente').addEventListener('click', () => (uid ? carregar() : iniciar()));
-    el('btn-sair').addEventListener('click', sair);
+    // Sem "Sair" nesta tela (DEBT-013): a barra do topo leva de volta ao início.
 
     iniciar();
 })();
