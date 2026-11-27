@@ -5,8 +5,8 @@
 **GitHub US Issue:** -
 **Prioridade:** Alta
 **Story Points:** 5
-**Sprint:** - (Sprint 03 ainda sem planejamento; ver `docs/tasks/breakdown_US-010.md`)
-**Status:** In Progress
+**Sprint:** Sprint 03 (carry-over: so o Gate Done; ver `docs/tasks/testes_contratacao.md`)
+**Status:** Done
 **Behavior Change Esperado:** YES
 
 ---
@@ -158,6 +158,8 @@ Ver `docs/requirements/helpme-mvp-marco2.md` (Key Decisions) — alternativas de
 - 2026-10-09: story gerada no Modo Backlog a partir de `docs/requirements/helpme-mvp-marco2.md` (rev. 2), aprovada pelo usuario.
 - 2026-11-06: desenvolvimento iniciado. Tela `contratacao.html` confirmada pelo usuario (D9), porque o profissional nao tem tela de detalhe em `solicitada`, `recusada` e `cancelada`. Sprint 03 e publicacao no GitHub dispensadas por enquanto, por decisao do usuario.
 - 2026-11-06: TASK-001 a TASK-005 implementadas na branch `feat/US-010-chat`, ainda sem commit. Validacao feita: 45 verificacoes no Chrome com Supabase falso (criterios 1 a 5, 7, 8 e a parte de tela do 6). **Falta:** roteiro manual com duas abas no Supabase real, incluindo Realtime com RLS e o criterio 6 via console; code review cruzado; validacao do PO. Criterios seguem desmarcados ate o teste real.
+- 2026-11-09: movida para `Done` por decisao do PO (Bruno Alves) para a entrega do Marco 2 em 11/11, com base nos testes automatizados no Supabase real (`supabase/testes/contratacao_api.mjs`: 62 verificacoes; `contratacao_telas.mjs`: 93) registrados em `docs/tasks/testes_contratacao.md`. **Itens do Gate Done nao executados:** CH-13 (RLS rodado por outra pessoa), CH-17 (celular real), leitor de tela (CH-18), CH-20 (revisao do BDD), CH-21 (code review por quem nao escreveu) e CH-22 (validacao formal do PO). Criterios marcados com base nesses testes.
+- 2026-11-27: status recuperado da branch `docs/sprint-03-planning`, que nunca foi mesclada (DEBT-011).
 
 ---
 
