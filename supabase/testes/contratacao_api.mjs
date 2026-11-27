@@ -141,8 +141,9 @@ async function main() {
 
     r = await novaC(cli, p1, { rotulo: '', campos: { descricao: '   ', endereco: '   ' } });
     const cVazia = r.data && r.data[0];
-    check('US7-09', 'US-007', '[observacao] banco recusa descricao/endereco so com espacos',
-        r.status >= 400, `banco ACEITOU (${r.status}); so o front valida os campos obrigatorios`);
+    // DEBT-012 (017): constraints contratacoes_descricao_preenchida / _endereco_preenchido.
+    check('US7-09', 'US-007', 'banco recusa descricao/endereco so com espacos (DEBT-012)',
+        r.status === 400 && r.code === '23514', `${r.status} ${r.code}`);
 
     // ================= US-008 — aceitar / recusar =================
     const ev1 = await rtP1.esperar((e) => e.type === 'INSERT' && e.record?.id === c1?.id);
