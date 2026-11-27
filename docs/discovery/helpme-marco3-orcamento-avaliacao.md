@@ -1,6 +1,6 @@
 # Discovery — Marco 3: orçamento da contratação e avaliação do profissional
 
-**Status:** DRAFT
+**Status:** PROBLEM_READY
 **Classificacao de Processo:** NORMAL PROCESS (aprovada pelo PO em 2026-11-27)
 **Origem:** híbrido (pedido do PO + Discovery do Marco 2 + código e banco atuais)
 **Iniciativa:** EPIC-005 (parte). Escopo aprovado no C0: **orçamento + avaliação**; orçamento **depois do aceite**.
@@ -44,11 +44,11 @@ Fechar o ciclo da contratação dentro do app: o cliente sabe quanto vai pagar a
 - **Orçamento:**
   - depois do aceite, o profissional envia um valor em R$ e, opcionalmente, uma observação curta (o que está incluso);
   - o cliente aprova ou recusa;
-  - **[PROPOSTA — pergunta 4 do C0]** se o cliente recusar, o profissional pode enviar um novo valor; enquanto não houver valor aprovado, o cliente pode **cancelar** a contratação (transição nova `aceita → cancelada`, só do cliente);
+  - **[DECIDIDO]** se o cliente recusar, o profissional pode enviar um novo valor; enquanto não houver valor aprovado, o cliente pode **cancelar** a contratação (transição nova `aceita → cancelada`, só do cliente);
   - a conclusão do serviço só é possível com valor aprovado;
   - as duas partes veem o histórico de valores enviados e respostas da contratação.
 - **Avaliação (HU04):**
-  - **[PROPOSTA — pergunta 5 do C0]** só o **cliente** de uma contratação **concluída** avalia aquele profissional;
+  - **[DECIDIDO]** só o **cliente** de uma contratação **concluída** avalia aquele profissional;
   - uma avaliação por cliente e profissional (regra que já existe); o cliente pode **editar** a própria nota e comentário depois;
   - o **comentário aparece no perfil público**, com o primeiro nome do autor e a data;
   - a política de escrita de `avaliacoes` passa a exigir contratação concluída (fecha o item 5 da banca).
@@ -79,31 +79,32 @@ Fechar o ciclo da contratação dentro do app: o cliente sabe quanto vai pagar a
 - [ASSUMPTION] Não há prazo de validade do valor enviado; ele vale até o cliente responder ou cancelar.
 - [ASSUMPTION] Valor mínimo R$ 1,00 e máximo R$ 100.000,00 (barra erro de digitação).
 - [ASSUMPTION] A contratação `aceita` que já existe sem orçamento (1 no banco real) passa a seguir a regra nova: para concluir, precisa de valor aprovado.
-- [ASSUMPTION] A avaliação do seed sem contratação concluída continua no banco (a regra nova vale para avaliações novas); se o PO preferir, ela é apagada na migration.
+- **[DECIDIDO]** A avaliação do seed sem contratação concluída é apagada na migration; depois dela, toda avaliação no banco tem contratação concluída entre as partes.
 
 ## Risks
 - **Mudar a máquina de estados da contratação** (aceita → cancelada; concluída só com valor aprovado) pode quebrar telas e testes da Sprint 02 (`contratacao_api.mjs`, `contratacao_telas.mjs`). Mitigação: rodar os testes da contratação depois da migration.
 - **Dado antigo:** 1 contratação `aceita` sem orçamento fica presa até o profissional enviar valor — comunicar ou concluir antes da migration.
-- **Nota do perfil muda** quando a regra filtrar avaliações sem contratação (se o PO decidir apagar a do seed).
+- **Nota do perfil muda** do profissional que tinha a avaliação do seed (apagada por decisão do PO).
 - **Concentração de trabalho** (retrospectiva da Sprint 03): as stories desta iniciativa precisam de responsável que commita.
 
 ## Open Questions
-- [BLOCKING? sim] **Recusa do valor** (pergunta 4 do C0): o profissional pode mandar outro valor, e o cliente pode cancelar enquanto não aprovar? A proposta acima diz que sim, sem limite de tentativas.
-- [BLOCKING? sim] **Avaliação** (pergunta 5 do C0): só cliente com contratação concluída; editável; comentário público com primeiro nome e data. Confirma?
-- [BLOCKING? não] Guardar a avaliação do seed sem contratação ou apagá-la?
+- [RESOLVIDA 2026-11-27] Recusa do valor: o profissional pode mandar outro valor, sem limite; o cliente pode cancelar enquanto não aprovar.
+- [RESOLVIDA 2026-11-27] Avaliação: só cliente com contratação concluída; editável; comentário público com primeiro nome e data.
+- [RESOLVIDA 2026-11-27] Avaliação do seed sem contratação: apagar na migration.
 
 ## Review & Adjust
 
-- [ ] Usuario revisou a proposta completa
-- [ ] Alteracoes solicitadas foram incorporadas
-- [ ] Decisoes relevantes foram confirmadas
-- [ ] Nao existem perguntas bloqueantes abertas
+- [x] Usuario revisou a proposta completa
+- [x] Alteracoes solicitadas foram incorporadas
+- [x] Decisoes relevantes foram confirmadas
+- [x] Nao existem perguntas bloqueantes abertas
 
 ### User adjustments
 - 2026-11-27 (C0): NORMAL PROCESS aprovado; escopo = orçamento + avaliação (pagamento simulado e favoritos ficam para depois); orçamento acontece depois do aceite.
+- 2026-11-27 (D1): PO confirmou as 3 respostas (novo valor sem limite e cancelamento antes da aprovação; avaliação só de cliente com contratação concluída, editável, comentário público; apagar a avaliação do seed) e aprovou o Discovery.
 
 ## Gate G0 — PROBLEM READY
 
-**Status:** PENDING
+**Status:** APPROVED (2026-11-27)
 
-**Aprovado pelo usuario:** nao
+**Aprovado pelo usuario:** sim
