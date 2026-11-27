@@ -6,7 +6,7 @@
 **Prioridade:** Média
 **Story Points:** 3
 **Sprint:** Sprint 05
-**Status:** To Do
+**Status:** In Progress
 **Behavior Change Esperado:** YES
 
 ---
@@ -144,6 +144,7 @@ Ver Key Decisions em `docs/requirements/helpme-marco3-orcamento-avaliacao.md`.
 
 ## Notas e Comentarios
 
+- 2026-11-27: implementada na branch `feat/US-026-avaliacoes-perfil` (decisões em `docs/tasks/breakdown_US-026.md`). Tela com visitante e banco simulados **19/19**. Falta o PO aplicar a `019_avaliacoes_publicas.sql` e rodar `supabase/testes/019_avaliacoes_publicas.sql` (P1–P10).
 - 2026-11-27: story gerada no Modo Backlog a partir de `docs/requirements/helpme-marco3-orcamento-avaliacao.md` (REQUIREMENTS_READY), aprovada pelo PO.
 
 ---

@@ -1155,6 +1155,57 @@ body.painel button:focus-visible {
     overflow-wrap: anywhere;
 }
 
+/* Avaliações no perfil (US-026) */
+.lista-avaliacoes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.item-avaliacao {
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--painel-borda);
+    border-radius: 10px;
+    background: var(--painel-branco);
+}
+
+.item-avaliacao-topo {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.6rem;
+}
+
+.item-avaliacao-estrelas {
+    color: #a3501a; /* 5,6:1 no branco; o laranja da marca fica abaixo de 3:1 */
+    letter-spacing: 1px;
+}
+
+.item-avaliacao-autor {
+    font-weight: 700;
+    color: var(--painel-texto);
+    overflow-wrap: anywhere;
+}
+
+.item-avaliacao-data {
+    font-size: 0.9rem;
+    color: var(--painel-texto-suave);
+}
+
+.item-avaliacao-comentario {
+    margin: 0.4rem 0 0;
+    line-height: 1.5;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+#avaliacoes-limite {
+    margin: 0.75rem 0 0;
+}
+
 .lista-chips {
     display: flex;
     flex-wrap: wrap;
